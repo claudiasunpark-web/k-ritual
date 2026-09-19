@@ -1,0 +1,20 @@
+{
+  "name": "apgujeong-ebook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "압구정 아파트 재건축 투자 전자책 — 웹 기반 인터랙티브",
+  "scripts": {
+    "fetch": "node scripts/fetch-trades.mjs",
+    "sample": "node scripts/make-sample.mjs",
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "check": "node scripts/check-data.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "verify": "node scripts/check-data.mjs && node scripts/build.mjs && node scripts/check-links.mjs",
+    "pdf": "node scripts/pdf.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "asOf": "2026-09-19",
+  "howToFill": "landSharePyeong(대지지분)은 공개 언론 자료로는 신뢰도가 낮아 비워두었습니다. 등기부등본의 '대지권 비율', 또는 부동산공시가격 알리미(realtyprice.kr)의 공동주택 공시가격 상세에서 전유면적별 대지권 면적을 확인해 채우세요. 값을 채우면 사이트의 '지분 대비 가격' 계산이 자동으로 활성화됩니다.",
+  "lawdCd": "11680",
+  "umdName": "압구정동",
+  "complexes": [
+    { "id": "c-ms1",  "zone": "z1", "label": "미성1차",  "aliases": ["미성1", "미성 1", "미성1차"], "landSharePyeong": {} },
+    { "id": "c-ms2",  "zone": "z1", "label": "미성2차",  "aliases": ["미성2", "미성 2", "미성2차"], "landSharePyeong": {} },
+
+    { "id": "c-sh",   "zone": "z2", "label": "신현대(9·11·12차)", "aliases": ["신현대", "현대9", "현대11", "현대12", "신현대9", "신현대11", "신현대12"], "landSharePyeong": {} },
+
+    { "id": "c-hd1",  "zone": "z3", "label": "현대1차",  "aliases": ["현대1", "현대1차", "구현대1"], "landSharePyeong": {} },
+    { "id": "c-hd2",  "zone": "z3", "label": "현대2차",  "aliases": ["현대2", "현대2차", "구현대2"], "landSharePyeong": {} },
+    { "id": "c-hd3",  "zone": "z3", "label": "현대3차",  "aliases": ["현대3", "현대3차", "구현대3"], "landSharePyeong": {} },
+    { "id": "c-hd4",  "zone": "z3", "label": "현대4차",  "aliases": ["현대4", "현대4차", "구현대4"], "landSharePyeong": {} },
+    { "id": "c-hd5",  "zone": "z3", "label": "현대5차",  "aliases": ["현대5", "현대5차", "구현대5"], "landSharePyeong": {} },
+    { "id": "c-hd6",  "zone": "z3", "label": "현대6차",  "aliases": ["현대6", "현대6차", "현대6,7", "현대(6,7차)"], "landSharePyeong": {} },
+    { "id": "c-hd7",  "zone": "z3", "label": "현대7차",  "aliases": ["현대7", "현대7차"], "landSharePyeong": {} },
+    { "id": "c-hd10", "zone": "z3", "label": "현대10차", "aliases": ["현대10", "현대10차", "현대10,13,14", "현대(10,13,14차)"], "landSharePyeong": {} },
+    { "id": "c-hd13", "zone": "z3", "label": "현대13차", "aliases": ["현대13", "현대13차"], "landSharePyeong": {} },
+    { "id": "c-hd14", "zone": "z3", "label": "현대14차", "aliases": ["현대14", "현대14차"], "landSharePyeong": {} },
+    { "id": "c-drv",  "zone": "z3", "label": "대림빌라트", "aliases": ["대림빌라트", "대림빌라"], "landSharePyeong": {} },
+
+    { "id": "c-hd8",  "zone": "z4", "label": "현대8차",  "aliases": ["현대8", "현대8차"], "landSharePyeong": {} },
+    { "id": "c-hy3",  "zone": "z4", "label": "한양3차",  "aliases": ["한양3", "한양3차"], "landSharePyeong": {} },
+    { "id": "c-hy4",  "zone": "z4", "label": "한양4차",  "aliases": ["한양4", "한양4차"], "landSharePyeong": {} },
+    { "id": "c-hy6",  "zone": "z4", "label": "한양6차",  "aliases": ["한양6", "한양6차"], "landSharePyeong": {} },
+
+    { "id": "c-hy1",  "zone": "z5", "label": "한양1차",  "aliases": ["한양1", "한양1차"], "landSharePyeong": {} },
+    { "id": "c-hy2",  "zone": "z5", "label": "한양2차",  "aliases": ["한양2", "한양2차"], "landSharePyeong": {} },
+
+    { "id": "c-hy5",  "zone": "z6", "label": "한양5차",  "aliases": ["한양5", "한양5차"], "units": 343, "landSharePyeong": {} },
+    { "id": "c-hy7",  "zone": "z6", "label": "한양7차",  "aliases": ["한양7", "한양7차"], "units": 239, "landSharePyeong": {} },
+    { "id": "c-hy8",  "zone": "z6", "label": "한양8차",  "aliases": ["한양8", "한양8차"], "units": 90,  "landSharePyeong": {} }
+  ]
+}

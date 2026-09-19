@@ -1,0 +1,69 @@
+name: Build and deploy ebook
+
+on:
+  push:
+    branches: [main]
+  # 매월 1일 09:00 KST — 국토부 실거래 갱신 후 재배포
+  schedule:
+    - cron: '0 0 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 데이터 정합성 점검
+        run: node scripts/check-data.mjs
+
+      - name: 실거래가 수집
+        # 시크릿이 없으면 저장소에 커밋된 데이터로 그대로 빌드합니다.
+        env:
+          MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
+        run: |
+          if [ -n "$MOLIT_API_KEY" ]; then
+            node scripts/fetch-trades.mjs --months 36
+          else
+            echo "MOLIT_API_KEY 미설정 — 커밋된 data/trades/ 로 빌드합니다."
+          fi
+
+      - name: 샘플 데이터 준비
+        # 실거래 파일이 전혀 없을 때만 레이아웃 확인용 샘플을 만듭니다.
+        run: |
+          if [ ! -f data/trades/apgujeong.json ] && [ ! -f data/trades/sample.json ]; then
+            node scripts/make-sample.mjs
+          fi
+
+      - name: 빌드
+        run: node scripts/build.mjs
+
+      - name: 내부 링크 점검
+        run: node scripts/check-links.mjs
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

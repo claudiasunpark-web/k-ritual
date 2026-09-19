@@ -1,0 +1,203 @@
+{
+  "asOf": "2026-09-19",
+  "note": "공개된 언론 보도·서울시 발표 기준. 조합 내부 확정 수치가 아니며 사업시행계획인가 전까지 변경될 수 있습니다. verified=false 항목은 반드시 원문 확인 후 사용하세요.",
+  "stageLadder": [
+    { "step": 1, "label": "정비구역 지정" },
+    { "step": 2, "label": "추진위 구성" },
+    { "step": 3, "label": "조합설립인가" },
+    { "step": 4, "label": "시공사 선정" },
+    { "step": 5, "label": "정비사업 통합심의" },
+    { "step": 6, "label": "사업시행계획인가" },
+    { "step": 7, "label": "관리처분계획인가" },
+    { "step": 8, "label": "이주·철거" },
+    { "step": 9, "label": "착공" },
+    { "step": 10, "label": "준공·입주" }
+  ],
+  "zones": [
+    {
+      "id": "z1",
+      "name": "압구정1구역",
+      "shortName": "1구역",
+      "complexes": [
+        { "name": "미성1차", "units": null, "verified": false },
+        { "name": "미성2차", "units": null, "verified": false }
+      ],
+      "unitsBefore": null,
+      "unitsAfter": null,
+      "maxFloors": null,
+      "builder": null,
+      "constructionCostBillionKRW": null,
+      "stageDone": 2,
+      "stageStatus": "추진위 구성 단계. 추진위원장 자리가 약 3년간 공석",
+      "riskLevel": "high",
+      "highlights": [
+        "미성1차의 단독 재건축 주장과 강남구청 상대 소송 등으로 통합 추진 동력이 약함",
+        "2~5구역과 사업 속도 격차가 가장 큰 구역"
+      ],
+      "sources": ["bizwatch-2026-06-02", "smarttoday-apgujeong-status"]
+    },
+    {
+      "id": "z2",
+      "name": "압구정2구역",
+      "shortName": "2구역",
+      "complexes": [
+        { "name": "현대9차", "units": null, "verified": false },
+        { "name": "현대11차", "units": null, "verified": false },
+        { "name": "현대12차", "units": null, "verified": false }
+      ],
+      "complexAlias": "신현대 9·11·12차",
+      "unitsBefore": 1924,
+      "unitsAfter": 2381,
+      "maxFloors": 66,
+      "buildingCount": 14,
+      "basementFloors": 5,
+      "builder": "현대건설",
+      "constructionCostBillionKRW": null,
+      "stageDone": 5,
+      "stageStatus": "2026년 7월 서울시 제13차 정비사업 통합심의 조건부 의결 — 압구정 2~5구역 중 최초 통과",
+      "riskLevel": "low",
+      "highlights": [
+        "압구정 구역 중 인허가 속도 선두",
+        "특별건축구역 지정. 한강·잠원한강공원 접근성 확보 조건 부과",
+        "단지 내부 공공보행통로 조성, 경로당·어린이집·작은도서관 등 공공개방시설 포함"
+      ],
+      "milestones": [
+        { "date": "2026-07-03", "label": "정비사업 통합심의 조건부 통과", "status": "done" },
+        { "date": "2027-H1", "label": "사업시행계획인가 (목표)", "status": "target" },
+        { "date": "2028", "label": "관리처분계획인가 (목표)", "status": "target" },
+        { "date": "2029", "label": "이주·착공 (목표)", "status": "target" }
+      ],
+      "sources": ["hankyung-2026-07-03", "seoul-2026-07-03", "herald-2026-07-03"]
+    },
+    {
+      "id": "z3",
+      "name": "압구정3구역",
+      "shortName": "3구역",
+      "complexes": [
+        { "name": "현대1차", "units": null, "verified": false },
+        { "name": "현대2차", "units": null, "verified": false },
+        { "name": "현대3차", "units": null, "verified": false },
+        { "name": "현대4차", "units": null, "verified": false },
+        { "name": "현대5차", "units": null, "verified": false },
+        { "name": "현대6차", "units": null, "verified": false },
+        { "name": "현대7차", "units": null, "verified": false },
+        { "name": "현대10차", "units": null, "verified": false },
+        { "name": "현대13차", "units": null, "verified": false },
+        { "name": "현대14차", "units": null, "verified": false },
+        { "name": "대림빌라트", "units": null, "verified": false }
+      ],
+      "unitsBefore": 3934,
+      "unitsAfter": 5175,
+      "maxFloors": 65,
+      "basementFloors": 7,
+      "builder": "현대건설",
+      "constructionCostBillionKRW": 55610,
+      "stageDone": 4,
+      "stageStatus": "2026년 5월 시공사 선정 완료, 2026년 8월 31일 서울시에 통합심의 접수",
+      "riskLevel": "medium",
+      "highlights": [
+        "총공사비 5조 5,610억원 — 단일 도시정비사업 기준 역대 최대 규모",
+        "압구정 6개 구역 중 규모 최대 (기존 3,934가구 → 5,175가구)",
+        "압구정역 인근 일부 구역은 지역 용적률 상향으로 상업·업무·문화 복합기능 유도",
+        "상가 소유자 이해관계와 일부 필지 소유권 정리가 속도 변수"
+      ],
+      "milestones": [
+        { "date": "2026-05-25", "label": "시공사 선정 (현대건설, 찬성 89%)", "status": "done" },
+        { "date": "2026-08-31", "label": "정비사업 통합심의 접수", "status": "done" },
+        { "date": "2026", "label": "통합심의 완료 (조합 목표)", "status": "target" },
+        { "date": "2027", "label": "사업시행계획인가 (조합 목표)", "status": "target" },
+        { "date": "2030", "label": "착공 (목표)", "status": "target" }
+      ],
+      "sources": ["fnnews-2026-05-25", "housingherald-61883", "mt-2026-09-03", "tf-2234907"]
+    },
+    {
+      "id": "z4",
+      "name": "압구정4구역",
+      "shortName": "4구역",
+      "complexes": [
+        { "name": "현대8차", "units": null, "verified": false },
+        { "name": "한양3차", "units": null, "verified": false },
+        { "name": "한양4차", "units": null, "verified": false },
+        { "name": "한양6차", "units": null, "verified": false }
+      ],
+      "unitsBefore": null,
+      "unitsAfter": 1662,
+      "maxFloors": 67,
+      "buildingCount": 8,
+      "basementFloors": 5,
+      "builder": "삼성물산",
+      "constructionCostBillionKRW": 21154,
+      "constructionCostPerPyeongManKRW": 1250,
+      "stageDone": 4,
+      "stageStatus": "2026년 5월 시공사 선정 완료, 공사도급계약 체결 단계",
+      "riskLevel": "low",
+      "highlights": [
+        "압구정 6개 구역 중 유일하게 삼성물산 시공 (브랜드 차별화 요소)",
+        "3.3㎡당 공사비 1,250만원 수준으로 계약",
+        "공유지분 토지 누락등기 문제를 2026년 2월 해결 — 3구역·5구역 대비 토지 리스크 정리됨",
+        "인허가 속도에서 2구역에 이어 2순위 평가"
+      ],
+      "milestones": [
+        { "date": "2026-02", "label": "공유지분 토지 누락등기 해결", "status": "done" },
+        { "date": "2026-05-23", "label": "시공사 선정 (삼성물산, 찬성 87.4%)", "status": "done" },
+        { "date": "2026", "label": "공사도급계약 체결", "status": "progress" },
+        { "date": "2030", "label": "착공 (목표)", "status": "target" }
+      ],
+      "sources": ["sedaily-20047641", "arunews-63016", "mt-2026-09-03", "nate-2026-02-19"]
+    },
+    {
+      "id": "z5",
+      "name": "압구정5구역",
+      "shortName": "5구역",
+      "complexes": [
+        { "name": "한양1차", "units": null, "verified": false },
+        { "name": "한양2차", "units": null, "verified": false }
+      ],
+      "unitsBefore": null,
+      "unitsAfter": 1397,
+      "maxFloors": 68,
+      "buildingCount": 8,
+      "basementFloors": 6,
+      "builder": "현대건설",
+      "constructionCostBillionKRW": 14960,
+      "stageDone": 4,
+      "stageStatus": "2026년 5월 시공사 선정 완료. 대지지분 소유권 이전 소송 준비 중",
+      "riskLevel": "medium",
+      "highlights": [
+        "압구정 구역 중 최고 층수 계획 (지상 68층)",
+        "2·3구역과 함께 현대건설이 시공 — '압구정 현대' 연속 타운 형성",
+        "한양(현 BS한양) 명의로 남은 대지지분 총 607㎡(한양1차 약 179㎡, 한양2차 약 428㎡) 소유권 이전 소송 준비"
+      ],
+      "milestones": [
+        { "date": "2026-05-29", "label": "시공사 선정 (현대건설)", "status": "done" },
+        { "date": "2026", "label": "대지지분 소유권 이전 소송", "status": "progress" },
+        { "date": "2030", "label": "착공 (목표)", "status": "target" }
+      ],
+      "sources": ["news1-6182439", "asiatoday-2026-05-28", "tf-2234907", "pinpoint-369861"]
+    },
+    {
+      "id": "z6",
+      "name": "압구정6구역",
+      "shortName": "6구역",
+      "complexes": [
+        { "name": "한양5차", "units": 343, "verified": true },
+        { "name": "한양7차", "units": 239, "verified": true },
+        { "name": "한양8차", "units": 90, "verified": true }
+      ],
+      "unitsBefore": 672,
+      "unitsAfter": null,
+      "maxFloors": null,
+      "builder": null,
+      "constructionCostBillionKRW": null,
+      "stageDone": 3,
+      "stageStatus": "한양7차만 조합 설립. 통합 재건축 vs 단지별 재건축 이견 지속",
+      "riskLevel": "high",
+      "highlights": [
+        "한양5차 343세대 / 한양7차 239세대 / 한양8차 90세대 — 소규모 단지 조합",
+        "통합 여부 미확정이 최대 변수. 단지별 개별 재건축 시 사업성 저하 우려",
+        "1구역과 함께 재건축 초기 단계"
+      ],
+      "sources": ["bizwatch-2026-06-02", "seoul-2026-05-30"]
+    }
+  ]
+}
