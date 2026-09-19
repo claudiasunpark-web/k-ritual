@@ -1,0 +1,14 @@
+{
+  "name": "k-ritual",
+  "version": "0.1.0",
+  "private": true,
+  "description": "만화풍 캐릭터와 스토리로 진행되는 연애 상담 웹앱",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
