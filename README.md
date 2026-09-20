@@ -158,7 +158,7 @@ npm run verify         # check → build → check:links 한 번에
 
 | 항목 | 채우는 방법 |
 |---|---|
-| 단지별 **대지지분** | 등기부등본 '대지권 비율', 또는 [부동산공시가격 알리미](https://www.realtyprice.kr) → `data/complexes.json`의 `landSharePyeong`에 `"전용면적": 대지지분평` 형태로 입력 |
+| 단지별 **대지지분** | [등기부등본](https://www.iros.go.kr) 표제부 '대지권의 표시'(확정적·유료), [일사편리](https://www.kras.go.kr)·[씨:리얼](https://seereal.lh.or.kr)·집합건축물대장 전유부(무료) → `data/complexes.json`의 `landSharePyeong`에 `"전용면적": 대지지분평` 형태로 입력. **부동산공시가격 알리미에는 대지지분이 없습니다.** |
 | 1·4·5구역 기존 세대수 | 조합 자료 → `data/zones.json`의 `unitsBefore` |
 | 1·6구역 계획 세대수·층수 | 정비계획 확정 후 |
 | 아파트 구조 방식(기둥식 여부) | 사업시행계획인가 도서, 도급계약서 |
@@ -182,8 +182,13 @@ node scripts/pdf.mjs      # dist-pdf/ 에 장별 PDF
 
 ## 배포
 
-`main`에 푸시하면 GitHub Actions가 빌드해 GitHub Pages로 배포합니다
-(저장소 Settings → Pages → Source를 **GitHub Actions**로 설정해야 합니다).
+`main` 또는 `claude/**` 브랜치에 푸시하면 GitHub Actions가 빌드해 GitHub Pages로 배포합니다.
+**최초 1회만** 저장소 Settings → Pages → Source를 **GitHub Actions**로 바꿔 주세요.
+배포 주소: `https://<사용자명>.github.io/k-ritual/`
+
+산출물은 상대 경로만 쓰므로 **`dist/` 폴더를 그대로 압축해 배포해도 동작합니다.**
+받는 사람이 `index.html`을 더블클릭하면 브라우저에서 열리고, 계산기와 차트까지 전부 작동합니다
+(서버 없이 열리도록 스크립트를 일반 스크립트로 두었습니다).
 
 시세를 정기 갱신하려면 저장소 Secrets에 `MOLIT_API_KEY`를 등록하세요.
 워크플로가 매월 1일 실거래를 다시 수집한 뒤 배포합니다.

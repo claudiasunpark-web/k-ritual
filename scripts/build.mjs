@@ -165,7 +165,7 @@ ${body}
     </footer>
   </main>
 </div>
-<script src="${up}assets/app.js" type="module"></script>
+<script src="${up}assets/app.js"></script>
 </body>
 </html>
 `;

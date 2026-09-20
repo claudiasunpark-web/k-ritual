@@ -240,7 +240,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     <div class="stat stat--hero"><span class="stat__label">대지지분 평당가</span><span class="stat__value" data-out="perShare">—</span></div>
     <div class="stat"><span class="stat__label">대지지분 / 전용면적</span><span class="stat__value" data-out="ratio">—</span></div>
   </output>
-  <p class="calc__note">대지지분은 등기부등본의 '대지권 비율' 또는 <a href="https://www.realtyprice.kr" target="_blank" rel="noopener noreferrer">부동산공시가격 알리미</a>에서 확인하세요. 같은 구역 안에서 <strong>대지지분 평당가가 낮은 매물</strong>이 상대적으로 저평가된 구간입니다.</p>
+  <p class="calc__note">대지지분은 <a href="https://www.iros.go.kr" target="_blank" rel="noopener noreferrer">등기부등본</a> 표제부의 '대지권의 표시'(가장 확정적), 또는 무료로는 <a href="https://www.kras.go.kr" target="_blank" rel="noopener noreferrer">일사편리 부동산종합증명서</a>·<a href="https://seereal.lh.or.kr" target="_blank" rel="noopener noreferrer">씨:리얼</a>에서 확인하세요. 같은 구역 안에서 <strong>대지지분 평당가가 낮은 매물</strong>이 상대적으로 저평가된 구간입니다.</p>
 </form>`;
     },
 
