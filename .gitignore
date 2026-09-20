@@ -4,3 +4,6 @@ dist/
 .DS_Store
 *.log
 data/trades/raw/
+
+# 대지지분 입력 작업 파일 (채워서 돌려받는 용도)
+대지지분-입력표.csv

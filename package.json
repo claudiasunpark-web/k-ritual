@@ -12,7 +12,8 @@
     "check": "node scripts/check-data.mjs",
     "check:links": "node scripts/check-links.mjs",
     "verify": "node scripts/check-data.mjs && node scripts/build.mjs && node scripts/check-links.mjs",
-    "pdf": "node scripts/pdf.mjs"
+    "pdf": "node scripts/pdf.mjs",
+    "todo": "node scripts/land-share-todo.mjs"
   },
   "engines": {
     "node": ">=20"
