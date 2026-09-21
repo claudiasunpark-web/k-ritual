@@ -43,6 +43,19 @@ MOLIT_API_KEY=xxx node scripts/fetch-trades.mjs --months 60
 
 무료이며 개발계정 기준 일 10,000건 트래픽이 제공됩니다. 36개월 수집에 수십 건만 사용합니다.
 
+### 키를 로컬에 두지 않고 수집하기 (권장)
+
+저장소 **Settings → Secrets and variables → Actions → New repository secret** 에
+이름 `MOLIT_API_KEY` 로 등록하면 GitHub Actions 러너가 대신 수집합니다.
+
+- **예약 실행(매월 1일)과 수동 실행(Run workflow)** 에서는 수집 결과를
+  `data/trades/apgujeong.json` 으로 **저장소에 되커밋**합니다. 커밋 메시지에 `[skip ci]` 가
+  붙어 되커밋이 워크플로를 다시 깨우지 않습니다.
+- 일반 push 에서는 수집만 하고 커밋하지 않습니다 — push 이벤트에서 커밋하면 그 커밋이
+  다시 push 를 만들어 반복 실행됩니다.
+
+되커밋된 데이터를 `git pull` 하면 로컬에서도 키 없이 실제 시세로 빌드됩니다.
+
 수집 스크립트는 강남구(법정동코드 `11680`) 전체를 조회한 뒤 법정동이 `압구정동`인 거래만 추출하고,
 해제된 거래를 제외한 다음 단지·평형·구역별로 집계해 `data/trades/apgujeong.json`을 만듭니다.
 **평형 목록은 미리 입력한 값이 아니라 실거래에 신고된 전용면적에서 도출**됩니다.
