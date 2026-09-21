@@ -12,7 +12,8 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  # 수집한 실거래를 저장소에 되커밋하기 위해 write 가 필요합니다.
+  contents: write
   pages: write
   id-token: write
 
@@ -35,14 +36,36 @@ jobs:
 
       - name: 실거래가 수집
         # 시크릿이 없으면 저장소에 커밋된 데이터로 그대로 빌드합니다.
+        id: fetch
         env:
           MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
         run: |
           if [ -n "$MOLIT_API_KEY" ]; then
             node scripts/fetch-trades.mjs --months 36
+            echo "fetched=true" >> "$GITHUB_OUTPUT"
           else
             echo "MOLIT_API_KEY 미설정 — 커밋된 data/trades/ 로 빌드합니다."
+            echo "fetched=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: 수집한 실거래 되커밋
+        # 예약 실행과 수동 실행에서만 커밋합니다. push 이벤트에서 커밋하면
+        # 그 커밋이 다시 워크플로를 깨워 무한 반복이 됩니다.
+        if: |
+          steps.fetch.outputs.fetched == 'true' &&
+          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        run: |
+          if git diff --quiet -- data/trades/; then
+            echo "실거래 데이터 변동 없음 — 커밋하지 않습니다."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/trades/
+          COUNT=$(node -e "const t=require('./data/trades/apgujeong.json');console.log(t.totals.trades)")
+          RANGE=$(node -e "const t=require('./data/trades/apgujeong.json');console.log(t.range.from+'~'+t.range.to)")
+          git commit -m "실거래가 갱신: 압구정동 ${COUNT}건 (${RANGE}) [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
 
       - name: 샘플 데이터 준비
         # 실거래 파일이 전혀 없을 때만 레이아웃 확인용 샘플을 만듭니다.
