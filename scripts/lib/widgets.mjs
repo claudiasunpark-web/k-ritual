@@ -124,7 +124,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
           key: b.key,
           label: b.label,
           series: viewFor(b.key),
-          note: `단위: 만원 / 전용면적 1평 · ${b.label} 월별 중위값 · 속이 빈 점은 그 달 거래 2건 이하`,
+          note: `단위: 만원 / 전용면적 1평 · ${b.label} 월별 중위값`,
         })),
         {
           key: 'all',

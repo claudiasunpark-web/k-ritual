@@ -560,5 +560,4 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 
 /* 평형대 선택 필터 + 표본 적은 지점 표시 */
 .filters--chart { grid-template-columns: minmax(200px, 300px); margin: 10px 0 0; }
-.chart .marker--thin { stroke-width: 1.8; }
 .tooltip__few { font-size: 11px; color: var(--text-muted); margin-left: 5px; }

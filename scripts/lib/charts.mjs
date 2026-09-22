@@ -107,17 +107,6 @@ function linePlot({ series, ymList, label, unitNote }) {
         .map((seg) => `M${seg.map((pt) => `${x(pt.i).toFixed(1)} ${y(pt.v).toFixed(1)}`).join('L')}`)
         .join(' ');
 
-      // 표본이 적은 달(2건 이하)은 고리로 표시합니다 — 색 외의 2차 신호.
-      // fill 을 none 으로 둬서 선이 고리 안을 지나가게 합니다. 서피스 색으로
-      // 채우면 연속 구간에서 선이 끊겨 점선(=계획·추정)처럼 읽힙니다.
-      const thin = s.points
-        .map((p, i) =>
-          Number.isFinite(p.value) && (p.count ?? 99) <= 2
-            ? `<circle class="marker--thin" cx="${x(i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="4.5" fill="none" stroke="${SERIES_VAR(si)}"></circle>`
-            : '',
-        )
-        .join('');
-
       const lone = segments
         .filter((seg) => seg.length === 1)
         .map(
@@ -135,7 +124,7 @@ function linePlot({ series, ymList, label, unitNote }) {
           ? `<circle class="marker" cx="${x(lastIdx).toFixed(1)}" cy="${y(s.points[lastIdx].value).toFixed(1)}" r="4.5" fill="${SERIES_VAR(si)}"></circle>`
           : '';
 
-      return `<g class="series" data-key="${escapeHtml(s.key)}"><path d="${d}" fill="none" stroke="${SERIES_VAR(si)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>${lone}${endMarker}${thin}</g>`;
+      return `<g class="series" data-key="${escapeHtml(s.key)}"><path d="${d}" fill="none" stroke="${SERIES_VAR(si)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>${lone}${endMarker}</g>`;
     })
     .join('');
 
