@@ -36,17 +36,23 @@ jobs:
 
       - name: 실거래가 수집
         # 시크릿이 없으면 저장소에 커밋된 데이터로 그대로 빌드합니다.
-        # API가 응답을 끝내지 않는 경우가 있어 단계에도 상한을 둡니다.
-        timeout-minutes: 20
+        # 동시 6건으로 받으므로 정상이면 3~5분입니다. 상한을 두되,
+        # 수집이 실패해도 배포는 계속되도록 continue-on-error 를 둡니다.
+        timeout-minutes: 12
+        continue-on-error: true
         id: fetch
         env:
           MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
         run: |
-          if [ -n "$MOLIT_API_KEY" ]; then
-            node scripts/fetch-trades.mjs --months 36
+          if [ -z "$MOLIT_API_KEY" ]; then
+            echo "MOLIT_API_KEY 미설정 — 커밋된 data/trades/ 로 빌드합니다."
+            echo "fetched=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if node scripts/fetch-trades.mjs --months 36 --concurrency 6; then
             echo "fetched=true" >> "$GITHUB_OUTPUT"
           else
-            echo "MOLIT_API_KEY 미설정 — 커밋된 data/trades/ 로 빌드합니다."
+            echo "::warning::실거래 수집 실패 — 기존 데이터로 빌드를 계속합니다."
             echo "fetched=false" >> "$GITHUB_OUTPUT"
           fi
 

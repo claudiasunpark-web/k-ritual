@@ -11,6 +11,11 @@ slug: zones
 :::data-status
 :::
 
+## 여섯 구역이 어디에 있나
+
+:::zone-map
+:::
+
 ## 한눈에 보는 여섯 구역
 
 :::zone-cards

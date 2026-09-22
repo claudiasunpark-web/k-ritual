@@ -20,6 +20,10 @@ const argOf = (flag, fallback) => {
 };
 
 const MONTHS = Number(argOf('--months', '36'));
+// 국토부 API는 요청당 10~30초가 걸리는 경우가 많아, 순차 처리로는 36개월이
+// 20분을 넘깁니다. 동시 요청으로 벽시계 시간을 줄입니다(서버 부담을 고려해 6).
+const CONCURRENCY = Math.max(1, Math.min(8, Number(argOf('--concurrency', '6'))));
+const TIMEOUT_MS = Number(argOf('--timeout', '20000'));
 const serviceKey = process.env.MOLIT_API_KEY;
 
 if (!serviceKey) {
@@ -63,29 +67,58 @@ const now = new Date();
 // 실거래 신고는 계약 후 30일 이내이므로 직전 달은 아직 채워지는 중입니다.
 const months = monthRange(now.getFullYear(), now.getMonth() + 1, MONTHS);
 
-console.log(`강남구(${complexesDoc.lawdCd}) ${months[0]} ~ ${months.at(-1)} (${months.length}개월) 수집`);
+console.log(
+  `강남구(${complexesDoc.lawdCd}) ${months[0]} ~ ${months.at(-1)} (${months.length}개월) 수집 · 동시 ${CONCURRENCY}건`,
+);
 
 const all = [];
 const failures = [];
-for (const ym of months) {
-  try {
-    const raw = await fetchMonth({ serviceKey, lawdCd: complexesDoc.lawdCd, dealYmd: ym });
-    const rows = raw
-      .map(normalize)
-      .filter((r) => r && !r.cancelled && r.umd === complexesDoc.umdName);
-    all.push(...rows);
-    process.stdout.write(`  ${ym}: 강남구 ${raw.length}건 → 압구정동 ${rows.length}건\n`);
-  } catch (err) {
-    failures.push({ ym, message: err.message });
-    process.stdout.write(`  ${ym}: 실패 — ${err.message}\n`);
-  }
-  await new Promise((r) => setTimeout(r, 120));
+let done = 0;
+
+/** 월 목록을 동시 CONCURRENCY 개씩 처리합니다. */
+async function collect() {
+  const queue = [...months];
+  const worker = async () => {
+    for (;;) {
+      const ym = queue.shift();
+      if (!ym) return;
+      try {
+        const raw = await fetchMonth({
+          serviceKey,
+          lawdCd: complexesDoc.lawdCd,
+          dealYmd: ym,
+          timeoutMs: TIMEOUT_MS,
+        });
+        const rows = raw
+          .map(normalize)
+          .filter((r) => r && !r.cancelled && r.umd === complexesDoc.umdName);
+        all.push(...rows);
+        done += 1;
+        process.stdout.write(
+          `  [${done}/${months.length}] ${ym}: 강남구 ${raw.length}건 → 압구정동 ${rows.length}건\n`,
+        );
+      } catch (err) {
+        failures.push({ ym, message: err.message });
+        done += 1;
+        process.stdout.write(`  [${done}/${months.length}] ${ym}: 실패 — ${err.message}\n`);
+      }
+    }
+  };
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
 }
+
+const startedAt = Date.now();
+await collect();
+console.log(`\n수집 소요 ${((Date.now() - startedAt) / 1000).toFixed(0)}초`);
 
 if (all.length === 0) {
   console.error('\n수집된 거래가 0건입니다. API 키와 기간을 확인하세요.');
-  if (failures.length) console.error(failures);
+  if (failures.length) console.error(failures.slice(0, 5));
   process.exit(1);
+}
+// 일부 달이 실패해도 나머지로 집계를 진행합니다. 실패 목록은 결과에 남깁니다.
+if (failures.length) {
+  console.log(`실패한 월 ${failures.length}개 — 나머지 ${months.length - failures.length}개월로 집계합니다.`);
 }
 
 // ── 단지별 집계 ──────────────────────────────────────────────
@@ -193,6 +226,7 @@ const out = {
     note: '전용면적 기준 평당가. 해제된 거래는 제외했습니다. 직전 1~2개월은 신고 기한(계약 후 30일) 때문에 건수가 과소 집계될 수 있습니다.',
   },
   totals: { trades: all.length, mappedComplexes: complexes.length, months: ymList.length },
+  collection: { concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, requestedMonths: months.length, failedMonths: failures.length },
   ymList,
   complexes,
   zoneMonthly,

@@ -1,5 +1,6 @@
 // 원고의 ::: 블록에 대응하는 인터랙티브 컴포넌트 생성기.
 import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
+import { zoneMap } from './zonemap.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
@@ -37,6 +38,9 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   ${sample ? `<p class="databar__warn">${escapeHtml(trades.sampleWarning)}</p>` : `<p class="databar__note">${escapeHtml(src?.note ?? '')}</p>`}
 </div>`;
     },
+
+    /** 6개 구역 개념도 */
+    'zone-map': () => zoneMap({ zones }),
 
     /** 구역별 카드 */
     'zone-cards': (args) => {
