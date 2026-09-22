@@ -89,11 +89,46 @@ export function normalize(row) {
   };
 }
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * 제한시간과 재시도를 걸어 한 번 요청합니다.
+ * 이 API는 간헐적으로 응답을 끝내지 않는 경우가 있어, 타임아웃이 없으면
+ * 프로세스가 무한정 매달립니다(CI에서 작업이 멈추는 원인).
+ */
+async function fetchWithRetry(href, { timeoutMs = 20000, attempts = 3, label = '' } = {}) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const res = await fetch(href, {
+        headers: { Accept: 'application/xml' },
+        signal: AbortSignal.timeout(timeoutMs),
+      });
+      if (!res.ok) {
+        const e = new Error(`HTTP ${res.status} ${res.statusText}`);
+        // 인증·권한·요청 오류는 재시도해도 같은 결과이므로 즉시 올립니다.
+        e.noRetry = res.status >= 400 && res.status < 500 && res.status !== 429;
+        throw e;
+      }
+      return await res.text();
+    } catch (err) {
+      lastError = err;
+      if (err.noRetry) throw err;
+      const reason = err.name === 'TimeoutError' || err.name === 'AbortError' ? '응답 시간 초과' : err.message;
+      if (attempt < attempts) {
+        process.stdout.write(`    ${label} ${attempt}차 실패(${reason}) — ${attempt * 2}초 후 재시도\n`);
+        await sleep(attempt * 2000);
+      }
+    }
+  }
+  throw new Error(`${attempts}회 시도 모두 실패: ${lastError?.message ?? 'unknown'}`);
+}
+
 /**
  * 한 달치 거래를 모두 가져옵니다(페이지네이션 포함).
- * @param {{serviceKey:string, lawdCd:string, dealYmd:string, numOfRows?:number}} opts
+ * @param {{serviceKey:string, lawdCd:string, dealYmd:string, numOfRows?:number, timeoutMs?:number}} opts
  */
-export async function fetchMonth({ serviceKey, lawdCd, dealYmd, numOfRows = 1000 }) {
+export async function fetchMonth({ serviceKey, lawdCd, dealYmd, numOfRows = 1000, timeoutMs = 20000 }) {
   const rows = [];
   let page = 1;
   let total = Infinity;
@@ -107,9 +142,7 @@ export async function fetchMonth({ serviceKey, lawdCd, dealYmd, numOfRows = 1000
     url.searchParams.set('pageNo', String(page));
     const href = `${url.href}&serviceKey=${serviceKey}`;
 
-    const res = await fetch(href, { headers: { Accept: 'application/xml' } });
-    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText} (${dealYmd} p${page})`);
-    const xml = await res.text();
+    const xml = await fetchWithRetry(href, { timeoutMs, label: `${dealYmd} p${page}` });
 
     const resultCode = tagValue(xml, 'resultCode');
     if (resultCode && !['00', '0'].includes(resultCode)) {

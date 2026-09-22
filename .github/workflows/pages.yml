@@ -36,6 +36,8 @@ jobs:
 
       - name: 실거래가 수집
         # 시크릿이 없으면 저장소에 커밋된 데이터로 그대로 빌드합니다.
+        # API가 응답을 끝내지 않는 경우가 있어 단계에도 상한을 둡니다.
+        timeout-minutes: 20
         id: fetch
         env:
           MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
