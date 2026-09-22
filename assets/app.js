@@ -277,7 +277,7 @@ document.querySelectorAll('[data-widget="contribution-calculator"]').forEach((fo
 });
 
 /* ── 단지·평형 시세표 필터 ───────────────────────────── */
-document.querySelectorAll('[data-widget="complex-table"]').forEach((root) => {
+document.querySelectorAll('[data-widget="complex-table"], [data-widget="trade-log"]').forEach((root) => {
   const tbody = root.querySelector('tbody');
   const empty = root.querySelector('.datatable__empty');
   if (!tbody) return;
@@ -288,7 +288,7 @@ document.querySelectorAll('[data-widget="complex-table"]').forEach((root) => {
     const zone = f('zone')?.value ?? '';
     const q = (f('q')?.value ?? '').trim().toLowerCase();
     const [key, dir] = (f('sort')?.value ?? 'perPyeong-desc').split('-');
-    const attr = { perPyeong: 'perpyeong', amount: 'amount', pyeongNum: 'pyeongnum' }[key];
+    const attr = { perPyeong: 'perpyeong', amount: 'amount', pyeongNum: 'pyeongnum', date: 'date' }[key];
 
     let visible = 0;
     for (const tr of all) {
@@ -301,6 +301,12 @@ document.querySelectorAll('[data-widget="complex-table"]').forEach((root) => {
     if (empty) empty.hidden = visible > 0;
 
     const sorted = [...all].sort((a, b) => {
+      // 계약일은 문자열 비교(YYYY-MM-DD 는 사전순 = 날짜순), 나머지는 수치 비교
+      if (attr === 'date') {
+        const av = a.dataset.date ?? '';
+        const bv = b.dataset.date ?? '';
+        return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+      }
       const av = Number(a.dataset[attr]) || 0;
       const bv = Number(b.dataset[attr]) || 0;
       return dir === 'asc' ? av - bv : bv - av;

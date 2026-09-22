@@ -192,13 +192,16 @@ const complexes = [...byComplex.values()]
       medianPerPyeongManKRW: median(basis.map((t) => t.perPyeongManKRW)),
       buildYear: trades.find((t) => t.buildYear)?.buildYear ?? null,
       sizes,
-      recentTrades: trades.slice(0, 12).map((t) => ({
+      // 개별 거래 내역. 집계값만 보면 "그래서 어떤 거래였나"를 알 수 없어
+      // 최근 거래를 그대로 보관합니다(단지별 최대 30건).
+      recentTrades: trades.slice(0, 30).map((t) => ({
         date: t.date,
         pyeong: Math.round(t.pyeong),
         area: t.area,
         amountManKRW: t.amountManKRW,
         perPyeongManKRW: t.perPyeongManKRW,
         floor: t.floor,
+        dealType: t.dealType,
       })),
     };
   })

@@ -233,6 +233,74 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
 </div>`;
     },
 
+    /** 개별 실거래 내역 — 집계값이 아니라 실제 거래 한 건 한 건 */
+    'recent-trades': () => {
+      const rows = tradeComplexes.flatMap((c) =>
+        (c.recentTrades ?? []).map((t) => ({ ...t, complex: c.label, zone: c.zone })),
+      );
+      rows.sort((a, b) => (a.date < b.date ? 1 : -1));
+
+      if (rows.length === 0) {
+        return '<p class="muted">개별 거래 내역이 없습니다. npm run fetch 로 실거래를 수집하세요.</p>';
+      }
+
+      const zoneOpts = zones.zones
+        .filter((z) => tradeComplexes.some((c) => c.zone === z.id))
+        .map((z) => `<option value="${z.id}">${escapeHtml(z.shortName)}</option>`)
+        .join('');
+
+      return `<div class="datatable" data-widget="trade-log">
+  <div class="filters">
+    <label class="filters__field"><span>구역</span>
+      <select data-filter="zone"><option value="">전체</option>${zoneOpts}</select>
+    </label>
+    <label class="filters__field"><span>단지·평형·날짜 검색</span>
+      <input type="search" data-filter="q" placeholder="예: 한양1차, 2026-08, 59평">
+    </label>
+    <label class="filters__field"><span>정렬</span>
+      <select data-filter="sort">
+        <option value="date-desc">최근 거래 순</option>
+        <option value="amount-desc">거래금액 높은 순</option>
+        <option value="amount-asc">거래금액 낮은 순</option>
+        <option value="perPyeong-desc">평당가 높은 순</option>
+        <option value="perPyeong-asc">평당가 낮은 순</option>
+        <option value="pyeongNum-desc">평형 큰 순</option>
+        <option value="pyeongNum-asc">평형 작은 순</option>
+      </select>
+    </label>
+  </div>
+  <div class="table-wrap">
+    <table class="datatable__table">
+      <thead><tr>
+        <th>계약일</th><th>구역</th><th>단지</th><th>평형</th>
+        <th style="text-align:right">전용(㎡)</th><th style="text-align:right">층</th>
+        <th style="text-align:right">거래금액</th><th style="text-align:right">평당가(만원)</th><th>거래유형</th>
+      </tr></thead>
+      <tbody>${rows
+        .map(
+          (r) => `<tr data-zone="${r.zone}"
+        data-search="${escapeHtml(`${zoneLabel(r.zone)} ${r.complex} ${r.pyeong}평 ${r.date}`)}"
+        data-date="${escapeHtml(r.date)}" data-amount="${r.amountManKRW ?? 0}"
+        data-perpyeong="${r.perPyeongManKRW ?? 0}" data-pyeongnum="${r.pyeong ?? 0}">
+        <td>${escapeHtml(r.date)}</td>
+        <td>${escapeHtml(zoneLabel(r.zone))}</td>
+        <td>${escapeHtml(r.complex)}</td>
+        <td>${r.pyeong}평</td>
+        <td style="text-align:right">${r.area}</td>
+        <td style="text-align:right">${r.floor ?? '—'}</td>
+        <td style="text-align:right"><strong>${eok(r.amountManKRW)}</strong></td>
+        <td style="text-align:right">${comma(r.perPyeongManKRW)}</td>
+        <td>${escapeHtml(r.dealType ?? '—')}</td>
+      </tr>`,
+        )
+        .join('')}</tbody>
+    </table>
+  </div>
+  <p class="datatable__empty" hidden>조건에 맞는 거래가 없습니다.</p>
+  <p class="chart__unit">단지별 최근 거래를 최대 30건까지 그대로 보여 줍니다. 평당가는 전용면적 기준이며, 해제된 거래는 제외했습니다. 같은 단지에서도 <strong>평형·층에 따라 평당가가 크게 다릅니다</strong> — 집계값이 아니라 이 표로 확인하세요.</p>
+</div>`;
+    },
+
     /** 지분 대비 가격 계산기 */
     'share-calculator': () => {
       const optgroups = zones.zones

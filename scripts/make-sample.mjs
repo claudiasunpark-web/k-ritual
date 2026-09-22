@@ -69,16 +69,24 @@ for (const c of complexesDoc.complexes) {
       lastTrade: { date: '2026-08-15', amountManKRW: amount, floor: 3 + Math.floor(rand() * 12) },
       landSharePyeong: c.landSharePyeong?.[area.toFixed(2)] ?? null,
     });
-    recentTrades.push({
-      date: '2026-08-15',
-      pyeong: Math.round(pyeong),
-      area,
-      amountManKRW: amount,
-      perPyeongManKRW: perPyeong,
-      floor: 3 + Math.floor(rand() * 12),
-    });
+    // 평형마다 몇 건씩 만들어 개별 거래 표가 비지 않게 합니다.
+    for (let k = 0; k < 2 + Math.floor(rand() * 3); k += 1) {
+      const m = 8 - k;
+      const jitter = 0.94 + rand() * 0.12;
+      const amt = Math.round((amount * jitter) / 1000) * 1000;
+      recentTrades.push({
+        date: `2026-${String(m > 0 ? m : 12 + m).padStart(2, '0')}-${String(3 + Math.floor(rand() * 25)).padStart(2, '0')}`,
+        pyeong: Math.round(pyeong),
+        area,
+        amountManKRW: amt,
+        perPyeongManKRW: Math.round(amt / pyeong),
+        floor: 3 + Math.floor(rand() * 12),
+        dealType: rand() > 0.85 ? '직거래' : '중개거래',
+      });
+    }
   }
 
+  recentTrades.sort((a, b) => (a.date < b.date ? 1 : -1));
   const med = median(sizes.map((s) => s.medianPerPyeongManKRW));
   complexes.push({
     id: c.id,
