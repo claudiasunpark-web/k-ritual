@@ -12,7 +12,7 @@ const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
  */
 export function zoneMap({ zones, title = '압구정 6개 구역 개념도', id = 'zone-map' }) {
   const W = 980;
-  const H = 560;
+  const H = 500;
 
   // ── 세로 구성 ────────────────────────────────────────────
   const river = { y: 0, h: 72 };
@@ -161,7 +161,7 @@ export function zoneMap({ zones, title = '압구정 6개 구역 개념도', id =
         .join('')}
 
       <!-- 범례 -->
-      <g transform="translate(${left} ${H - 34})">
+      <g transform="translate(${left} ${H - 22})">
         <rect x="0" y="-9" width="13" height="13" rx="3" fill="none" stroke="var(--good)" stroke-width="2"></rect>
         <text class="zm__leg" x="19" y="2">진행 리스크 낮음</text>
         <rect x="128" y="-9" width="13" height="13" rx="3" fill="none" stroke="var(--warning)" stroke-width="2"></rect>
