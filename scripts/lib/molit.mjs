@@ -144,8 +144,10 @@ export async function fetchMonth({ serviceKey, lawdCd, dealYmd, numOfRows = 1000
 
     const xml = await fetchWithRetry(href, { timeoutMs, label: `${dealYmd} p${page}` });
 
+    // 성공 코드는 응답에 따라 '0', '00', '000' 으로 표기가 다릅니다.
+    // 숫자로 0이면 성공으로 취급해야 합니다 ('000' 을 오류로 읽는 실수 방지).
     const resultCode = tagValue(xml, 'resultCode');
-    if (resultCode && !['00', '0'].includes(resultCode)) {
+    if (resultCode !== null && resultCode !== '' && Number(resultCode) !== 0) {
       const msg = tagValue(xml, 'resultMsg') || tagValue(xml, 'returnAuthMsg') || 'unknown';
       throw new Error(`API 오류 ${resultCode}: ${msg} (${dealYmd})`);
     }
