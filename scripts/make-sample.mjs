@@ -101,10 +101,18 @@ const zoneMonthly = zonesDoc.zones
     const series = ymList.map((ym, i) => {
       const t = i / (ymList.length - 1);
       const trend = start + (end - start) * (t ** 1.25);
+      const base = Math.round((trend * (0.97 + rand() * 0.06)) / 10) * 10;
+      // 소형이 평당가가 높은 실제 경향을 샘플에도 반영합니다.
+      const byBand = {
+        small: { count: Math.floor(rand() * 3), medianPerPyeongManKRW: Math.round(base * 1.55) },
+        mid: { count: 1 + Math.floor(rand() * 5), medianPerPyeongManKRW: base },
+        large: { count: Math.floor(rand() * 4), medianPerPyeongManKRW: Math.round(base * 0.9) },
+      };
       return {
         ym,
-        count: 1 + Math.floor(rand() * 8),
-        medianPerPyeongManKRW: Math.round((trend * (0.97 + rand() * 0.06)) / 10) * 10,
+        count: byBand.small.count + byBand.mid.count + byBand.large.count,
+        medianPerPyeongManKRW: base,
+        byBand,
       };
     });
     return { zone: z.id, totalCount: series.reduce((a, s) => a + s.count, 0), series };
@@ -126,6 +134,11 @@ const out = {
   },
   totals: { trades: complexes.reduce((a, c) => a + c.tradeCount, 0), mappedComplexes: complexes.length, months: MONTHS },
   ymList,
+  bands: [
+    { key: 'small', label: '소형 (전용 100㎡ 미만)', min: 0, max: 100 },
+    { key: 'mid', label: '중형 (전용 100~160㎡)', min: 100, max: 160 },
+    { key: 'large', label: '대형 (전용 160㎡ 이상)', min: 160, max: null },
+  ],
   complexes,
   zoneMonthly,
   unmapped: [],

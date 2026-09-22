@@ -47,10 +47,12 @@ function tableTwin(caption, head, rows) {
 }
 
 /**
- * 구역별 평당가 추이 라인 차트.
- * @param {{series:{key:string,label:string,points:{ym:string,value:number|null}[]}[], ymList:string[], title:string, subtitle?:string, unit?:string}} opts
+ * 하나의 라인 플롯(svg + 호버 데이터)을 만듭니다.
+ * 평형대마다 값의 범위가 달라 축 눈금도 달라지므로, 플롯을 평형대별로
+ * 따로 그려 두고 전환합니다. 클라이언트에서 좌표를 다시 계산하지 않아
+ * 축과 선이 어긋날 여지가 없습니다.
  */
-export function lineChart({ series, ymList, title, subtitle = '', id = 'line' }) {
+function linePlot({ series, ymList, label, unitNote }) {
   const W = 880;
   const H = 400;
   const plotW = W - PAD.left - PAD.right;
@@ -58,7 +60,7 @@ export function lineChart({ series, ymList, title, subtitle = '', id = 'line' })
 
   const values = series.flatMap((s) => s.points.map((p) => p.value)).filter((v) => Number.isFinite(v));
   if (values.length === 0) {
-    return `<figure class="chart chart--empty"><figcaption>${escapeHtml(title)}</figcaption><p class="chart__empty">표시할 실거래 데이터가 없습니다.</p></figure>`;
+    return { empty: true, label, html: `<p class="chart__empty">${escapeHtml(label)}: 표시할 실거래가 없습니다.</p>` };
   }
   const dataMin = Math.min(...values);
   const dataMax = Math.max(...values);
@@ -92,39 +94,49 @@ export function lineChart({ series, ymList, title, subtitle = '', id = 'line' })
       const segments = [];
       let cur = [];
       s.points.forEach((p, i) => {
-        if (Number.isFinite(p.value)) cur.push(`${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`);
+        if (Number.isFinite(p.value)) cur.push({ i, v: p.value });
         else if (cur.length) {
           segments.push(cur);
           cur = [];
         }
       });
       if (cur.length) segments.push(cur);
+
       const d = segments
         .filter((seg) => seg.length > 1)
-        .map((seg) => `M${seg.join('L')}`)
+        .map((seg) => `M${seg.map((pt) => `${x(pt.i).toFixed(1)} ${y(pt.v).toFixed(1)}`).join('L')}`)
         .join(' ');
-      const dots = segments
-        .filter((seg) => seg.length === 1)
-        .map((seg) => {
-          const [cx, cy] = seg[0].split(' ');
-          return `<circle class="marker" cx="${cx}" cy="${cy}" r="4.5" fill="${SERIES_VAR(si)}"></circle>`;
-        })
+
+      // 표본이 적은 달(2건 이하)은 고리로 표시합니다 — 색 외의 2차 신호.
+      // fill 을 none 으로 둬서 선이 고리 안을 지나가게 합니다. 서피스 색으로
+      // 채우면 연속 구간에서 선이 끊겨 점선(=계획·추정)처럼 읽힙니다.
+      const thin = s.points
+        .map((p, i) =>
+          Number.isFinite(p.value) && (p.count ?? 99) <= 2
+            ? `<circle class="marker--thin" cx="${x(i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="4.5" fill="none" stroke="${SERIES_VAR(si)}"></circle>`
+            : '',
+        )
         .join('');
-      const last = [...s.points].reverse().findIndex((p) => Number.isFinite(p.value));
-      const lastIdx = last === -1 ? -1 : s.points.length - 1 - last;
+
+      const lone = segments
+        .filter((seg) => seg.length === 1)
+        .map(
+          (seg) =>
+            `<circle class="marker" cx="${x(seg[0].i).toFixed(1)}" cy="${y(seg[0].v).toFixed(1)}" r="4.5" fill="${SERIES_VAR(si)}"></circle>`,
+        )
+        .join('');
+
+      const lastIdx = (() => {
+        for (let i = s.points.length - 1; i >= 0; i -= 1) if (Number.isFinite(s.points[i].value)) return i;
+        return -1;
+      })();
       const endMarker =
         lastIdx >= 0
           ? `<circle class="marker" cx="${x(lastIdx).toFixed(1)}" cy="${y(s.points[lastIdx].value).toFixed(1)}" r="4.5" fill="${SERIES_VAR(si)}"></circle>`
           : '';
-      return `<g class="series" data-key="${escapeHtml(s.key)}"><path d="${d}" fill="none" stroke="${SERIES_VAR(si)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>${dots}${endMarker}</g>`;
-    })
-    .join('');
 
-  const legend = series
-    .map(
-      (s, si) =>
-        `<button type="button" class="legend__item" data-key="${escapeHtml(s.key)}" aria-pressed="true"><span class="legend__swatch" style="background:${SERIES_VAR(si)}"></span>${escapeHtml(s.label)}</button>`,
-    )
+      return `<g class="series" data-key="${escapeHtml(s.key)}"><path d="${d}" fill="none" stroke="${SERIES_VAR(si)}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>${lone}${endMarker}${thin}</g>`;
+    })
     .join('');
 
   const hoverData = JSON.stringify({
@@ -137,19 +149,24 @@ export function lineChart({ series, ymList, title, subtitle = '', id = 'line' })
       label: s.label,
       slot: (si % 8) + 1,
       points: s.points.map((p) => p.value),
+      counts: s.points.map((p) => p.count ?? null),
     })),
   });
 
   const rows = ymList.map((ym, i) => [
     ym,
-    ...series.map((s) => (Number.isFinite(s.points[i]?.value) ? comma(s.points[i].value) : '—')),
+    ...series.map((s) => {
+      const p = s.points[i];
+      if (!Number.isFinite(p?.value)) return '—';
+      return `${comma(p.value)}${(p.count ?? 99) <= 2 ? ` <span class="muted">(${p.count}건)</span>` : ''}`;
+    }),
   ]);
 
-  return `<figure class="chart" id="${id}" data-chart="line" data-hover='${escapeHtml(hoverData)}'>
-  <figcaption class="chart__title">${escapeHtml(title)}${subtitle ? `<span class="chart__sub">${escapeHtml(subtitle)}</span>` : ''}</figcaption>
-  <div class="legend" role="group" aria-label="구역 선택">${legend}</div>
-  <div class="chart__plot">
-    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml(title)}" preserveAspectRatio="xMidYMid meet">
+  return {
+    empty: false,
+    label,
+    html: `<div class="chart__plot" data-hover='${escapeHtml(hoverData)}'>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeHtml(label)}" preserveAspectRatio="xMidYMid meet">
       <g class="grid-group">${grid}</g>
       <line class="baseline" x1="${PAD.left}" y1="${PAD.top + plotH}" x2="${PAD.left + plotW}" y2="${PAD.top + plotH}"></line>
       ${xLabels}
@@ -159,9 +176,63 @@ export function lineChart({ series, ymList, title, subtitle = '', id = 'line' })
     </svg>
     <div class="tooltip" hidden></div>
   </div>
-  <p class="chart__unit">단위: 만원 / 전용면적 1평 · 월별 중위값</p>
+  <p class="chart__unit">${escapeHtml(unitNote)}</p>
   <p class="chart__scrollhint">좁은 화면에서는 차트를 좌우로 밀어 볼 수 있습니다.</p>
-  ${tableTwin(title, ['기준월', ...series.map((s) => s.label)], rows)}
+  ${tableTwin(label, ['기준월', ...series.map((s) => s.label)], rows)}`,
+  };
+}
+
+/**
+ * 평형대 전환이 가능한 구역별 평당가 추이 차트.
+ * @param {{views:{key:string,label:string,series:any[],note?:string}[], defaultView:string, ymList:string[], title:string, subtitle?:string, legendSeries:{key:string,label:string}[]}} opts
+ */
+export function lineChart({ views, defaultView, ymList, title, subtitle = '', legendSeries, id = 'line' }) {
+  const plots = views.map((v) => ({
+    key: v.key,
+    ...linePlot({
+      series: v.series,
+      ymList,
+      label: `${title} — ${v.label}`,
+      unitNote: v.note ?? '단위: 만원 / 전용면적 1평 · 월별 중위값',
+    }),
+  }));
+
+  if (plots.every((p) => p.empty)) {
+    return `<figure class="chart chart--empty" id="${id}"><figcaption>${escapeHtml(title)}</figcaption><p class="chart__empty">표시할 실거래 데이터가 없습니다.</p></figure>`;
+  }
+
+  const active = plots.some((p) => p.key === defaultView && !p.empty)
+    ? defaultView
+    : plots.find((p) => !p.empty).key;
+
+  const bandOptions = views
+    .map(
+      (v, i) =>
+        `<option value="${escapeHtml(v.key)}"${v.key === active ? ' selected' : ''}${plots[i].empty ? ' disabled' : ''}>${escapeHtml(v.label)}</option>`,
+    )
+    .join('');
+
+  const legend = legendSeries
+    .map(
+      (s, si) =>
+        `<button type="button" class="legend__item" data-key="${escapeHtml(s.key)}" aria-pressed="true"><span class="legend__swatch" style="background:${SERIES_VAR(si)}"></span>${escapeHtml(s.label)}</button>`,
+    )
+    .join('');
+
+  return `<figure class="chart" id="${id}" data-chart="line">
+  <figcaption class="chart__title">${escapeHtml(title)}${subtitle ? `<span class="chart__sub">${escapeHtml(subtitle)}</span>` : ''}</figcaption>
+  <div class="filters filters--chart">
+    <label class="filters__field"><span>평형대</span>
+      <select data-band-select>${bandOptions}</select>
+    </label>
+  </div>
+  <div class="legend" role="group" aria-label="구역 선택">${legend}</div>
+  ${plots
+    .map(
+      (p) =>
+        `<div class="chart__view" data-band="${escapeHtml(p.key)}"${p.key === active ? '' : ' hidden'}>${p.html}</div>`,
+    )
+    .join('')}
 </figure>`;
 }
 

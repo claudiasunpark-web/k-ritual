@@ -1,7 +1,7 @@
 {
   "isSample": true,
   "sampleWarning": "이 데이터는 사이트 레이아웃 확인용 합성 샘플입니다. 실제 시세가 아니며, 판매·배포 전에 반드시 npm run fetch 로 국토교통부 실거래가를 채워야 합니다.",
-  "generatedAt": "2026-09-19T07:19:59.442Z",
+  "generatedAt": "2026-09-22T11:33:14.411Z",
   "range": {
     "from": "202310",
     "to": "202609",
@@ -60,6 +60,26 @@
     "2026-07",
     "2026-08",
     "2026-09"
+  ],
+  "bands": [
+    {
+      "key": "small",
+      "label": "소형 (전용 100㎡ 미만)",
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "mid",
+      "label": "중형 (전용 100~160㎡)",
+      "min": 100,
+      "max": 160
+    },
+    {
+      "key": "large",
+      "label": "대형 (전용 160㎡ 이상)",
+      "min": 160,
+      "max": null
+    }
   ],
   "complexes": [
     {
@@ -2665,1117 +2685,4141 @@
   "zoneMonthly": [
     {
       "zone": "z1",
-      "totalCount": 174,
+      "totalCount": 216,
       "series": [
         {
           "ym": "2023-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 7340
+          "count": 5,
+          "medianPerPyeongManKRW": 7380,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11439
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7380
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 6642
+            }
+          }
         },
         {
           "ym": "2023-11",
-          "count": 2,
-          "medianPerPyeongManKRW": 7730
+          "count": 5,
+          "medianPerPyeongManKRW": 7640,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11842
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7640
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 6876
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 5,
-          "medianPerPyeongManKRW": 7790
+          "count": 9,
+          "medianPerPyeongManKRW": 7810,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12106
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 7810
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7029
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 1,
-          "medianPerPyeongManKRW": 7720
+          "count": 6,
+          "medianPerPyeongManKRW": 7770,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12044
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7770
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 6993
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 7,
-          "medianPerPyeongManKRW": 7910
+          "count": 5,
+          "medianPerPyeongManKRW": 7860,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12183
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7860
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7074
+            }
+          }
         },
         {
           "ym": "2024-03",
-          "count": 7,
-          "medianPerPyeongManKRW": 7870
+          "count": 8,
+          "medianPerPyeongManKRW": 7750,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 12013
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 7750
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 6975
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 6,
-          "medianPerPyeongManKRW": 7850
+          "count": 7,
+          "medianPerPyeongManKRW": 7910,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 12261
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 7910
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7119
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 5,
-          "medianPerPyeongManKRW": 8020
+          "count": 8,
+          "medianPerPyeongManKRW": 8100,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12555
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 8100
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7290
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 6,
-          "medianPerPyeongManKRW": 8200
+          "count": 8,
+          "medianPerPyeongManKRW": 8060,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12493
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 8060
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7254
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 3,
-          "medianPerPyeongManKRW": 8030
+          "count": 6,
+          "medianPerPyeongManKRW": 8280,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12834
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8280
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7452
+            }
+          }
         },
         {
           "ym": "2024-08",
-          "count": 3,
-          "medianPerPyeongManKRW": 7930
+          "count": 9,
+          "medianPerPyeongManKRW": 8140,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12617
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8140
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7326
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 8,
-          "medianPerPyeongManKRW": 8400
+          "count": 7,
+          "medianPerPyeongManKRW": 8120,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12586
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8120
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7308
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 5,
-          "medianPerPyeongManKRW": 8160
+          "count": 3,
+          "medianPerPyeongManKRW": 8570,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 13284
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8570
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7713
+            }
+          }
         },
         {
           "ym": "2024-11",
-          "count": 7,
-          "medianPerPyeongManKRW": 8610
+          "count": 6,
+          "medianPerPyeongManKRW": 8340,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12927
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8340
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7506
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 7,
-          "medianPerPyeongManKRW": 8460
+          "count": 8,
+          "medianPerPyeongManKRW": 8630,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13377
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8630
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7767
+            }
+          }
         },
         {
           "ym": "2025-01",
           "count": 8,
-          "medianPerPyeongManKRW": 8700
+          "medianPerPyeongManKRW": 8820,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13671
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 8820
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7938
+            }
+          }
         },
         {
           "ym": "2025-02",
-          "count": 5,
-          "medianPerPyeongManKRW": 8690
+          "count": 3,
+          "medianPerPyeongManKRW": 8420,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13051
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8420
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7578
+            }
+          }
         },
         {
           "ym": "2025-03",
-          "count": 8,
-          "medianPerPyeongManKRW": 8780
+          "count": 5,
+          "medianPerPyeongManKRW": 8490,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 13160
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8490
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7641
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 8,
-          "medianPerPyeongManKRW": 8910
+          "count": 6,
+          "medianPerPyeongManKRW": 8920,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13826
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8920
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8028
+            }
+          }
         },
         {
           "ym": "2025-05",
-          "count": 3,
-          "medianPerPyeongManKRW": 9070
+          "count": 8,
+          "medianPerPyeongManKRW": 8790,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13625
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8790
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7911
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 4,
-          "medianPerPyeongManKRW": 9190
+          "count": 5,
+          "medianPerPyeongManKRW": 9080,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14074
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9080
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8172
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 6,
-          "medianPerPyeongManKRW": 9360
+          "count": 8,
+          "medianPerPyeongManKRW": 9300,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14415
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 9300
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8370
+            }
+          }
         },
         {
           "ym": "2025-08",
           "count": 2,
-          "medianPerPyeongManKRW": 9220
+          "medianPerPyeongManKRW": 9100,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14105
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9100
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8190
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 6,
-          "medianPerPyeongManKRW": 9300
+          "count": 2,
+          "medianPerPyeongManKRW": 9370,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14524
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9370
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8433
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 8,
-          "medianPerPyeongManKRW": 9430
+          "count": 6,
+          "medianPerPyeongManKRW": 9680,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15004
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9680
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8712
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 1,
-          "medianPerPyeongManKRW": 9420
+          "count": 6,
+          "medianPerPyeongManKRW": 9750,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15113
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9750
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8775
+            }
+          }
         },
         {
           "ym": "2025-12",
-          "count": 3,
-          "medianPerPyeongManKRW": 9820
+          "count": 6,
+          "medianPerPyeongManKRW": 9600,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14880
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9600
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8640
+            }
+          }
         },
         {
           "ym": "2026-01",
-          "count": 3,
-          "medianPerPyeongManKRW": 9730
+          "count": 7,
+          "medianPerPyeongManKRW": 9690,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15020
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9690
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8721
+            }
+          }
         },
         {
           "ym": "2026-02",
-          "count": 7,
-          "medianPerPyeongManKRW": 9980
+          "count": 8,
+          "medianPerPyeongManKRW": 10050,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15578
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10050
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9045
+            }
+          }
         },
         {
           "ym": "2026-03",
           "count": 4,
-          "medianPerPyeongManKRW": 10040
+          "medianPerPyeongManKRW": 9940,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15407
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9940
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8946
+            }
+          }
         },
         {
           "ym": "2026-04",
-          "count": 8,
-          "medianPerPyeongManKRW": 10120
+          "count": 7,
+          "medianPerPyeongManKRW": 10200,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15810
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10200
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9180
+            }
+          }
         },
         {
           "ym": "2026-05",
-          "count": 8,
-          "medianPerPyeongManKRW": 9980
+          "count": 4,
+          "medianPerPyeongManKRW": 9840,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15252
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9840
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8856
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 1,
-          "medianPerPyeongManKRW": 9930
+          "count": 4,
+          "medianPerPyeongManKRW": 10230,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15857
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10230
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9207
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 2,
-          "medianPerPyeongManKRW": 10380
+          "count": 8,
+          "medianPerPyeongManKRW": 10160,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15748
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 10160
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9144
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 1,
-          "medianPerPyeongManKRW": 10370
+          "count": 2,
+          "medianPerPyeongManKRW": 10240,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15872
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10240
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9216
+            }
+          }
         },
         {
           "ym": "2026-09",
-          "count": 5,
-          "medianPerPyeongManKRW": 10460
+          "count": 7,
+          "medianPerPyeongManKRW": 10730,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16632
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 10730
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9657
+            }
+          }
         }
       ]
     },
     {
       "zone": "z2",
-      "totalCount": 176,
+      "totalCount": 201,
       "series": [
         {
           "ym": "2023-10",
-          "count": 6,
-          "medianPerPyeongManKRW": 11080
+          "count": 5,
+          "medianPerPyeongManKRW": 10890,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16880
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10890
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9801
+            }
+          }
         },
         {
           "ym": "2023-11",
-          "count": 5,
-          "medianPerPyeongManKRW": 10700
+          "count": 6,
+          "medianPerPyeongManKRW": 11030,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17097
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11030
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9927
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 2,
-          "medianPerPyeongManKRW": 11100
+          "count": 6,
+          "medianPerPyeongManKRW": 11180,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 17329
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11180
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10062
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 4,
-          "medianPerPyeongManKRW": 11230
+          "count": 6,
+          "medianPerPyeongManKRW": 10950,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16973
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10950
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9855
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 5,
-          "medianPerPyeongManKRW": 11200
+          "count": 6,
+          "medianPerPyeongManKRW": 10990,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17035
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10990
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9891
+            }
+          }
         },
         {
           "ym": "2024-03",
-          "count": 4,
-          "medianPerPyeongManKRW": 10940
+          "count": 7,
+          "medianPerPyeongManKRW": 11300,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17515
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11300
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10170
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 7,
-          "medianPerPyeongManKRW": 11480
+          "count": 3,
+          "medianPerPyeongManKRW": 11510,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 17841
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11510
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10359
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 6,
-          "medianPerPyeongManKRW": 11470
+          "count": 4,
+          "medianPerPyeongManKRW": 11500,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17825
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11500
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10350
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 3,
-          "medianPerPyeongManKRW": 11540
+          "count": 4,
+          "medianPerPyeongManKRW": 11340,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17577
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11340
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10206
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 1,
-          "medianPerPyeongManKRW": 11360
+          "count": 3,
+          "medianPerPyeongManKRW": 11850,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18368
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11850
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10665
+            }
+          }
         },
         {
           "ym": "2024-08",
-          "count": 5,
-          "medianPerPyeongManKRW": 11740
+          "count": 3,
+          "medianPerPyeongManKRW": 11760,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18228
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11760
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10584
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 1,
-          "medianPerPyeongManKRW": 11480
+          "count": 7,
+          "medianPerPyeongManKRW": 12030,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18647
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12030
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10827
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 8,
-          "medianPerPyeongManKRW": 11900
+          "count": 5,
+          "medianPerPyeongManKRW": 12160,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18848
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12160
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10944
+            }
+          }
         },
         {
           "ym": "2024-11",
-          "count": 4,
-          "medianPerPyeongManKRW": 12090
+          "count": 2,
+          "medianPerPyeongManKRW": 12270,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19019
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12270
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11043
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 8,
-          "medianPerPyeongManKRW": 11780
+          "count": 6,
+          "medianPerPyeongManKRW": 12470,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19329
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12470
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11223
+            }
+          }
         },
         {
           "ym": "2025-01",
-          "count": 7,
-          "medianPerPyeongManKRW": 12220
+          "count": 5,
+          "medianPerPyeongManKRW": 12460,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 19313
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12460
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11214
+            }
+          }
         },
         {
           "ym": "2025-02",
-          "count": 5,
-          "medianPerPyeongManKRW": 12190
+          "count": 9,
+          "medianPerPyeongManKRW": 12030,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18647
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12030
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10827
+            }
+          }
         },
         {
           "ym": "2025-03",
-          "count": 5,
-          "medianPerPyeongManKRW": 12760
+          "count": 4,
+          "medianPerPyeongManKRW": 12160,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18848
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12160
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10944
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 5,
-          "medianPerPyeongManKRW": 12970
+          "count": 8,
+          "medianPerPyeongManKRW": 12910,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20011
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 12910
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11619
+            }
+          }
         },
         {
           "ym": "2025-05",
-          "count": 4,
-          "medianPerPyeongManKRW": 13100
+          "count": 5,
+          "medianPerPyeongManKRW": 12410,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19236
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12410
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11169
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 8,
-          "medianPerPyeongManKRW": 12790
+          "count": 2,
+          "medianPerPyeongManKRW": 12670,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 19639
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12670
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11403
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 7,
-          "medianPerPyeongManKRW": 13260
+          "count": 6,
+          "medianPerPyeongManKRW": 12730,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19732
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12730
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11457
+            }
+          }
         },
         {
           "ym": "2025-08",
-          "count": 5,
-          "medianPerPyeongManKRW": 12810
+          "count": 4,
+          "medianPerPyeongManKRW": 13490,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20910
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13490
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12141
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 2,
-          "medianPerPyeongManKRW": 13460
+          "count": 7,
+          "medianPerPyeongManKRW": 13400,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20770
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13400
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12060
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 7,
-          "medianPerPyeongManKRW": 13810
+          "count": 6,
+          "medianPerPyeongManKRW": 13070,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 20259
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13070
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11763
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 4,
-          "medianPerPyeongManKRW": 13620
+          "count": 6,
+          "medianPerPyeongManKRW": 13550,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 21003
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13550
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12195
+            }
+          }
         },
         {
           "ym": "2025-12",
-          "count": 1,
-          "medianPerPyeongManKRW": 13710
+          "count": 6,
+          "medianPerPyeongManKRW": 13780,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 21359
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 13780
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12402
+            }
+          }
         },
         {
           "ym": "2026-01",
-          "count": 5,
-          "medianPerPyeongManKRW": 13620
+          "count": 9,
+          "medianPerPyeongManKRW": 13840,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 21452
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 13840
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12456
+            }
+          }
         },
         {
           "ym": "2026-02",
           "count": 5,
-          "medianPerPyeongManKRW": 13650
+          "medianPerPyeongManKRW": 13810,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 21406
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13810
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 12429
+            }
+          }
         },
         {
           "ym": "2026-03",
           "count": 7,
-          "medianPerPyeongManKRW": 13750
+          "medianPerPyeongManKRW": 14080,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 21824
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 14080
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12672
+            }
+          }
         },
         {
           "ym": "2026-04",
-          "count": 3,
-          "medianPerPyeongManKRW": 14320
+          "count": 7,
+          "medianPerPyeongManKRW": 14140,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 21917
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 14140
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12726
+            }
+          }
         },
         {
           "ym": "2026-05",
           "count": 8,
-          "medianPerPyeongManKRW": 14410
+          "medianPerPyeongManKRW": 14090,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 21840
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 14090
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12681
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 3,
-          "medianPerPyeongManKRW": 14240
+          "count": 7,
+          "medianPerPyeongManKRW": 14400,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 22320
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 14400
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12960
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 1,
-          "medianPerPyeongManKRW": 14670
+          "count": 6,
+          "medianPerPyeongManKRW": 14740,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 22847
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14740
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13266
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 7,
-          "medianPerPyeongManKRW": 15010
+          "count": 3,
+          "medianPerPyeongManKRW": 14460,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 22413
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14460
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 13014
+            }
+          }
         },
         {
           "ym": "2026-09",
           "count": 8,
-          "medianPerPyeongManKRW": 14730
+          "medianPerPyeongManKRW": 14760,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 22878
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 14760
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13284
+            }
+          }
         }
       ]
     },
     {
       "zone": "z3",
-      "totalCount": 179,
+      "totalCount": 205,
       "series": [
         {
           "ym": "2023-10",
-          "count": 6,
-          "medianPerPyeongManKRW": 10490
+          "count": 4,
+          "medianPerPyeongManKRW": 9920,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15376
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9920
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8928
+            }
+          }
         },
         {
           "ym": "2023-11",
-          "count": 2,
-          "medianPerPyeongManKRW": 10400
+          "count": 8,
+          "medianPerPyeongManKRW": 10050,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15578
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 10050
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9045
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 7,
-          "medianPerPyeongManKRW": 10130
+          "count": 3,
+          "medianPerPyeongManKRW": 10170,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15764
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10170
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9153
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 7,
-          "medianPerPyeongManKRW": 10450
+          "count": 8,
+          "medianPerPyeongManKRW": 10550,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 16353
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10550
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9495
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 8,
-          "medianPerPyeongManKRW": 10410
+          "count": 4,
+          "medianPerPyeongManKRW": 10240,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15872
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10240
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9216
+            }
+          }
         },
         {
           "ym": "2024-03",
           "count": 6,
-          "medianPerPyeongManKRW": 10520
+          "medianPerPyeongManKRW": 10510,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16291
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10510
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9459
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 4,
-          "medianPerPyeongManKRW": 10840
+          "count": 7,
+          "medianPerPyeongManKRW": 10870,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16849
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10870
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9783
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 2,
-          "medianPerPyeongManKRW": 10880
+          "count": 8,
+          "medianPerPyeongManKRW": 11070,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17159
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11070
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9963
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 3,
-          "medianPerPyeongManKRW": 10560
+          "count": 4,
+          "medianPerPyeongManKRW": 11060,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17143
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11060
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9954
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 6,
-          "medianPerPyeongManKRW": 11090
+          "count": 3,
+          "medianPerPyeongManKRW": 11190,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17345
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11190
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10071
+            }
+          }
         },
         {
           "ym": "2024-08",
-          "count": 6,
-          "medianPerPyeongManKRW": 10940
+          "count": 8,
+          "medianPerPyeongManKRW": 10770,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16694
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10770
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9693
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 7,
-          "medianPerPyeongManKRW": 11270
+          "count": 3,
+          "medianPerPyeongManKRW": 11010,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17066
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11010
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9909
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 7,
-          "medianPerPyeongManKRW": 11280
+          "count": 3,
+          "medianPerPyeongManKRW": 11270,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17469
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11270
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10143
+            }
+          }
         },
         {
           "ym": "2024-11",
-          "count": 1,
-          "medianPerPyeongManKRW": 11230
+          "count": 7,
+          "medianPerPyeongManKRW": 11700,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18135
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11700
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10530
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 6,
-          "medianPerPyeongManKRW": 11260
+          "count": 4,
+          "medianPerPyeongManKRW": 11500,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17825
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11500
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10350
+            }
+          }
         },
         {
           "ym": "2025-01",
-          "count": 1,
-          "medianPerPyeongManKRW": 11860
+          "count": 5,
+          "medianPerPyeongManKRW": 11760,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18228
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11760
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10584
+            }
+          }
         },
         {
           "ym": "2025-02",
-          "count": 3,
-          "medianPerPyeongManKRW": 11420
+          "count": 2,
+          "medianPerPyeongManKRW": 11500,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17825
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11500
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10350
+            }
+          }
         },
         {
           "ym": "2025-03",
           "count": 7,
-          "medianPerPyeongManKRW": 11540
+          "medianPerPyeongManKRW": 11660,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18073
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11660
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10494
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 8,
-          "medianPerPyeongManKRW": 11660
+          "count": 6,
+          "medianPerPyeongManKRW": 11920,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18476
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11920
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10728
+            }
+          }
         },
         {
           "ym": "2025-05",
-          "count": 3,
-          "medianPerPyeongManKRW": 12010
+          "count": 5,
+          "medianPerPyeongManKRW": 12250,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18988
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12250
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11025
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 5,
-          "medianPerPyeongManKRW": 12500
+          "count": 2,
+          "medianPerPyeongManKRW": 12050,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18678
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12050
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10845
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 2,
-          "medianPerPyeongManKRW": 11960
+          "count": 5,
+          "medianPerPyeongManKRW": 12490,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19360
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12490
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11241
+            }
+          }
         },
         {
           "ym": "2025-08",
-          "count": 7,
-          "medianPerPyeongManKRW": 12210
+          "count": 5,
+          "medianPerPyeongManKRW": 12670,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19639
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12670
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11403
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 8,
-          "medianPerPyeongManKRW": 12670
+          "count": 7,
+          "medianPerPyeongManKRW": 12470,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19329
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12470
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11223
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 7,
-          "medianPerPyeongManKRW": 12650
+          "count": 5,
+          "medianPerPyeongManKRW": 12620,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 19561
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12620
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11358
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 3,
-          "medianPerPyeongManKRW": 13010
+          "count": 6,
+          "medianPerPyeongManKRW": 12580,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19499
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12580
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11322
+            }
+          }
         },
         {
           "ym": "2025-12",
-          "count": 7,
-          "medianPerPyeongManKRW": 12940
+          "count": 6,
+          "medianPerPyeongManKRW": 13000,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20150
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13000
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11700
+            }
+          }
         },
         {
           "ym": "2026-01",
-          "count": 1,
-          "medianPerPyeongManKRW": 12710
+          "count": 7,
+          "medianPerPyeongManKRW": 13120,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20336
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13120
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11808
+            }
+          }
         },
         {
           "ym": "2026-02",
-          "count": 8,
-          "medianPerPyeongManKRW": 13240
+          "count": 9,
+          "medianPerPyeongManKRW": 13280,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20584
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 13280
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11952
+            }
+          }
         },
         {
           "ym": "2026-03",
-          "count": 7,
-          "medianPerPyeongManKRW": 13010
+          "count": 8,
+          "medianPerPyeongManKRW": 13410,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20786
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13410
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12069
+            }
+          }
         },
         {
           "ym": "2026-04",
           "count": 7,
-          "medianPerPyeongManKRW": 13360
+          "medianPerPyeongManKRW": 13140,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20367
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13140
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11826
+            }
+          }
         },
         {
           "ym": "2026-05",
-          "count": 3,
-          "medianPerPyeongManKRW": 13860
+          "count": 5,
+          "medianPerPyeongManKRW": 13910,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 21561
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 13910
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12519
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 1,
-          "medianPerPyeongManKRW": 13710
+          "count": 5,
+          "medianPerPyeongManKRW": 14160,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 21948
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14160
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12744
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 8,
-          "medianPerPyeongManKRW": 14250
+          "count": 6,
+          "medianPerPyeongManKRW": 14240,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 22072
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 14240
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12816
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 1,
-          "medianPerPyeongManKRW": 14320
+          "count": 10,
+          "medianPerPyeongManKRW": 14400,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 22320
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 14400
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12960
+            }
+          }
         },
         {
           "ym": "2026-09",
-          "count": 4,
-          "medianPerPyeongManKRW": 13840
+          "count": 7,
+          "medianPerPyeongManKRW": 13780,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 21359
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13780
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12402
+            }
+          }
         }
       ]
     },
     {
       "zone": "z4",
-      "totalCount": 140,
+      "totalCount": 196,
       "series": [
         {
           "ym": "2023-10",
-          "count": 7,
-          "medianPerPyeongManKRW": 9750
+          "count": 3,
+          "medianPerPyeongManKRW": 9440,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14632
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9440
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8496
+            }
+          }
         },
         {
           "ym": "2023-11",
           "count": 6,
-          "medianPerPyeongManKRW": 9680
+          "medianPerPyeongManKRW": 9800,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15190
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9800
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8820
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 1,
-          "medianPerPyeongManKRW": 9580
+          "count": 6,
+          "medianPerPyeongManKRW": 9340,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14477
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9340
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8406
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 4,
-          "medianPerPyeongManKRW": 9610
+          "count": 7,
+          "medianPerPyeongManKRW": 9610,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14896
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9610
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8649
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 2,
-          "medianPerPyeongManKRW": 9630
+          "count": 10,
+          "medianPerPyeongManKRW": 9490,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14710
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9490
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8541
+            }
+          }
         },
         {
           "ym": "2024-03",
-          "count": 2,
-          "medianPerPyeongManKRW": 9580
+          "count": 8,
+          "medianPerPyeongManKRW": 9920,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15376
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9920
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8928
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 2,
-          "medianPerPyeongManKRW": 10090
+          "count": 4,
+          "medianPerPyeongManKRW": 9650,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14958
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9650
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8685
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 1,
-          "medianPerPyeongManKRW": 10220
+          "count": 5,
+          "medianPerPyeongManKRW": 10030,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15547
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10030
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9027
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 8,
-          "medianPerPyeongManKRW": 10000
+          "count": 3,
+          "medianPerPyeongManKRW": 9970,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15454
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9970
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8973
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 2,
-          "medianPerPyeongManKRW": 10120
+          "count": 3,
+          "medianPerPyeongManKRW": 10200,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15810
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10200
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9180
+            }
+          }
         },
         {
           "ym": "2024-08",
-          "count": 6,
-          "medianPerPyeongManKRW": 10190
+          "count": 8,
+          "medianPerPyeongManKRW": 10140,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15717
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 10140
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9126
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 4,
-          "medianPerPyeongManKRW": 10640
+          "count": 3,
+          "medianPerPyeongManKRW": 10550,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 16353
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10550
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9495
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 10250
+          "count": 6,
+          "medianPerPyeongManKRW": 10530,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16322
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10530
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9477
+            }
+          }
         },
         {
           "ym": "2024-11",
           "count": 5,
-          "medianPerPyeongManKRW": 10720
+          "medianPerPyeongManKRW": 10680,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16554
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10680
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9612
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 4,
-          "medianPerPyeongManKRW": 10780
+          "count": 3,
+          "medianPerPyeongManKRW": 10910,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16911
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10910
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9819
+            }
+          }
         },
         {
           "ym": "2025-01",
-          "count": 5,
-          "medianPerPyeongManKRW": 10900
+          "count": 6,
+          "medianPerPyeongManKRW": 10740,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16647
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10740
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9666
+            }
+          }
         },
         {
           "ym": "2025-02",
           "count": 5,
-          "medianPerPyeongManKRW": 11110
+          "medianPerPyeongManKRW": 11110,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 17221
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11110
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9999
+            }
+          }
         },
         {
           "ym": "2025-03",
-          "count": 1,
-          "medianPerPyeongManKRW": 11220
+          "count": 3,
+          "medianPerPyeongManKRW": 10850,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 16818
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10850
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9765
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 5,
-          "medianPerPyeongManKRW": 11220
+          "count": 8,
+          "medianPerPyeongManKRW": 11010,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17066
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11010
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9909
+            }
+          }
         },
         {
           "ym": "2025-05",
-          "count": 8,
-          "medianPerPyeongManKRW": 11400
+          "count": 5,
+          "medianPerPyeongManKRW": 10900,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16895
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10900
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9810
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 3,
-          "medianPerPyeongManKRW": 11380
+          "count": 7,
+          "medianPerPyeongManKRW": 11390,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 17655
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11390
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10251
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 7,
-          "medianPerPyeongManKRW": 11130
+          "count": 3,
+          "medianPerPyeongManKRW": 11790,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18275
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11790
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10611
+            }
+          }
         },
         {
           "ym": "2025-08",
-          "count": 4,
-          "medianPerPyeongManKRW": 11870
+          "count": 5,
+          "medianPerPyeongManKRW": 11310,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17531
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11310
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10179
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 4,
-          "medianPerPyeongManKRW": 11750
+          "count": 6,
+          "medianPerPyeongManKRW": 11640,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18042
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11640
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10476
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 3,
-          "medianPerPyeongManKRW": 11720
+          "count": 5,
+          "medianPerPyeongManKRW": 11760,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18228
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11760
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10584
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 6,
-          "medianPerPyeongManKRW": 12080
+          "count": 3,
+          "medianPerPyeongManKRW": 12020,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 18631
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12020
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10818
+            }
+          }
         },
         {
           "ym": "2025-12",
-          "count": 2,
-          "medianPerPyeongManKRW": 12220
+          "count": 7,
+          "medianPerPyeongManKRW": 12050,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18678
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 12050
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10845
+            }
+          }
         },
         {
           "ym": "2026-01",
-          "count": 4,
-          "medianPerPyeongManKRW": 12490
+          "count": 9,
+          "medianPerPyeongManKRW": 11960,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18538
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11960
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10764
+            }
+          }
         },
         {
           "ym": "2026-02",
-          "count": 3,
-          "medianPerPyeongManKRW": 12030
+          "count": 6,
+          "medianPerPyeongManKRW": 11960,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18538
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11960
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10764
+            }
+          }
         },
         {
           "ym": "2026-03",
-          "count": 6,
-          "medianPerPyeongManKRW": 12640
+          "count": 5,
+          "medianPerPyeongManKRW": 12770,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 19794
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12770
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11493
+            }
+          }
         },
         {
           "ym": "2026-04",
-          "count": 5,
-          "medianPerPyeongManKRW": 12930
+          "count": 6,
+          "medianPerPyeongManKRW": 12440,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19282
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 12440
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11196
+            }
+          }
         },
         {
           "ym": "2026-05",
-          "count": 2,
-          "medianPerPyeongManKRW": 13060
+          "count": 8,
+          "medianPerPyeongManKRW": 12690,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19670
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12690
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11421
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 1,
-          "medianPerPyeongManKRW": 12690
+          "count": 3,
+          "medianPerPyeongManKRW": 13030,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20197
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 13030
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11727
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 1,
-          "medianPerPyeongManKRW": 12900
+          "count": 4,
+          "medianPerPyeongManKRW": 13060,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20243
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13060
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11754
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 2,
-          "medianPerPyeongManKRW": 13160
+          "count": 3,
+          "medianPerPyeongManKRW": 13050,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 20228
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13050
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11745
+            }
+          }
         },
         {
           "ym": "2026-09",
-          "count": 8,
-          "medianPerPyeongManKRW": 13320
+          "count": 9,
+          "medianPerPyeongManKRW": 13220,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 20491
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 13220
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11898
+            }
+          }
         }
       ]
     },
     {
       "zone": "z5",
-      "totalCount": 150,
+      "totalCount": 193,
       "series": [
         {
           "ym": "2023-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 9080
+          "count": 3,
+          "medianPerPyeongManKRW": 9030,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13997
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9030
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8127
+            }
+          }
         },
         {
           "ym": "2023-11",
-          "count": 1,
-          "medianPerPyeongManKRW": 9500
+          "count": 7,
+          "medianPerPyeongManKRW": 9480,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14694
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9480
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8532
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 2,
-          "medianPerPyeongManKRW": 9470
+          "count": 5,
+          "medianPerPyeongManKRW": 9050,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14028
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9050
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8145
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 7,
-          "medianPerPyeongManKRW": 9300
+          "count": 9,
+          "medianPerPyeongManKRW": 9130,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14152
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9130
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8217
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 2,
-          "medianPerPyeongManKRW": 9310
+          "count": 6,
+          "medianPerPyeongManKRW": 9380,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14539
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9380
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8442
+            }
+          }
         },
         {
           "ym": "2024-03",
-          "count": 2,
-          "medianPerPyeongManKRW": 9660
+          "count": 5,
+          "medianPerPyeongManKRW": 9390,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14555
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9390
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8451
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 6,
-          "medianPerPyeongManKRW": 9660
+          "count": 5,
+          "medianPerPyeongManKRW": 9410,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14586
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9410
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8469
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 6,
-          "medianPerPyeongManKRW": 9930
+          "count": 4,
+          "medianPerPyeongManKRW": 9840,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15252
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 9840
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8856
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 1,
-          "medianPerPyeongManKRW": 9970
+          "count": 9,
+          "medianPerPyeongManKRW": 9750,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15113
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 9750
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8775
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 3,
-          "medianPerPyeongManKRW": 9590
+          "count": 6,
+          "medianPerPyeongManKRW": 9820,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15221
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9820
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8838
+            }
+          }
         },
         {
           "ym": "2024-08",
-          "count": 4,
-          "medianPerPyeongManKRW": 9730
+          "count": 5,
+          "medianPerPyeongManKRW": 9670,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14989
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9670
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8703
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 4,
-          "medianPerPyeongManKRW": 10340
+          "count": 6,
+          "medianPerPyeongManKRW": 9920,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15376
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9920
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8928
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 7,
-          "medianPerPyeongManKRW": 10260
+          "count": 6,
+          "medianPerPyeongManKRW": 10420,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16151
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10420
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9378
+            }
+          }
         },
         {
           "ym": "2024-11",
           "count": 5,
-          "medianPerPyeongManKRW": 10240
+          "medianPerPyeongManKRW": 10150,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15733
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10150
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9135
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 8,
-          "medianPerPyeongManKRW": 10590
+          "count": 3,
+          "medianPerPyeongManKRW": 10310,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15981
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10310
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9279
+            }
+          }
         },
         {
           "ym": "2025-01",
-          "count": 8,
-          "medianPerPyeongManKRW": 10330
+          "count": 2,
+          "medianPerPyeongManKRW": 10320,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15996
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10320
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9288
+            }
+          }
         },
         {
           "ym": "2025-02",
-          "count": 7,
-          "medianPerPyeongManKRW": 10860
+          "count": 6,
+          "medianPerPyeongManKRW": 10870,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16849
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10870
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9783
+            }
+          }
         },
         {
           "ym": "2025-03",
-          "count": 1,
-          "medianPerPyeongManKRW": 10530
+          "count": 3,
+          "medianPerPyeongManKRW": 10620,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16461
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10620
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9558
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 7,
-          "medianPerPyeongManKRW": 10570
+          "count": 6,
+          "medianPerPyeongManKRW": 10670,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16539
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10670
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9603
+            }
+          }
         },
         {
           "ym": "2025-05",
-          "count": 2,
-          "medianPerPyeongManKRW": 10790
+          "count": 8,
+          "medianPerPyeongManKRW": 11040,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17112
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11040
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9936
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 1,
-          "medianPerPyeongManKRW": 11310
+          "count": 4,
+          "medianPerPyeongManKRW": 11070,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17159
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11070
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9963
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 5,
-          "medianPerPyeongManKRW": 11300
+          "count": 6,
+          "medianPerPyeongManKRW": 11230,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17407
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11230
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10107
+            }
+          }
         },
         {
           "ym": "2025-08",
-          "count": 3,
-          "medianPerPyeongManKRW": 10940
+          "count": 7,
+          "medianPerPyeongManKRW": 11340,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17577
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 11340
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10206
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 2,
-          "medianPerPyeongManKRW": 11340
+          "count": 1,
+          "medianPerPyeongManKRW": 11020,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17081
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11020
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9918
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 5,
-          "medianPerPyeongManKRW": 11320
+          "count": 8,
+          "medianPerPyeongManKRW": 11150,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17283
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11150
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10035
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 4,
-          "medianPerPyeongManKRW": 11220
+          "count": 2,
+          "medianPerPyeongManKRW": 11330,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17562
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11330
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10197
+            }
+          }
         },
         {
           "ym": "2025-12",
           "count": 8,
-          "medianPerPyeongManKRW": 12010
+          "medianPerPyeongManKRW": 11690,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18120
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11690
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10521
+            }
+          }
         },
         {
           "ym": "2026-01",
           "count": 6,
-          "medianPerPyeongManKRW": 11720
+          "medianPerPyeongManKRW": 11460,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 17763
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 11460
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10314
+            }
+          }
         },
         {
           "ym": "2026-02",
-          "count": 5,
-          "medianPerPyeongManKRW": 11660
+          "count": 3,
+          "medianPerPyeongManKRW": 12160,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18848
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12160
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 10944
+            }
+          }
         },
         {
           "ym": "2026-03",
-          "count": 3,
-          "medianPerPyeongManKRW": 12070
+          "count": 4,
+          "medianPerPyeongManKRW": 12130,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 18802
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12130
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10917
+            }
+          }
         },
         {
           "ym": "2026-04",
-          "count": 6,
-          "medianPerPyeongManKRW": 12130
+          "count": 8,
+          "medianPerPyeongManKRW": 12440,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19282
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 12440
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11196
+            }
+          }
         },
         {
           "ym": "2026-05",
-          "count": 3,
-          "medianPerPyeongManKRW": 12340
+          "count": 9,
+          "medianPerPyeongManKRW": 12400,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19220
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 12400
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11160
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 2,
-          "medianPerPyeongManKRW": 12250
+          "count": 6,
+          "medianPerPyeongManKRW": 12280,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 19034
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 12280
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11052
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 3,
-          "medianPerPyeongManKRW": 12200
+          "count": 2,
+          "medianPerPyeongManKRW": 12760,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 19778
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12760
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 11484
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 2,
-          "medianPerPyeongManKRW": 12650
+          "count": 4,
+          "medianPerPyeongManKRW": 12590,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 19515
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12590
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 11331
+            }
+          }
         },
         {
           "ym": "2026-09",
-          "count": 8,
-          "medianPerPyeongManKRW": 12690
+          "count": 6,
+          "medianPerPyeongManKRW": 13010,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 20166
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 13010
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11709
+            }
+          }
         }
       ]
     },
     {
       "zone": "z6",
-      "totalCount": 181,
+      "totalCount": 196,
       "series": [
         {
           "ym": "2023-10",
-          "count": 4,
-          "medianPerPyeongManKRW": 7880
+          "count": 5,
+          "medianPerPyeongManKRW": 7830,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12137
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7830
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 7047
+            }
+          }
         },
         {
           "ym": "2023-11",
-          "count": 8,
-          "medianPerPyeongManKRW": 8080
+          "count": 4,
+          "medianPerPyeongManKRW": 7920,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12276
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7920
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7128
+            }
+          }
         },
         {
           "ym": "2023-12",
-          "count": 6,
-          "medianPerPyeongManKRW": 7950
+          "count": 7,
+          "medianPerPyeongManKRW": 8130,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 12602
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 8130
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 7317
+            }
+          }
         },
         {
           "ym": "2024-01",
-          "count": 5,
-          "medianPerPyeongManKRW": 8280
+          "count": 3,
+          "medianPerPyeongManKRW": 8410,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13036
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8410
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7569
+            }
+          }
         },
         {
           "ym": "2024-02",
-          "count": 3,
-          "medianPerPyeongManKRW": 8320
+          "count": 6,
+          "medianPerPyeongManKRW": 8210,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 12726
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8210
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7389
+            }
+          }
         },
         {
           "ym": "2024-03",
-          "count": 1,
-          "medianPerPyeongManKRW": 8110
+          "count": 9,
+          "medianPerPyeongManKRW": 8430,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13067
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8430
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7587
+            }
+          }
         },
         {
           "ym": "2024-04",
-          "count": 6,
-          "medianPerPyeongManKRW": 8450
+          "count": 5,
+          "medianPerPyeongManKRW": 8320,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 12896
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8320
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 7488
+            }
+          }
         },
         {
           "ym": "2024-05",
-          "count": 4,
-          "medianPerPyeongManKRW": 8560
+          "count": 7,
+          "medianPerPyeongManKRW": 8540,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13237
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8540
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7686
+            }
+          }
         },
         {
           "ym": "2024-06",
-          "count": 7,
-          "medianPerPyeongManKRW": 8780
+          "count": 4,
+          "medianPerPyeongManKRW": 8400,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13020
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8400
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 7560
+            }
+          }
         },
         {
           "ym": "2024-07",
-          "count": 3,
-          "medianPerPyeongManKRW": 8510
+          "count": 6,
+          "medianPerPyeongManKRW": 8840,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13702
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8840
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 7956
+            }
+          }
         },
         {
           "ym": "2024-08",
           "count": 3,
-          "medianPerPyeongManKRW": 8960
+          "medianPerPyeongManKRW": 8790,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13625
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8790
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 7911
+            }
+          }
         },
         {
           "ym": "2024-09",
-          "count": 7,
-          "medianPerPyeongManKRW": 8600
+          "count": 3,
+          "medianPerPyeongManKRW": 8870,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 13749
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8870
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 7983
+            }
+          }
         },
         {
           "ym": "2024-10",
-          "count": 4,
-          "medianPerPyeongManKRW": 8730
+          "count": 9,
+          "medianPerPyeongManKRW": 8720,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13516
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 8720
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7848
+            }
+          }
         },
         {
           "ym": "2024-11",
-          "count": 7,
-          "medianPerPyeongManKRW": 8800
+          "count": 2,
+          "medianPerPyeongManKRW": 9220,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14291
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9220
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8298
+            }
+          }
         },
         {
           "ym": "2024-12",
-          "count": 2,
-          "medianPerPyeongManKRW": 9230
+          "count": 6,
+          "medianPerPyeongManKRW": 8860,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 13733
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8860
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 7974
+            }
+          }
         },
         {
           "ym": "2025-01",
-          "count": 4,
-          "medianPerPyeongManKRW": 9100
+          "count": 3,
+          "medianPerPyeongManKRW": 9210,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14276
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9210
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8289
+            }
+          }
         },
         {
           "ym": "2025-02",
           "count": 5,
-          "medianPerPyeongManKRW": 9480
+          "medianPerPyeongManKRW": 9490,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14710
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 9490
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 8541
+            }
+          }
         },
         {
           "ym": "2025-03",
-          "count": 6,
-          "medianPerPyeongManKRW": 9090
+          "count": 7,
+          "medianPerPyeongManKRW": 9280,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 14384
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9280
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8352
+            }
+          }
         },
         {
           "ym": "2025-04",
-          "count": 5,
-          "medianPerPyeongManKRW": 9360
+          "count": 6,
+          "medianPerPyeongManKRW": 9330,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 14462
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9330
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8397
+            }
+          }
         },
         {
           "ym": "2025-05",
           "count": 7,
-          "medianPerPyeongManKRW": 9540
+          "medianPerPyeongManKRW": 9730,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15082
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 9730
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 8757
+            }
+          }
         },
         {
           "ym": "2025-06",
-          "count": 5,
-          "medianPerPyeongManKRW": 9890
+          "count": 9,
+          "medianPerPyeongManKRW": 9790,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15175
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9790
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8811
+            }
+          }
         },
         {
           "ym": "2025-07",
-          "count": 8,
-          "medianPerPyeongManKRW": 9760
+          "count": 9,
+          "medianPerPyeongManKRW": 9660,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14973
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9660
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8694
+            }
+          }
         },
         {
           "ym": "2025-08",
-          "count": 5,
-          "medianPerPyeongManKRW": 9790
+          "count": 3,
+          "medianPerPyeongManKRW": 9900,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 15345
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9900
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 8910
+            }
+          }
         },
         {
           "ym": "2025-09",
-          "count": 5,
-          "medianPerPyeongManKRW": 10180
+          "count": 6,
+          "medianPerPyeongManKRW": 10120,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15686
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10120
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9108
+            }
+          }
         },
         {
           "ym": "2025-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 10180
+          "count": 9,
+          "medianPerPyeongManKRW": 9730,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15082
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 9730
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 8757
+            }
+          }
         },
         {
           "ym": "2025-11",
-          "count": 5,
-          "medianPerPyeongManKRW": 10270
+          "count": 4,
+          "medianPerPyeongManKRW": 10420,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16151
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10420
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9378
+            }
+          }
         },
         {
           "ym": "2025-12",
-          "count": 7,
-          "medianPerPyeongManKRW": 10110
+          "count": 9,
+          "medianPerPyeongManKRW": 10340,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 16027
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 10340
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9306
+            }
+          }
         },
         {
           "ym": "2026-01",
           "count": 5,
-          "medianPerPyeongManKRW": 10290
+          "medianPerPyeongManKRW": 10160,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 15748
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10160
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 9144
+            }
+          }
         },
         {
           "ym": "2026-02",
-          "count": 8,
-          "medianPerPyeongManKRW": 10370
+          "count": 3,
+          "medianPerPyeongManKRW": 10150,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15733
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10150
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9135
+            }
+          }
         },
         {
           "ym": "2026-03",
-          "count": 1,
-          "medianPerPyeongManKRW": 10800
+          "count": 7,
+          "medianPerPyeongManKRW": 10280,
+          "byBand": {
+            "small": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15934
+            },
+            "mid": {
+              "count": 4,
+              "medianPerPyeongManKRW": 10280
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9252
+            }
+          }
         },
         {
           "ym": "2026-04",
-          "count": 8,
-          "medianPerPyeongManKRW": 10460
+          "count": 4,
+          "medianPerPyeongManKRW": 10490,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16260
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10490
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9441
+            }
+          }
         },
         {
           "ym": "2026-05",
-          "count": 5,
-          "medianPerPyeongManKRW": 11030
+          "count": 1,
+          "medianPerPyeongManKRW": 10540,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16337
+            },
+            "mid": {
+              "count": 1,
+              "medianPerPyeongManKRW": 10540
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9486
+            }
+          }
         },
         {
           "ym": "2026-06",
-          "count": 8,
-          "medianPerPyeongManKRW": 11040
+          "count": 5,
+          "medianPerPyeongManKRW": 10800,
+          "byBand": {
+            "small": {
+              "count": 1,
+              "medianPerPyeongManKRW": 16740
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 10800
+            },
+            "large": {
+              "count": 2,
+              "medianPerPyeongManKRW": 9720
+            }
+          }
         },
         {
           "ym": "2026-07",
-          "count": 8,
-          "medianPerPyeongManKRW": 11200
+          "count": 6,
+          "medianPerPyeongManKRW": 11250,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17438
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 11250
+            },
+            "large": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10125
+            }
+          }
         },
         {
           "ym": "2026-08",
-          "count": 1,
-          "medianPerPyeongManKRW": 11240
+          "count": 4,
+          "medianPerPyeongManKRW": 10790,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 16725
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 10790
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 9711
+            }
+          }
         },
         {
           "ym": "2026-09",
-          "count": 4,
-          "medianPerPyeongManKRW": 11270
+          "count": 5,
+          "medianPerPyeongManKRW": 11030,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": 17097
+            },
+            "mid": {
+              "count": 5,
+              "medianPerPyeongManKRW": 11030
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": 9927
+            }
+          }
         }
       ]
     }

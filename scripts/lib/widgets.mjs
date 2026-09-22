@@ -101,19 +101,49 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         )
         .join('')}</tbody></table></div>`,
 
-    /** 구역별 평당가 추이 라인 차트 */
-    'price-trend': () =>
-      lineChart({
-        id: 'chart-price-trend',
-        title: '구역별 전용면적 평당 실거래가 추이',
-        subtitle: '월별 중위값 · 거래가 없는 달은 선이 끊깁니다',
-        ymList: trades?.ymList ?? [],
-        series: (trades?.zoneMonthly ?? []).map((z) => ({
+    /** 구역별 평당가 추이 라인 차트 (평형대 전환) */
+    'price-trend': () => {
+      const zoneSeries = trades?.zoneMonthly ?? [];
+      const legendSeries = zoneSeries.map((z) => ({ key: z.zone, label: zoneLabel(z.zone) }));
+      const bands = trades?.bands ?? [];
+
+      const viewFor = (bandKey) =>
+        zoneSeries.map((z) => ({
           key: z.zone,
           label: zoneLabel(z.zone),
-          points: z.series.map((p) => ({ ym: p.ym, value: p.medianPerPyeongManKRW })),
+          points: z.series.map((p) => {
+            const b = bandKey ? p.byBand?.[bandKey] : null;
+            return bandKey
+              ? { ym: p.ym, value: b?.medianPerPyeongManKRW ?? null, count: b?.count ?? 0 }
+              : { ym: p.ym, value: p.medianPerPyeongManKRW, count: p.count };
+          }),
+        }));
+
+      const views = [
+        ...bands.map((b) => ({
+          key: b.key,
+          label: b.label,
+          series: viewFor(b.key),
+          note: `단위: 만원 / 전용면적 1평 · ${b.label} 월별 중위값 · 속이 빈 점은 그 달 거래 2건 이하`,
         })),
-      }),
+        {
+          key: 'all',
+          label: '전체 평형 (해석 주의)',
+          series: viewFor(null),
+          note: '단위: 만원 / 전용면적 1평 · 전체 평형 월별 중위값 — 그 달에 거래된 평형 구성에 따라 값이 크게 흔들립니다',
+        },
+      ];
+
+      return lineChart({
+        id: 'chart-price-trend',
+        title: '구역별 전용면적 평당 실거래가 추이',
+        subtitle: '평형대를 골라 보세요 · 거래가 없는 달은 선이 끊깁니다',
+        ymList: trades?.ymList ?? [],
+        legendSeries,
+        views,
+        defaultView: 'mid',
+      });
+    },
 
     /** 단지별 평당가 비교 막대 */
     'complex-prices': () =>

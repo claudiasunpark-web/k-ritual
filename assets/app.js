@@ -62,87 +62,104 @@ function setHint(form, name, manKRW) {
   });
 })();
 
-/* ── 라인 차트: 범례 토글 + 크로스헤어 툴팁 ───────────── */
+/* ── 라인 차트: 평형대 전환 + 범례 토글 + 크로스헤어 툴팁 ── */
 document.querySelectorAll('figure[data-chart="line"]').forEach((fig) => {
-  let cfg;
-  try {
-    cfg = JSON.parse(fig.dataset.hover);
-  } catch (e) {
-    return;
-  }
-  const svg = fig.querySelector('svg');
-  const hit = fig.querySelector('.hit');
-  const cross = fig.querySelector('.crosshair');
-  const crossLine = cross?.querySelector('line');
-  const tip = fig.querySelector('.tooltip');
   const hidden = new Set();
 
-  fig.querySelectorAll('.legend__item').forEach((btn) => {
+  // 범례는 그림 전체에 하나. 모든 평형대 뷰의 시리즈에 함께 적용합니다.
+  const legendButtons = [...fig.querySelectorAll('.legend__item')];
+  const applyHidden = () => {
+    fig.querySelectorAll('.series').forEach((g) => {
+      g.classList.toggle('is-dim', hidden.has(g.dataset.key));
+    });
+  };
+  legendButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       const key = btn.dataset.key;
       const on = btn.getAttribute('aria-pressed') === 'true';
-      // 마지막 한 개를 끄면 읽을 게 없어지므로 막습니다.
-      if (on && hidden.size >= cfg.series.length - 1) return;
+      // 마지막 하나를 끄면 읽을 게 없어지므로 막습니다.
+      if (on && hidden.size >= legendButtons.length - 1) return;
       btn.setAttribute('aria-pressed', String(!on));
       if (on) hidden.add(key);
       else hidden.delete(key);
-      fig.querySelectorAll('.series').forEach((g) => {
-        g.classList.toggle('is-dim', hidden.has(g.dataset.key));
-      });
+      applyHidden();
     });
   });
 
-  if (!hit || !tip || !crossLine) return;
+  // 평형대 전환
+  const select = fig.querySelector('[data-band-select]');
+  select?.addEventListener('change', () => {
+    fig.querySelectorAll('.chart__view').forEach((v) => {
+      v.hidden = v.dataset.band !== select.value;
+    });
+    applyHidden();
+  });
 
-  const xOf = (i) =>
-    cfg.pad.left + (cfg.ymList.length === 1 ? cfg.plotW / 2 : (i / (cfg.ymList.length - 1)) * cfg.plotW);
-
-  const show = (clientX) => {
-    const box = svg.getBoundingClientRect();
-    const vb = svg.viewBox.baseVal;
-    const svgX = ((clientX - box.left) / box.width) * vb.width;
-    const t = (svgX - cfg.pad.left) / cfg.plotW;
-    const idx = Math.max(0, Math.min(cfg.ymList.length - 1, Math.round(t * (cfg.ymList.length - 1))));
-
-    const rows = cfg.series
-      .filter((s) => !hidden.has(s.key) && Number.isFinite(s.points[idx]))
-      .sort((a, b) => b.points[idx] - a.points[idx]);
-    if (rows.length === 0) {
-      tip.hidden = true;
-      cross.hidden = true;
+  // 뷰별 크로스헤어 툴팁
+  fig.querySelectorAll('.chart__view .chart__plot').forEach((plot) => {
+    let cfg;
+    try {
+      cfg = JSON.parse(plot.dataset.hover);
+    } catch (e) {
       return;
     }
+    const svg = plot.querySelector('svg');
+    const hit = plot.querySelector('.hit');
+    const cross = plot.querySelector('.crosshair');
+    const crossLine = cross?.querySelector('line');
+    const tip = plot.querySelector('.tooltip');
+    if (!svg || !hit || !tip || !crossLine) return;
 
-    const cx = xOf(idx);
-    crossLine.setAttribute('x1', cx);
-    crossLine.setAttribute('x2', cx);
-    cross.hidden = false;
+    const xOf = (i) =>
+      cfg.pad.left + (cfg.ymList.length === 1 ? cfg.plotW / 2 : (i / (cfg.ymList.length - 1)) * cfg.plotW);
 
-    tip.innerHTML =
-      `<p class="tooltip__ym">${cfg.ymList[idx]} · 전용 평당 중위값</p>` +
-      rows
-        .map(
-          (s) =>
-            `<span class="tooltip__row"><span class="tooltip__dot" style="background:var(--series-${s.slot})"></span>${s.label}<span class="tooltip__v">${comma(s.points[idx])}만</span></span>`,
-        )
-        .join('');
-    tip.hidden = false;
-    // 커서 반대쪽에 붙여 데이터를 가리지 않게 합니다.
-    const pct = (cx / vb.width) * 100;
-    tip.style.left = `${pct}%`;
-    tip.style.top = '6px';
-    tip.style.transform = pct > 50 ? 'translate(calc(-100% - 14px), 0)' : 'translate(14px, 0)';
-  };
+    const show = (clientX) => {
+      const box = svg.getBoundingClientRect();
+      const vb = svg.viewBox.baseVal;
+      const svgX = ((clientX - box.left) / box.width) * vb.width;
+      const t = (svgX - cfg.pad.left) / cfg.plotW;
+      const idx = Math.max(0, Math.min(cfg.ymList.length - 1, Math.round(t * (cfg.ymList.length - 1))));
 
-  const hide = () => {
-    tip.hidden = true;
-    cross.hidden = true;
-  };
+      const rows = cfg.series
+        .filter((s) => !hidden.has(s.key) && Number.isFinite(s.points[idx]))
+        .sort((a, b) => b.points[idx] - a.points[idx]);
+      if (rows.length === 0) {
+        tip.hidden = true;
+        cross.hidden = true;
+        return;
+      }
 
-  hit.addEventListener('pointermove', (e) => show(e.clientX));
-  hit.addEventListener('pointerdown', (e) => show(e.clientX));
-  hit.addEventListener('pointerleave', hide);
-  svg.addEventListener('blur', hide);
+      const cx = xOf(idx);
+      crossLine.setAttribute('x1', cx);
+      crossLine.setAttribute('x2', cx);
+      cross.hidden = false;
+
+      tip.innerHTML =
+        `<p class="tooltip__ym">${cfg.ymList[idx]} · 전용 평당 중위값</p>` +
+        rows
+          .map((s) => {
+            const n = s.counts?.[idx];
+            const few = Number.isFinite(n) && n <= 2 ? `<span class="tooltip__few">${n}건</span>` : '';
+            return `<span class="tooltip__row"><span class="tooltip__dot" style="background:var(--series-${s.slot})"></span>${s.label}${few}<span class="tooltip__v">${comma(s.points[idx])}만</span></span>`;
+          })
+          .join('');
+      tip.hidden = false;
+      const pct = (cx / vb.width) * 100;
+      tip.style.left = `${pct}%`;
+      tip.style.top = '6px';
+      tip.style.transform = pct > 50 ? 'translate(calc(-100% - 14px), 0)' : 'translate(14px, 0)';
+    };
+
+    const hide = () => {
+      tip.hidden = true;
+      cross.hidden = true;
+    };
+
+    hit.addEventListener('pointermove', (e) => show(e.clientX));
+    hit.addEventListener('pointerdown', (e) => show(e.clientX));
+    hit.addEventListener('pointerleave', hide);
+    svg.addEventListener('blur', hide);
+  });
 });
 
 /* ── 막대 차트 호버 툴팁 ──────────────────────────────── */

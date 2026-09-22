@@ -56,6 +56,16 @@ function matchComplex(aptName) {
   return null;
 }
 
+// 평형대 구분. 재건축 단지는 소형의 평당가가 유독 높아(대지지분 대비 입주권
+// 가치), 평형을 섞은 중위값은 그 달에 어떤 평형이 거래됐는지에 좌우됩니다.
+// 그래서 구역 시계열을 평형대별로 나눠 둡니다.
+const BANDS = [
+  { key: 'small', label: '소형 (전용 100㎡ 미만)', min: 0, max: 100 },
+  { key: 'mid', label: '중형 (전용 100~160㎡)', min: 100, max: 160 },
+  { key: 'large', label: '대형 (전용 160㎡ 이상)', min: 160, max: Infinity },
+];
+const bandOf = (area) => BANDS.find((b) => area >= b.min && area < b.max)?.key ?? 'large';
+
 const median = (nums) => {
   if (nums.length === 0) return null;
   const s = [...nums].sort((a, b) => a - b);
@@ -204,10 +214,19 @@ const zoneMonthly = zoneIds
       .flatMap((e) => e.trades);
     const series = ymList.map((ym) => {
       const picked = trades.filter((t) => t.ym === ym);
+      const byBand = {};
+      for (const b of BANDS) {
+        const inBand = picked.filter((t) => bandOf(t.area) === b.key);
+        byBand[b.key] = {
+          count: inBand.length,
+          medianPerPyeongManKRW: median(inBand.map((t) => t.perPyeongManKRW)),
+        };
+      }
       return {
         ym,
         count: picked.length,
         medianPerPyeongManKRW: median(picked.map((t) => t.perPyeongManKRW)),
+        byBand,
       };
     });
     return { zone: zid, totalCount: trades.length, series };
@@ -228,6 +247,7 @@ const out = {
   totals: { trades: all.length, mappedComplexes: complexes.length, months: ymList.length },
   collection: { concurrency: CONCURRENCY, timeoutMs: TIMEOUT_MS, requestedMonths: months.length, failedMonths: failures.length },
   ymList,
+  bands: BANDS.map(({ key, label, min, max }) => ({ key, label, min, max: max === Infinity ? null : max })),
   complexes,
   zoneMonthly,
   unmapped: [...unmapped.entries()]
