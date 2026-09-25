@@ -356,3 +356,25 @@ document.querySelectorAll('[data-widget="trade-table"]').forEach((root) => {
   });
   switchTo(current);
 });
+
+/* ── 실제 지형도: 구역 강조 ──────────────────────────────────
+   범례 버튼을 누르면 그 구역 건물만 남기고 나머지를 죽입니다.
+   좌표 계산은 없습니다 — data-focus 하나만 바꾸고 나머지는 CSS 가 합니다. */
+document.querySelectorAll('.geomap[data-widget="geo-map"]').forEach((root) => {
+  const keys = [...root.querySelectorAll('.geomap__key')];
+  if (!keys.length) return;
+
+  const focus = (zone) => {
+    if (zone) root.dataset.focus = zone;
+    else root.removeAttribute('data-focus');
+    keys.forEach((k) => k.setAttribute('aria-pressed', String(!!zone && k.dataset.zone === zone)));
+  };
+
+  keys.forEach((key) => {
+    key.addEventListener('click', () => {
+      const zone = key.dataset.zone;
+      // 같은 버튼을 다시 누르면 전체로 돌아갑니다.
+      focus(zone && root.dataset.focus !== zone ? zone : '');
+    });
+  });
+});

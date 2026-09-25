@@ -10,7 +10,7 @@
 
 import { escapeHtml } from './format.mjs';
 import {
-  projector, toPath, ringArea, centroid, pointInRing, bboxOf, inBbox, ringsOf, linesOf,
+  projector, toPath, ringArea, centroid, pointInRing, bboxOf, inBbox, ringsOf, linesOf, mercY,
 } from './geo.mjs';
 
 // ── 보여줄 범위 ─────────────────────────────────────────────
@@ -20,11 +20,8 @@ const VIEW = { west: 127.0145, south: 37.5205, east: 127.0505, north: 37.5395 };
 
 const W = 980;
 // 메르카토르 상에서 실제 비율이 되도록 높이를 계산합니다 (형상이 눌리지 않게).
-const H = Math.round(
-  (W * (Math.log(Math.tan(Math.PI / 4 + (VIEW.north * Math.PI) / 360))
-      - Math.log(Math.tan(Math.PI / 4 + (VIEW.south * Math.PI) / 360))))
-  / (VIEW.east - VIEW.west),
-);
+// mercY 와 경도가 같은 단위(도)여야 합니다 — geo.mjs 의 주석 참고.
+const H = Math.round((W * (mercY(VIEW.north) - mercY(VIEW.south))) / (VIEW.east - VIEW.west));
 
 const ZONE_COLOR = {
   z1: 'var(--series-1)', z2: 'var(--series-2)', z3: 'var(--series-3)',
@@ -91,12 +88,18 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   const features = geojson.features ?? [];
 
   // 화면 밖 피처는 일찍 버립니다 (SVG 크기가 크게 줄어듭니다).
+  //
+  // '꼭짓점이 화면 안에 있는가'로 보면 안 됩니다. 한강처럼 화면을 통째로
+  // 가로지르는 피처는 꼭짓점이 모두 화면 밖에 있을 수 있습니다. 경계 상자가
+  // 겹치는지로 판정해야 그런 피처가 사라지지 않습니다.
   const viewBbox = [VIEW.west - 0.002, VIEW.south - 0.002, VIEW.east + 0.002, VIEW.north + 0.002];
   const touchesView = (f) => {
-    const coords = f.geometry?.type === 'Point'
-      ? [f.geometry.coordinates]
-      : [...ringsOf(f), ...linesOf(f)].flat();
-    return coords.some((c) => inBbox(c, viewBbox));
+    if (f.geometry?.type === 'Point') return inBbox(f.geometry.coordinates, viewBbox);
+    const coords = [...ringsOf(f), ...linesOf(f)].flat();
+    if (!coords.length) return false;
+    const [w, s2, e, n] = bboxOf(coords);
+    const [vw, vs, ve, vn] = viewBbox;
+    return w <= ve && e >= vw && s2 <= vn && n >= vs;
   };
   const inView = features.filter(touchesView);
 
@@ -257,7 +260,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
       }
     }
     if (!aw) continue;
-    labels.push({ at: [ax / aw, ay / aw], text: z.short ?? z.name ?? z.id, zone: z.id, weight: 1 });
+    labels.push({ at: [ax / aw, ay / aw], text: z.shortName ?? z.name ?? z.id, zone: z.id, weight: 1 });
   }
 
   push('<g class="geomap__labels">');
@@ -268,27 +271,40 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   }
   push('</g>');
 
-  // 한강 / 올림픽대로 / 압구정로 이름은 실제 선을 따라 배치합니다.
+  // 한강 / 올림픽대로 / 압구정로 이름은 실제 선을 따라, 그 선의 방향으로 씁니다.
+  //
+  // 화면을 가로지르는 긴 선은 꼭짓점이 대부분 화면 밖에 있습니다. 그래서
+  // '화면 안 꼭짓점만' 쓰면 라벨이 아예 안 붙습니다. 화면 안 점이 2개 미만이면
+  // 전체 꼭짓점으로 방향을 잡고, 글자 위치만 화면 안으로 당겨 넣습니다.
+  const MARGIN = 26;
   const labelOnLine = (re, text, cls, opts = {}) => {
     const cand = inView.filter((f) => f.properties.name && re.test(f.properties.name));
     if (!cand.length) return;
-    // 화면 안에서 가장 긴 조각을 골라 그 중간에 씁니다.
-    let best = null;
+
+    let best = null; // 가장 긴 조각
     for (const f of cand) {
       for (const line of [...linesOf(f), ...ringsOf(f)]) {
-        const pts = line.filter((c) => inBbox(c, viewBbox));
-        if (pts.length < 2) continue;
+        if (line.length < 2) continue;
+        const shown = line.filter((c) => inBbox(c, viewBbox));
+        const pts = shown.length >= 2 ? shown : line;
         if (!best || pts.length > best.length) best = pts;
       }
     }
     if (!best) return;
-    const mid = best[Math.floor(best.length / 2)];
-    const a = project(best[Math.max(0, Math.floor(best.length / 2) - 2)]);
-    const b = project(best[Math.min(best.length - 1, Math.floor(best.length / 2) + 2)]);
+
+    const mid = Math.floor(best.length / 2);
+    const a = project(best[Math.max(0, mid - 2)]);
+    const b = project(best[Math.min(best.length - 1, mid + 2)]);
     let deg = (Math.atan2(b[1] - a[1], b[0] - a[0]) * 180) / Math.PI;
     if (deg > 90) deg -= 180;
     if (deg < -90) deg += 180;
-    const [x, y] = project(mid);
+
+    let [x, y] = project(best[mid]);
+    // 글자가 테두리 밖으로 나가면 화면 안으로 당깁니다.
+    x = Math.min(Math.max(x, MARGIN), W - MARGIN);
+    y = Math.min(Math.max(y, MARGIN), H - MARGIN);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+
     push(`<text class="${cls}" x="${x.toFixed(1)}" y="${(y + (opts.dy ?? 0)).toFixed(1)}"`
       + ` text-anchor="middle" transform="rotate(${deg.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})">`
       + `${escapeHtml(text)}</text>`);
@@ -350,7 +366,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     return `<button type="button" class="geomap__key" data-zone="${z.id}" aria-pressed="false"`
       + ` ${n ? '' : 'disabled '}title="${n ? `건물 ${n}동 표시` : '이 구역 건물 윤곽이 지도 데이터에 없습니다'}">`
       + `<span class="geomap__swatch" style="background:${ZONE_COLOR[z.id]}"></span>`
-      + `${escapeHtml(z.short ?? z.name ?? z.id)}</button>`;
+      + `${escapeHtml(z.shortName ?? z.name ?? z.id)}</button>`;
   }).join('');
 
   const matched = [...perZone.values()].reduce((s, l) => s + l.length, 0);

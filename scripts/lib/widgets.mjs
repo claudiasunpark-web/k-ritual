@@ -1,6 +1,7 @@
 // 원고의 ::: 블록에 대응하는 인터랙티브 컴포넌트 생성기.
 import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
 import { zoneMap } from './zonemap.mjs';
+import { geoMap } from './geomap.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
@@ -28,7 +29,7 @@ function shareCell(r) {
 /** 202609 → 2026.09 */
 const ymDot = (ym) => (ym && String(ym).length === 6 ? `${String(ym).slice(0, 4)}.${String(ym).slice(4)}` : (ym ?? '—'));
 
-export function makeWidgets({ zones, complexes, trades, location, policy, sources, meta, pageIndex = [] }) {
+export function makeWidgets({ zones, complexes, trades, location, policy, sources, meta, osm = null, pageIndex = [] }) {
   const zoneById = new Map(zones.zones.map((z) => [z.id, z]));
   const tradesByZone = new Map((trades?.zoneMonthly ?? []).map((z) => [z.zone, z]));
   const tradeComplexes = trades?.complexes ?? [];
@@ -61,6 +62,16 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
 
     /** 6개 구역 개념도 */
     'zone-map': () => zoneMap({ zones }),
+
+    /**
+     * 실제 지형도. OSM 원본 지형을 빌드할 때 직접 그립니다.
+     * 지형 데이터가 없으면 개념도로 떨어뜨려, 데이터 수집이 실패해도
+     * 빈 자리가 생기지 않게 합니다.
+     */
+    'real-map': (args) => {
+      if (!osm?.features?.length) return zoneMap({ zones });
+      return geoMap({ geojson: osm, zones, complexes, title: args || undefined });
+    },
 
     /** 구역별 카드 */
     'zone-cards': (args) => {

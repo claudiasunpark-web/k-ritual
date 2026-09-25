@@ -20,6 +20,10 @@ const location = read('data/location.json');
 const policy = read('data/policy.json');
 const sources = read('data/sources.json');
 
+// OSM 실제 지형. 없으면 개념도로 대체하므로 빌드는 계속됩니다.
+const osmPath = new URL('data/osm/apgujeong.geojson', ROOT);
+const osm = existsSync(osmPath) ? JSON.parse(readFileSync(osmPath, 'utf8')) : null;
+
 const realTrades = new URL('data/trades/apgujeong.json', ROOT);
 const sampleTrades = new URL('data/trades/sample.json', ROOT);
 let trades = null;
@@ -29,6 +33,7 @@ else if (existsSync(sampleTrades)) trades = JSON.parse(readFileSync(sampleTrades
 const warnings = [];
 if (!trades) warnings.push('실거래 데이터가 없습니다. npm run fetch 또는 node scripts/make-sample.mjs 를 먼저 실행하세요.');
 if (trades?.isSample) warnings.push('샘플(합성) 시세 데이터로 빌드했습니다. 판매·배포 전에 npm run fetch 로 실제 실거래를 채우세요.');
+if (!osm) warnings.push('OSM 지형 데이터가 없어 실제 지형도 대신 개념도로 빌드했습니다. node scripts/fetch-osm.mjs 를 실행하세요.');
 
 // ── 원고 로드 ──────────────────────────────────────────────
 function parseFrontmatter(raw) {
@@ -62,7 +67,7 @@ const parsed = files.map((file) => {
 });
 
 const pageIndex = parsed.map(({ slug, title, desc, kind, chapter }) => ({ slug, title, desc, kind, chapter }));
-const widgets = makeWidgets({ zones, complexes, trades, location, policy, sources, meta, pageIndex });
+const widgets = makeWidgets({ zones, complexes, trades, location, policy, sources, meta, osm, pageIndex });
 
 // 2단계: 본문을 렌더링합니다.
 const pages = parsed.map((p) => {

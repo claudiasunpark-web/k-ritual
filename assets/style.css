@@ -34,6 +34,17 @@
   --serious: #ec835a;
   --critical: #d03b3b;
 
+
+  /* 지도 색 — 구역 색과 간섭하지 않도록 바탕은 전부 무채색 계열입니다. */
+  --map-land: #f1eee5;
+  --map-water: #c6dcf4;
+  --map-green: #dbe7cd;
+  --map-inst: #e8e3d7;
+  --map-road: #ffffff;
+  --map-road-edge: #d5d1c2;
+  --map-bldg: #e0dcd0;
+  --map-bldg-edge: #c9c4b4;
+  --map-rail: #8a877c;
   --radius: 12px;
   --gutter: 16px;
   --sans: system-ui, -apple-system, "Segoe UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -63,6 +74,16 @@
     --seq-150: #184f95;
     --seq-450: #3987e5;
     --seq-550: #86b6ef;
+
+    --map-land: #1f1e1c;
+    --map-water: #14324c;
+    --map-green: #232e20;
+    --map-inst: #272622;
+    --map-road: #3c3b37;
+    --map-road-edge: #171716;
+    --map-bldg: #2b2a26;
+    --map-bldg-edge: #3a3934;
+    --map-rail: #6d6b64;
   }
 }
 
@@ -89,6 +110,16 @@
   --seq-150: #184f95;
   --seq-450: #3987e5;
   --seq-550: #86b6ef;
+
+  --map-land: #1f1e1c;
+  --map-water: #14324c;
+  --map-green: #232e20;
+  --map-inst: #272622;
+  --map-road: #3c3b37;
+  --map-road-edge: #171716;
+  --map-bldg: #2b2a26;
+  --map-bldg-edge: #3a3934;
+  --map-rail: #6d6b64;
 }
 
 * { box-sizing: border-box; }
@@ -485,7 +516,15 @@ figure[data-chart="bar"] .tooltip { transform: translate(-50%, -100%); }
   .shell__nav, .navtoggle, .themetoggle, .pager { display: none !important; }
   .shell__main { padding: 0; }
   .prose { max-width: none; }
-  .chart, .calc, .zonecard, .locitem, .policybox { break-inside: avoid; box-shadow: none; }
+  .chart, .calc, .zonecard, .locitem, .policybox, .geomap { break-inside: avoid; box-shadow: none; }
+  /* 인쇄에서는 지도 색도 밝은 값으로 되돌립니다. */
+  :root {
+    --map-land: #f1eee5; --map-water: #c6dcf4; --map-green: #dbe7cd; --map-inst: #e8e3d7;
+    --map-road: #fff; --map-road-edge: #d5d1c2; --map-bldg: #e0dcd0;
+    --map-bldg-edge: #c9c4b4; --map-rail: #8a877c;
+  }
+  .geomap__legend { display: none; }
+  .geomap__frame svg { min-width: 0; }
   .table-view[open] .table-wrap { max-height: none; }
   .table-view summary { display: none; }
   .prose h2 { break-after: avoid; }
@@ -573,3 +612,84 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .viewswitch button[aria-pressed="true"] { background: var(--surface-1); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow); }
 .viewswitch button:disabled { opacity: 0.4; cursor: not-allowed; }
 .viewswitch button:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+
+/* ── 실제 지형도 (OSM) ─────────────────────────────────── */
+.geomap {
+  margin: 32px 0; padding: 20px; background: var(--surface-1);
+  border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.geomap__title { font-size: 15px; font-weight: 650; margin: 0 0 12px; }
+
+.geomap__legend { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.geomap__key {
+  display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px;
+  font: inherit; font-size: 13px; cursor: pointer;
+  border: 1px solid var(--border); border-radius: 999px;
+  background: transparent; color: var(--text-secondary);
+}
+.geomap__key:hover:not(:disabled) { border-color: var(--text-muted); color: var(--text-primary); }
+.geomap__key[aria-pressed="true"] {
+  background: var(--text-primary); border-color: var(--text-primary);
+  color: var(--page); font-weight: 600;
+}
+.geomap__key:disabled { opacity: 0.4; cursor: not-allowed; }
+.geomap__key--reset { color: var(--text-muted); }
+.geomap__swatch { width: 11px; height: 11px; border-radius: 3px; flex: none; }
+.geomap__key[aria-pressed="true"] .geomap__swatch { box-shadow: 0 0 0 1.5px var(--page); }
+
+.geomap__frame { overflow-x: auto; border-radius: 8px; }
+.geomap__frame svg { display: block; width: 100%; min-width: 700px; height: auto; border-radius: 8px; }
+
+/* 구역 강조 — 선택한 구역만 남기고 나머지를 죽입니다. */
+.geomap[data-focus] .geomap__zone { transition: opacity 0.15s ease; }
+.geomap[data-focus] .geomap__zone { opacity: 0.12; }
+.geomap[data-focus="z1"] .geomap__zone[data-zone="z1"],
+.geomap[data-focus="z2"] .geomap__zone[data-zone="z2"],
+.geomap[data-focus="z3"] .geomap__zone[data-zone="z3"],
+.geomap[data-focus="z4"] .geomap__zone[data-zone="z4"],
+.geomap[data-focus="z5"] .geomap__zone[data-zone="z5"],
+.geomap[data-focus="z6"] .geomap__zone[data-zone="z6"] { opacity: 1; }
+.geomap[data-focus] .geomap__zonelabel { opacity: 0.25; }
+.geomap[data-focus="z1"] .geomap__zonelabel[data-zone="z1"],
+.geomap[data-focus="z2"] .geomap__zonelabel[data-zone="z2"],
+.geomap[data-focus="z3"] .geomap__zonelabel[data-zone="z3"],
+.geomap[data-focus="z4"] .geomap__zonelabel[data-zone="z4"],
+.geomap[data-focus="z5"] .geomap__zonelabel[data-zone="z5"],
+.geomap[data-focus="z6"] .geomap__zonelabel[data-zone="z6"] { opacity: 1; }
+
+/* 글자는 배경 위에서 읽히도록 테두리(halo)를 먼저 그립니다. */
+.geomap text {
+  font-family: var(--sans);
+  paint-order: stroke fill;
+  stroke: var(--map-land); stroke-linejoin: round;
+}
+.geomap__zonelabel { font-size: 15px; font-weight: 750; fill: var(--text-primary); stroke-width: 4px; }
+.geomap__water-label {
+  font-size: 15px; font-weight: 600; letter-spacing: 0.22em;
+  fill: color-mix(in oklab, var(--series-1) 70%, var(--text-primary));
+  stroke: var(--map-water); stroke-width: 3px;
+}
+.geomap__road-label {
+  font-size: 11px; font-weight: 500; fill: var(--text-secondary);
+  stroke: var(--map-road); stroke-width: 3px;
+}
+.geomap__bridge-label {
+  font-size: 10.5px; font-weight: 500; fill: var(--text-secondary);
+  stroke: var(--map-water); stroke-width: 3px;
+}
+.geomap__poi { font-size: 11.5px; font-weight: 600; fill: var(--text-primary); stroke-width: 3.5px; }
+.geomap__poi--shop { font-size: 12.5px; font-weight: 700; }
+.geomap__poi--school { font-size: 10.5px; font-weight: 500; fill: var(--text-secondary); }
+.geomap__scale line { stroke: var(--text-secondary); stroke-width: 1.4; }
+.geomap__scale text { font-size: 10.5px; fill: var(--text-secondary); stroke-width: 3px; }
+.geomap__north text { font-size: 10.5px; font-weight: 600; fill: var(--text-secondary); stroke-width: 3px; }
+.geomap__credit { font-size: 9.5px; fill: var(--text-muted); stroke-width: 3px; }
+
+.geomap__note {
+  margin: 12px 0 0; font-size: 12.5px; line-height: 1.6; color: var(--text-secondary);
+}
+
+@media (max-width: 760px) {
+  .geomap { padding: 14px; }
+  .geomap__frame { margin: 0 -14px; padding: 0 14px; }
+}
