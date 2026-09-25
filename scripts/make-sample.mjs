@@ -87,6 +87,13 @@ for (const c of complexesDoc.complexes) {
   }
 
   recentTrades.sort((a, b) => (a.date < b.date ? 1 : -1));
+  // lastTrade 를 실제로 생성된 최신 거래에서 가져옵니다(날짜가 전부 같아지지 않게).
+  for (const sz of sizes) {
+    const newest = recentTrades.find((t) => t.area === sz.area);
+    if (newest) {
+      sz.lastTrade = { date: newest.date, amountManKRW: newest.amountManKRW, floor: newest.floor };
+    }
+  }
   const med = median(sizes.map((s) => s.medianPerPyeongManKRW));
   complexes.push({
     id: c.id,

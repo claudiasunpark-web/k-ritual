@@ -199,6 +199,8 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       <select data-filter="sort">
         <option value="perPyeong-desc">평당가 높은 순</option>
         <option value="perPyeong-asc">평당가 낮은 순</option>
+        <option value="date-desc">최근 거래일 순</option>
+        <option value="date-asc">오래된 거래일 순</option>
         <option value="amount-desc">거래금액 높은 순</option>
         <option value="amount-asc">거래금액 낮은 순</option>
         <option value="pyeongNum-asc">평형 작은 순</option>
@@ -211,8 +213,9 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       <thead><tr><th>구역</th><th>단지</th><th>평형</th><th style="text-align:right">전용(㎡)</th><th style="text-align:right">중위 거래가</th><th style="text-align:right">평당가(만원)</th><th style="text-align:right">거래건수</th><th>최근 거래</th><th style="text-align:right">지분당 단가</th></tr></thead>
       <tbody>${rows
         .map(
-          (r) => `<tr data-zone="${r.zone}" data-search="${escapeHtml(`${r.zoneLabel} ${r.complex} ${r.pyeong}`)}"
-        data-perpyeong="${r.perPyeong ?? 0}" data-amount="${r.amount ?? 0}" data-pyeongnum="${r.pyeongNum ?? 0}">
+          (r) => `<tr data-zone="${r.zone}" data-search="${escapeHtml(`${r.zoneLabel} ${r.complex} ${r.pyeong} ${r.last}`)}"
+        data-perpyeong="${r.perPyeong ?? 0}" data-amount="${r.amount ?? 0}" data-pyeongnum="${r.pyeongNum ?? 0}"
+        data-date="${escapeHtml(r.last ?? '')}">
         <td>${escapeHtml(r.zoneLabel)}</td><td>${escapeHtml(r.complex)}</td><td>${escapeHtml(r.pyeong)}</td>
         <td style="text-align:right">${r.area}</td>
         <td style="text-align:right">${eok(r.amount)}</td>

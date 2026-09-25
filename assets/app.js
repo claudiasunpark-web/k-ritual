@@ -303,8 +303,12 @@ document.querySelectorAll('[data-widget="complex-table"], [data-widget="trade-lo
     const sorted = [...all].sort((a, b) => {
       // 계약일은 문자열 비교(YYYY-MM-DD 는 사전순 = 날짜순), 나머지는 수치 비교
       if (attr === 'date') {
-        const av = a.dataset.date ?? '';
-        const bv = b.dataset.date ?? '';
+        const av = a.dataset.date || '';
+        const bv = b.dataset.date || '';
+        // 날짜가 없는 행은 방향과 무관하게 항상 뒤로 보냅니다.
+        if (!av && !bv) return 0;
+        if (!av) return 1;
+        if (!bv) return -1;
         return dir === 'asc' ? av.localeCompare(bv) : bv.localeCompare(av);
       }
       const av = Number(a.dataset[attr]) || 0;

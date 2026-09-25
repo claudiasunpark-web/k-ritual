@@ -1,7 +1,7 @@
 {
   "isSample": true,
   "sampleWarning": "이 데이터는 사이트 레이아웃 확인용 합성 샘플입니다. 실제 시세가 아니며, 판매·배포 전에 반드시 npm run fetch 로 국토교통부 실거래가를 채워야 합니다.",
-  "generatedAt": "2026-09-22T11:44:40.450Z",
+  "generatedAt": "2026-09-25T08:28:27.290Z",
   "range": {
     "from": "202310",
     "to": "202609",
@@ -102,9 +102,9 @@
           "minAmountManKRW": 342240,
           "maxAmountManKRW": 405480,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 372000,
-            "floor": 4
+            "date": "2026-08-20",
+            "amountManKRW": 351000,
+            "floor": 6
           },
           "landSharePyeong": null
         },
@@ -119,9 +119,9 @@
           "minAmountManKRW": 442520,
           "maxAmountManKRW": 524290,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 481000,
-            "floor": 9
+            "date": "2026-08-17",
+            "amountManKRW": 491000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -136,9 +136,9 @@
           "minAmountManKRW": 543720,
           "maxAmountManKRW": 644190,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 591000,
-            "floor": 8
+            "date": "2026-08-10",
+            "amountManKRW": 625000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -153,9 +153,9 @@
           "minAmountManKRW": 537280,
           "maxAmountManKRW": 636560,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 584000,
-            "floor": 11
+            "date": "2026-08-27",
+            "amountManKRW": 596000,
+            "floor": 9
           },
           "landSharePyeong": null
         }
@@ -273,9 +273,9 @@
           "minAmountManKRW": 325680,
           "maxAmountManKRW": 385860,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 354000,
-            "floor": 10
+            "date": "2026-08-09",
+            "amountManKRW": 364000,
+            "floor": 14
           },
           "landSharePyeong": null
         },
@@ -290,9 +290,9 @@
           "minAmountManKRW": 441600,
           "maxAmountManKRW": 523200,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 480000,
-            "floor": 9
+            "date": "2026-08-22",
+            "amountManKRW": 474000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -307,9 +307,9 @@
           "minAmountManKRW": 541880,
           "maxAmountManKRW": 642010,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 589000,
-            "floor": 5
+            "date": "2026-08-09",
+            "amountManKRW": 593000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -324,9 +324,9 @@
           "minAmountManKRW": 557520,
           "maxAmountManKRW": 660540,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 606000,
-            "floor": 7
+            "date": "2026-08-03",
+            "amountManKRW": 572000,
+            "floor": 13
           },
           "landSharePyeong": null
         }
@@ -444,9 +444,9 @@
           "minAmountManKRW": 450800,
           "maxAmountManKRW": 534100,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 490000,
-            "floor": 14
+            "date": "2026-08-26",
+            "amountManKRW": 463000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -461,9 +461,9 @@
           "minAmountManKRW": 567640,
           "maxAmountManKRW": 672530,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 617000,
-            "floor": 6
+            "date": "2026-08-08",
+            "amountManKRW": 586000,
+            "floor": 14
           },
           "landSharePyeong": null
         },
@@ -478,9 +478,9 @@
           "minAmountManKRW": 669760,
           "maxAmountManKRW": 793520,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 728000,
-            "floor": 6
+            "date": "2026-08-06",
+            "amountManKRW": 754000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -495,9 +495,9 @@
           "minAmountManKRW": 853760,
           "maxAmountManKRW": 1011520,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 928000,
-            "floor": 5
+            "date": "2026-08-05",
+            "amountManKRW": 912000,
+            "floor": 4
           },
           "landSharePyeong": null
         }
@@ -615,9 +615,9 @@
           "minAmountManKRW": 495880,
           "maxAmountManKRW": 587510,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 539000,
-            "floor": 8
+            "date": "2026-08-19",
+            "amountManKRW": 521000,
+            "floor": 6
           },
           "landSharePyeong": null
         },
@@ -632,9 +632,9 @@
           "minAmountManKRW": 653200,
           "maxAmountManKRW": 773900,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 710000,
-            "floor": 11
+            "date": "2026-08-25",
+            "amountManKRW": 706000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -649,9 +649,9 @@
           "minAmountManKRW": 794880,
           "maxAmountManKRW": 941760,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 864000,
-            "floor": 5
+            "date": "2026-08-13",
+            "amountManKRW": 824000,
+            "floor": 10
           },
           "landSharePyeong": null
         },
@@ -666,9 +666,9 @@
           "minAmountManKRW": 912640,
           "maxAmountManKRW": 1081280,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 992000,
-            "floor": 13
+            "date": "2026-08-27",
+            "amountManKRW": 940000,
+            "floor": 8
           },
           "landSharePyeong": null
         }
@@ -813,8 +813,8 @@
           "minAmountManKRW": 420440,
           "maxAmountManKRW": 498130,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 457000,
+            "date": "2026-08-21",
+            "amountManKRW": 467000,
             "floor": 8
           },
           "landSharePyeong": null
@@ -830,9 +830,9 @@
           "minAmountManKRW": 602600,
           "maxAmountManKRW": 713950,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 655000,
-            "floor": 10
+            "date": "2026-08-13",
+            "amountManKRW": 669000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -848,8 +848,8 @@
           "maxAmountManKRW": 780440,
           "lastTrade": {
             "date": "2026-08-15",
-            "amountManKRW": 716000,
-            "floor": 13
+            "amountManKRW": 755000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -864,9 +864,9 @@
           "minAmountManKRW": 841800,
           "maxAmountManKRW": 997350,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 915000,
-            "floor": 5
+            "date": "2026-08-12",
+            "amountManKRW": 906000,
+            "floor": 9
           },
           "landSharePyeong": null
         }
@@ -993,9 +993,9 @@
           "minAmountManKRW": 441600,
           "maxAmountManKRW": 523200,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 480000,
-            "floor": 3
+            "date": "2026-08-04",
+            "amountManKRW": 461000,
+            "floor": 9
           },
           "landSharePyeong": null
         },
@@ -1010,9 +1010,9 @@
           "minAmountManKRW": 565800,
           "maxAmountManKRW": 670350,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 615000,
-            "floor": 11
+            "date": "2026-08-20",
+            "amountManKRW": 611000,
+            "floor": 4
           },
           "landSharePyeong": null
         },
@@ -1027,9 +1027,9 @@
           "minAmountManKRW": 698280,
           "maxAmountManKRW": 827310,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 759000,
-            "floor": 10
+            "date": "2026-08-08",
+            "amountManKRW": 756000,
+            "floor": 14
           },
           "landSharePyeong": null
         },
@@ -1044,9 +1044,9 @@
           "minAmountManKRW": 842720,
           "maxAmountManKRW": 998440,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 916000,
-            "floor": 9
+            "date": "2026-08-21",
+            "amountManKRW": 938000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -1182,9 +1182,9 @@
           "minAmountManKRW": 456320,
           "maxAmountManKRW": 540640,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 496000,
-            "floor": 6
+            "date": "2026-08-08",
+            "amountManKRW": 519000,
+            "floor": 11
           },
           "landSharePyeong": null
         },
@@ -1199,9 +1199,9 @@
           "minAmountManKRW": 598000,
           "maxAmountManKRW": 708500,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 650000,
-            "floor": 12
+            "date": "2026-08-10",
+            "amountManKRW": 646000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -1216,8 +1216,8 @@
           "minAmountManKRW": 649520,
           "maxAmountManKRW": 769540,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 706000,
+            "date": "2026-08-24",
+            "amountManKRW": 711000,
             "floor": 12
           },
           "landSharePyeong": null
@@ -1233,9 +1233,9 @@
           "minAmountManKRW": 846400,
           "maxAmountManKRW": 1002800,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 920000,
-            "floor": 4
+            "date": "2026-08-23",
+            "amountManKRW": 963000,
+            "floor": 8
           },
           "landSharePyeong": null
         }
@@ -1389,9 +1389,9 @@
           "minAmountManKRW": 530840,
           "maxAmountManKRW": 628930,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 577000,
-            "floor": 7
+            "date": "2026-08-17",
+            "amountManKRW": 564000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -1406,9 +1406,9 @@
           "minAmountManKRW": 580520,
           "maxAmountManKRW": 687790,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 631000,
-            "floor": 10
+            "date": "2026-08-16",
+            "amountManKRW": 628000,
+            "floor": 8
           },
           "landSharePyeong": null
         },
@@ -1423,9 +1423,9 @@
           "minAmountManKRW": 830760,
           "maxAmountManKRW": 984270,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 903000,
-            "floor": 10
+            "date": "2026-08-05",
+            "amountManKRW": 915000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -1440,9 +1440,9 @@
           "minAmountManKRW": 982560,
           "maxAmountManKRW": 1164120,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 1068000,
-            "floor": 13
+            "date": "2026-08-12",
+            "amountManKRW": 1125000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -1560,9 +1560,9 @@
           "minAmountManKRW": 570400,
           "maxAmountManKRW": 675800,
           "lastTrade": {
-            "date": "2026-08-15",
+            "date": "2026-08-08",
             "amountManKRW": 620000,
-            "floor": 4
+            "floor": 9
           },
           "landSharePyeong": null
         },
@@ -1577,9 +1577,9 @@
           "minAmountManKRW": 592480,
           "maxAmountManKRW": 701960,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 644000,
-            "floor": 4
+            "date": "2026-08-25",
+            "amountManKRW": 650000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -1594,9 +1594,9 @@
           "minAmountManKRW": 825240,
           "maxAmountManKRW": 977730,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 897000,
-            "floor": 9
+            "date": "2026-08-20",
+            "amountManKRW": 874000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -1611,9 +1611,9 @@
           "minAmountManKRW": 999120,
           "maxAmountManKRW": 1183740,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 1086000,
-            "floor": 6
+            "date": "2026-08-14",
+            "amountManKRW": 1131000,
+            "floor": 3
           },
           "landSharePyeong": null
         }
@@ -1758,9 +1758,9 @@
           "minAmountManKRW": 481160,
           "maxAmountManKRW": 570070,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 523000,
-            "floor": 13
+            "date": "2026-08-12",
+            "amountManKRW": 542000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -1775,9 +1775,9 @@
           "minAmountManKRW": 592480,
           "maxAmountManKRW": 701960,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 644000,
-            "floor": 13
+            "date": "2026-08-09",
+            "amountManKRW": 633000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -1792,9 +1792,9 @@
           "minAmountManKRW": 805920,
           "maxAmountManKRW": 954840,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 876000,
-            "floor": 6
+            "date": "2026-08-03",
+            "amountManKRW": 905000,
+            "floor": 8
           },
           "landSharePyeong": null
         },
@@ -1809,9 +1809,9 @@
           "minAmountManKRW": 914480,
           "maxAmountManKRW": 1083460,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 994000,
-            "floor": 9
+            "date": "2026-08-27",
+            "amountManKRW": 951000,
+            "floor": 3
           },
           "landSharePyeong": null
         }
@@ -1956,9 +1956,9 @@
           "minAmountManKRW": 511520,
           "maxAmountManKRW": 606040,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 556000,
-            "floor": 4
+            "date": "2026-08-17",
+            "amountManKRW": 571000,
+            "floor": 11
           },
           "landSharePyeong": null
         },
@@ -1973,9 +1973,9 @@
           "minAmountManKRW": 627440,
           "maxAmountManKRW": 743380,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 682000,
-            "floor": 11
+            "date": "2026-08-27",
+            "amountManKRW": 680000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -1990,9 +1990,9 @@
           "minAmountManKRW": 784760,
           "maxAmountManKRW": 929770,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 853000,
-            "floor": 7
+            "date": "2026-08-26",
+            "amountManKRW": 901000,
+            "floor": 11
           },
           "landSharePyeong": null
         },
@@ -2007,9 +2007,9 @@
           "minAmountManKRW": 897920,
           "maxAmountManKRW": 1063840,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 976000,
-            "floor": 13
+            "date": "2026-08-05",
+            "amountManKRW": 970000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -2145,8 +2145,8 @@
           "minAmountManKRW": 565800,
           "maxAmountManKRW": 670350,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 615000,
+            "date": "2026-08-05",
+            "amountManKRW": 640000,
             "floor": 7
           },
           "landSharePyeong": null
@@ -2162,8 +2162,8 @@
           "minAmountManKRW": 619160,
           "maxAmountManKRW": 733570,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 673000,
+            "date": "2026-08-17",
+            "amountManKRW": 707000,
             "floor": 9
           },
           "landSharePyeong": null
@@ -2179,9 +2179,9 @@
           "minAmountManKRW": 785680,
           "maxAmountManKRW": 930860,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 854000,
-            "floor": 12
+            "date": "2026-08-03",
+            "amountManKRW": 889000,
+            "floor": 11
           },
           "landSharePyeong": null
         },
@@ -2197,8 +2197,8 @@
           "maxAmountManKRW": 1209900,
           "lastTrade": {
             "date": "2026-08-15",
-            "amountManKRW": 1110000,
-            "floor": 14
+            "amountManKRW": 1131000,
+            "floor": 13
           },
           "landSharePyeong": null
         }
@@ -2343,9 +2343,9 @@
           "minAmountManKRW": 506920,
           "maxAmountManKRW": 600590,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 551000,
-            "floor": 5
+            "date": "2026-08-11",
+            "amountManKRW": 526000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -2360,9 +2360,9 @@
           "minAmountManKRW": 580520,
           "maxAmountManKRW": 687790,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 631000,
-            "floor": 8
+            "date": "2026-08-20",
+            "amountManKRW": 650000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -2377,9 +2377,9 @@
           "minAmountManKRW": 760840,
           "maxAmountManKRW": 901430,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 827000,
-            "floor": 14
+            "date": "2026-08-17",
+            "amountManKRW": 800000,
+            "floor": 9
           },
           "landSharePyeong": null
         },
@@ -2394,9 +2394,9 @@
           "minAmountManKRW": 1014760,
           "maxAmountManKRW": 1202270,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 1103000,
-            "floor": 10
+            "date": "2026-08-08",
+            "amountManKRW": 1094000,
+            "floor": 11
           },
           "landSharePyeong": null
         }
@@ -2514,9 +2514,9 @@
           "minAmountManKRW": 328440,
           "maxAmountManKRW": 389130,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 357000,
-            "floor": 9
+            "date": "2026-08-22",
+            "amountManKRW": 367000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -2531,9 +2531,9 @@
           "minAmountManKRW": 436080,
           "maxAmountManKRW": 516660,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 474000,
-            "floor": 8
+            "date": "2026-08-07",
+            "amountManKRW": 480000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -2548,9 +2548,9 @@
           "minAmountManKRW": 481160,
           "maxAmountManKRW": 570070,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 523000,
-            "floor": 13
+            "date": "2026-08-06",
+            "amountManKRW": 502000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -2565,9 +2565,9 @@
           "minAmountManKRW": 606280,
           "maxAmountManKRW": 718310,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 659000,
-            "floor": 3
+            "date": "2026-08-09",
+            "amountManKRW": 628000,
+            "floor": 12
           },
           "landSharePyeong": null
         }
@@ -2712,9 +2712,9 @@
           "minAmountManKRW": 487600,
           "maxAmountManKRW": 577700,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 530000,
-            "floor": 11
+            "date": "2026-08-12",
+            "amountManKRW": 519000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -2729,9 +2729,9 @@
           "minAmountManKRW": 540960,
           "maxAmountManKRW": 640920,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 588000,
-            "floor": 11
+            "date": "2026-08-13",
+            "amountManKRW": 600000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -2746,9 +2746,9 @@
           "minAmountManKRW": 727720,
           "maxAmountManKRW": 862190,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 791000,
-            "floor": 12
+            "date": "2026-08-10",
+            "amountManKRW": 747000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -2763,8 +2763,8 @@
           "minAmountManKRW": 834440,
           "maxAmountManKRW": 988630,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 907000,
+            "date": "2026-08-03",
+            "amountManKRW": 889000,
             "floor": 12
           },
           "landSharePyeong": null
@@ -2901,9 +2901,9 @@
           "minAmountManKRW": 324760,
           "maxAmountManKRW": 384770,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 353000,
-            "floor": 12
+            "date": "2026-08-06",
+            "amountManKRW": 346000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -2918,9 +2918,9 @@
           "minAmountManKRW": 414920,
           "maxAmountManKRW": 491590,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 451000,
-            "floor": 8
+            "date": "2026-08-03",
+            "amountManKRW": 468000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -2935,9 +2935,9 @@
           "minAmountManKRW": 466440,
           "maxAmountManKRW": 552630,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 507000,
-            "floor": 10
+            "date": "2026-08-24",
+            "amountManKRW": 522000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -2952,9 +2952,9 @@
           "minAmountManKRW": 559360,
           "maxAmountManKRW": 662720,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 608000,
-            "floor": 5
+            "date": "2026-08-24",
+            "amountManKRW": 619000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -3099,9 +3099,9 @@
           "minAmountManKRW": 391920,
           "maxAmountManKRW": 464340,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 426000,
-            "floor": 13
+            "date": "2026-08-19",
+            "amountManKRW": 449000,
+            "floor": 7
           },
           "landSharePyeong": null
         },
@@ -3116,9 +3116,9 @@
           "minAmountManKRW": 567640,
           "maxAmountManKRW": 672530,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 617000,
-            "floor": 11
+            "date": "2026-08-25",
+            "amountManKRW": 626000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -3133,9 +3133,9 @@
           "minAmountManKRW": 656880,
           "maxAmountManKRW": 778260,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 714000,
-            "floor": 5
+            "date": "2026-08-14",
+            "amountManKRW": 715000,
+            "floor": 4
           },
           "landSharePyeong": null
         },
@@ -3150,9 +3150,9 @@
           "minAmountManKRW": 698280,
           "maxAmountManKRW": 827310,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 759000,
-            "floor": 6
+            "date": "2026-08-05",
+            "amountManKRW": 803000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -3297,9 +3297,9 @@
           "minAmountManKRW": 458160,
           "maxAmountManKRW": 542820,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 498000,
-            "floor": 10
+            "date": "2026-08-06",
+            "amountManKRW": 492000,
+            "floor": 3
           },
           "landSharePyeong": null
         },
@@ -3314,9 +3314,9 @@
           "minAmountManKRW": 566720,
           "maxAmountManKRW": 671440,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 616000,
-            "floor": 9
+            "date": "2026-08-07",
+            "amountManKRW": 643000,
+            "floor": 4
           },
           "landSharePyeong": null
         },
@@ -3331,9 +3331,9 @@
           "minAmountManKRW": 698280,
           "maxAmountManKRW": 827310,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 759000,
-            "floor": 8
+            "date": "2026-08-14",
+            "amountManKRW": 718000,
+            "floor": 6
           },
           "landSharePyeong": null
         },
@@ -3348,9 +3348,9 @@
           "minAmountManKRW": 978880,
           "maxAmountManKRW": 1159760,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 1064000,
-            "floor": 6
+            "date": "2026-08-11",
+            "amountManKRW": 1013000,
+            "floor": 11
           },
           "landSharePyeong": null
         }
@@ -3486,9 +3486,9 @@
           "minAmountManKRW": 287960,
           "maxAmountManKRW": 341170,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 313000,
-            "floor": 11
+            "date": "2026-08-08",
+            "amountManKRW": 325000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -3503,8 +3503,8 @@
           "minAmountManKRW": 381800,
           "maxAmountManKRW": 452350,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 415000,
+            "date": "2026-08-06",
+            "amountManKRW": 424000,
             "floor": 14
           },
           "landSharePyeong": null
@@ -3521,8 +3521,8 @@
           "maxAmountManKRW": 522110,
           "lastTrade": {
             "date": "2026-08-15",
-            "amountManKRW": 479000,
-            "floor": 8
+            "amountManKRW": 486000,
+            "floor": 6
           },
           "landSharePyeong": null
         },
@@ -3537,9 +3537,9 @@
           "minAmountManKRW": 554760,
           "maxAmountManKRW": 657270,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 603000,
-            "floor": 3
+            "date": "2026-08-03",
+            "amountManKRW": 595000,
+            "floor": 8
           },
           "landSharePyeong": null
         }
@@ -3675,9 +3675,9 @@
           "minAmountManKRW": 435160,
           "maxAmountManKRW": 515570,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 473000,
-            "floor": 6
+            "date": "2026-08-09",
+            "amountManKRW": 476000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -3692,9 +3692,9 @@
           "minAmountManKRW": 575920,
           "maxAmountManKRW": 682340,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 626000,
-            "floor": 11
+            "date": "2026-08-22",
+            "amountManKRW": 611000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -3709,9 +3709,9 @@
           "minAmountManKRW": 706560,
           "maxAmountManKRW": 837120,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 768000,
-            "floor": 11
+            "date": "2026-08-27",
+            "amountManKRW": 775000,
+            "floor": 5
           },
           "landSharePyeong": null
         },
@@ -3726,9 +3726,9 @@
           "minAmountManKRW": 845480,
           "maxAmountManKRW": 1001710,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 919000,
-            "floor": 8
+            "date": "2026-08-27",
+            "amountManKRW": 898000,
+            "floor": 4
           },
           "landSharePyeong": null
         }
@@ -3828,9 +3828,9 @@
           "minAmountManKRW": 262200,
           "maxAmountManKRW": 310650,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 285000,
-            "floor": 3
+            "date": "2026-08-05",
+            "amountManKRW": 269000,
+            "floor": 10
           },
           "landSharePyeong": null
         },
@@ -3845,9 +3845,9 @@
           "minAmountManKRW": 364320,
           "maxAmountManKRW": 431640,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 396000,
-            "floor": 3
+            "date": "2026-08-12",
+            "amountManKRW": 389000,
+            "floor": 10
           },
           "landSharePyeong": null
         },
@@ -3862,9 +3862,9 @@
           "minAmountManKRW": 385480,
           "maxAmountManKRW": 456710,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 419000,
-            "floor": 10
+            "date": "2026-08-09",
+            "amountManKRW": 422000,
+            "floor": 12
           },
           "landSharePyeong": null
         },
@@ -3879,9 +3879,9 @@
           "minAmountManKRW": 496800,
           "maxAmountManKRW": 588600,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 540000,
-            "floor": 10
+            "date": "2026-08-17",
+            "amountManKRW": 527000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -4017,9 +4017,9 @@
           "minAmountManKRW": 356960,
           "maxAmountManKRW": 422920,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 388000,
-            "floor": 4
+            "date": "2026-08-03",
+            "amountManKRW": 383000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -4034,9 +4034,9 @@
           "minAmountManKRW": 439760,
           "maxAmountManKRW": 521020,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 478000,
-            "floor": 11
+            "date": "2026-08-16",
+            "amountManKRW": 466000,
+            "floor": 13
           },
           "landSharePyeong": null
         },
@@ -4051,8 +4051,8 @@
           "minAmountManKRW": 560280,
           "maxAmountManKRW": 663810,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 609000,
+            "date": "2026-08-06",
+            "amountManKRW": 617000,
             "floor": 12
           },
           "landSharePyeong": null
@@ -4068,9 +4068,9 @@
           "minAmountManKRW": 653200,
           "maxAmountManKRW": 773900,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 710000,
-            "floor": 10
+            "date": "2026-08-06",
+            "amountManKRW": 707000,
+            "floor": 14
           },
           "landSharePyeong": null
         }
@@ -4197,9 +4197,9 @@
           "minAmountManKRW": 276920,
           "maxAmountManKRW": 328090,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 301000,
-            "floor": 13
+            "date": "2026-08-14",
+            "amountManKRW": 304000,
+            "floor": 6
           },
           "landSharePyeong": null
         },
@@ -4214,9 +4214,9 @@
           "minAmountManKRW": 341320,
           "maxAmountManKRW": 404390,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 371000,
-            "floor": 8
+            "date": "2026-08-26",
+            "amountManKRW": 354000,
+            "floor": 4
           },
           "landSharePyeong": null
         },
@@ -4231,9 +4231,9 @@
           "minAmountManKRW": 391000,
           "maxAmountManKRW": 463250,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 425000,
-            "floor": 6
+            "date": "2026-08-22",
+            "amountManKRW": 449000,
+            "floor": 14
           },
           "landSharePyeong": null
         },
@@ -4248,9 +4248,9 @@
           "minAmountManKRW": 491280,
           "maxAmountManKRW": 582060,
           "lastTrade": {
-            "date": "2026-08-15",
-            "amountManKRW": 534000,
-            "floor": 9
+            "date": "2026-08-25",
+            "amountManKRW": 551000,
+            "floor": 7
           },
           "landSharePyeong": null
         }
