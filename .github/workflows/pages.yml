@@ -74,6 +74,40 @@ jobs:
           git commit -m "실거래가 갱신: 압구정동 ${COUNT}건 (${RANGE}) [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
+      - name: OSM 지형 수집
+        # 강·도로·건물 윤곽은 거의 바뀌지 않으므로 파일이 없을 때만 받습니다.
+        # 다시 받고 싶으면 커밋 메시지에 [osm] 을 넣어 주세요.
+        timeout-minutes: 12
+        continue-on-error: true
+        id: osm
+        run: |
+          MSG=$(git log -1 --pretty=%B || true)
+          if [ -f data/osm/apgujeong.geojson ] && ! printf '%s' "$MSG" | grep -q '\[osm\]'; then
+            echo "data/osm/apgujeong.geojson 있음 — 건너뜁니다."
+            echo "fetched=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if node scripts/fetch-osm.mjs; then
+            echo "fetched=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning::OSM 수집 실패 — 개념도로 빌드를 계속합니다."
+            echo "fetched=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 수집한 OSM 지형 되커밋
+        if: steps.osm.outputs.fetched == 'true'
+        run: |
+          if git diff --quiet -- data/osm/; then
+            echo "지형 데이터 변동 없음 — 커밋하지 않습니다."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/osm/
+          COUNT=$(node -e "console.log(require('./data/osm/apgujeong.geojson').features.length)")
+          git commit -m "OSM 지형 갱신: 피처 ${COUNT}개 [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
       - name: 샘플 데이터 준비
         # 실거래 파일이 전혀 없을 때만 레이아웃 확인용 샘플을 만듭니다.
         run: |
