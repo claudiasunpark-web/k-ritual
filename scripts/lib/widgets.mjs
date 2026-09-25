@@ -186,9 +186,19 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
           .filter((g) => g.items.length),
       }),
 
-    /** 단지 × 평형별 시세표 (검색·필터) */
+    /**
+     * 실거래 표 — 같은 데이터를 두 가지로 묶어 보여 줍니다.
+     * 평형별 요약(비교용)과 개별 거래(확인용)를 한 표에서 전환합니다.
+     * 위젯을 둘로 나눠 두면 필터 줄이 두 벌 생겨 중복으로 읽힙니다.
+     */
     'complex-table': () => {
-      const rows = tradeComplexes.flatMap((c) =>
+      const zoneOpts = zones.zones
+        .filter((z) => tradeComplexes.some((c) => c.zone === z.id))
+        .map((z) => `<option value="${z.id}">${escapeHtml(z.shortName)}</option>`)
+        .join('');
+
+      // ── 평형별 요약 ────────────────────────────────────────
+      const summaryRows = tradeComplexes.flatMap((c) =>
         c.sizes.map((s) => ({
           zone: c.zone,
           zoneLabel: zoneLabel(c.zone),
@@ -204,39 +214,12 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
           landShareByDong: s.landShareByDong ?? {},
         })),
       );
-      const options = zones.zones
-        .filter((z) => tradeComplexes.some((c) => c.zone === z.id))
-        .map((z) => `<option value="${z.id}">${escapeHtml(z.shortName)}</option>`)
-        .join('');
-      return `<div class="datatable" data-widget="complex-table">
-  <div class="filters">
-    <label class="filters__field"><span>구역</span>
-      <select data-filter="zone"><option value="">전체</option>${options}</select>
-    </label>
-    <label class="filters__field"><span>단지·평형 검색</span>
-      <input type="search" data-filter="q" placeholder="예: 현대7차, 50평">
-    </label>
-    <label class="filters__field"><span>정렬</span>
-      <select data-filter="sort">
-        <option value="perPyeong-desc">평당가 높은 순</option>
-        <option value="perPyeong-asc">평당가 낮은 순</option>
-        <option value="date-desc">최근 거래일 순</option>
-        <option value="date-asc">오래된 거래일 순</option>
-        <option value="amount-desc">거래금액 높은 순</option>
-        <option value="amount-asc">거래금액 낮은 순</option>
-        <option value="pyeongNum-asc">평형 작은 순</option>
-        <option value="pyeongNum-desc">평형 큰 순</option>
-      </select>
-    </label>
-  </div>
-  <div class="table-wrap">
-    <table class="datatable__table">
-      <thead><tr><th>구역</th><th>단지</th><th>평형</th><th style="text-align:right">전용(㎡)</th><th style="text-align:right">중위 거래가</th><th style="text-align:right">평당가(만원)</th><th style="text-align:right">거래건수</th><th>최근 거래</th><th style="text-align:right">지분당 단가</th></tr></thead>
-      <tbody>${rows
+
+      const summaryBody = summaryRows
         .map(
           (r) => `<tr data-zone="${r.zone}" data-search="${escapeHtml(`${r.zoneLabel} ${r.complex} ${r.pyeong} ${r.last}`)}"
         data-perpyeong="${r.perPyeong ?? 0}" data-amount="${r.amount ?? 0}" data-pyeongnum="${r.pyeongNum ?? 0}"
-        data-date="${escapeHtml(r.last ?? '')}">
+        data-count="${r.count ?? 0}" data-date="${escapeHtml(r.last ?? '')}">
         <td>${escapeHtml(r.zoneLabel)}</td><td>${escapeHtml(r.complex)}</td><td>${escapeHtml(r.pyeong)}</td>
         <td style="text-align:right">${r.area}</td>
         <td style="text-align:right">${eok(r.amount)}</td>
@@ -246,62 +229,19 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         <td style="text-align:right">${shareCell(r)}</td>
       </tr>`,
         )
-        .join('')}</tbody>
-    </table>
-  </div>
-  <p class="datatable__empty" hidden>조건에 맞는 행이 없습니다.</p>
-</div>`;
-    },
-
-    /** 개별 실거래 내역 — 집계값이 아니라 실제 거래 한 건 한 건 */
-    'recent-trades': () => {
-      const rows = tradeComplexes.flatMap((c) =>
-        (c.recentTrades ?? []).map((t) => ({ ...t, complex: c.label, zone: c.zone })),
-      );
-      rows.sort((a, b) => (a.date < b.date ? 1 : -1));
-
-      if (rows.length === 0) {
-        return '<p class="muted">개별 거래 내역이 없습니다. npm run fetch 로 실거래를 수집하세요.</p>';
-      }
-
-      const zoneOpts = zones.zones
-        .filter((z) => tradeComplexes.some((c) => c.zone === z.id))
-        .map((z) => `<option value="${z.id}">${escapeHtml(z.shortName)}</option>`)
         .join('');
 
-      return `<div class="datatable" data-widget="trade-log">
-  <div class="filters">
-    <label class="filters__field"><span>구역</span>
-      <select data-filter="zone"><option value="">전체</option>${zoneOpts}</select>
-    </label>
-    <label class="filters__field"><span>단지·평형·날짜 검색</span>
-      <input type="search" data-filter="q" placeholder="예: 한양1차, 2026-08, 59평">
-    </label>
-    <label class="filters__field"><span>정렬</span>
-      <select data-filter="sort">
-        <option value="date-desc">최근 거래 순</option>
-        <option value="amount-desc">거래금액 높은 순</option>
-        <option value="amount-asc">거래금액 낮은 순</option>
-        <option value="perPyeong-desc">평당가 높은 순</option>
-        <option value="perPyeong-asc">평당가 낮은 순</option>
-        <option value="pyeongNum-desc">평형 큰 순</option>
-        <option value="pyeongNum-asc">평형 작은 순</option>
-      </select>
-    </label>
-  </div>
-  <div class="table-wrap">
-    <table class="datatable__table">
-      <thead><tr>
-        <th>계약일</th><th>구역</th><th>단지</th><th>동</th><th>평형</th>
-        <th style="text-align:right">전용(㎡)</th><th style="text-align:right">층</th>
-        <th style="text-align:right">거래금액</th><th style="text-align:right">평당가(만원)</th><th>거래유형</th>
-      </tr></thead>
-      <tbody>${rows
+      // ── 개별 거래 ──────────────────────────────────────────
+      const detailRows = tradeComplexes
+        .flatMap((c) => (c.recentTrades ?? []).map((t) => ({ ...t, complex: c.label, zone: c.zone })))
+        .sort((a, b) => (a.date < b.date ? 1 : -1));
+
+      const detailBody = detailRows
         .map(
           (r) => `<tr data-zone="${r.zone}"
         data-search="${escapeHtml(`${zoneLabel(r.zone)} ${r.complex} ${r.dong ?? ''} ${r.pyeong}평 ${r.date}`)}"
         data-date="${escapeHtml(r.date)}" data-amount="${r.amountManKRW ?? 0}"
-        data-perpyeong="${r.perPyeongManKRW ?? 0}" data-pyeongnum="${r.pyeong ?? 0}">
+        data-perpyeong="${r.perPyeongManKRW ?? 0}" data-pyeongnum="${r.pyeong ?? 0}" data-count="0">
         <td>${escapeHtml(r.date)}</td>
         <td>${escapeHtml(zoneLabel(r.zone))}</td>
         <td>${escapeHtml(r.complex)}</td>
@@ -314,11 +254,71 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         <td>${escapeHtml(r.dealType ?? '—')}</td>
       </tr>`,
         )
-        .join('')}</tbody>
-    </table>
+        .join('');
+
+      const hasDetail = detailRows.length > 0;
+
+      return `<div class="datatable" data-widget="trade-table">
+  <div class="viewswitch" role="group" aria-label="보기 방식">
+    <button type="button" data-view="summary" aria-pressed="true">평형별 요약</button>
+    <button type="button" data-view="detail" aria-pressed="false"${hasDetail ? '' : ' disabled'}>개별 거래</button>
   </div>
-  <p class="datatable__empty" hidden>조건에 맞는 거래가 없습니다.</p>
-  <p class="chart__unit">단지별 최근 거래를 최대 30건까지 그대로 보여 줍니다. 평당가는 전용면적 기준이며, 해제된 거래는 제외했습니다. 같은 단지에서도 <strong>동·평형·층에 따라 값이 크게 다릅니다</strong> — 집계값이 아니라 이 표로 확인하세요. 동은 국토교통부가 비공개 처리한 거래에서는 표시되지 않습니다.</p>
+  <div class="filters">
+    <label class="filters__field"><span>구역</span>
+      <select data-filter="zone"><option value="">전체</option>${zoneOpts}</select>
+    </label>
+    <label class="filters__field"><span>검색</span>
+      <input type="search" data-filter="q" placeholder="예: 현대7차, 103, 50평, 2026-08">
+    </label>
+    <label class="filters__field" data-for-view="summary"><span>정렬</span>
+      <select data-filter="sort" data-view="summary">
+        <option value="perPyeong-desc">평당가 높은 순</option>
+        <option value="perPyeong-asc">평당가 낮은 순</option>
+        <option value="date-desc">최근 거래일 순</option>
+        <option value="date-asc">오래된 거래일 순</option>
+        <option value="amount-desc">거래금액 높은 순</option>
+        <option value="amount-asc">거래금액 낮은 순</option>
+        <option value="count-desc">거래 많은 순</option>
+        <option value="pyeongNum-asc">평형 작은 순</option>
+        <option value="pyeongNum-desc">평형 큰 순</option>
+      </select>
+    </label>
+    <label class="filters__field" data-for-view="detail" hidden><span>정렬</span>
+      <select data-filter="sort" data-view="detail">
+        <option value="date-desc">최근 거래 순</option>
+        <option value="date-asc">오래된 거래 순</option>
+        <option value="amount-desc">거래금액 높은 순</option>
+        <option value="amount-asc">거래금액 낮은 순</option>
+        <option value="perPyeong-desc">평당가 높은 순</option>
+        <option value="perPyeong-asc">평당가 낮은 순</option>
+        <option value="pyeongNum-desc">평형 큰 순</option>
+        <option value="pyeongNum-asc">평형 작은 순</option>
+      </select>
+    </label>
+  </div>
+
+  <div class="datatable__view" data-view="summary">
+    <div class="table-wrap">
+      <table class="datatable__table">
+        <thead><tr><th>구역</th><th>단지</th><th>평형</th><th style="text-align:right">전용(㎡)</th><th style="text-align:right">중위 거래가</th><th style="text-align:right">평당가(만원)</th><th style="text-align:right">거래건수</th><th>최근 거래</th><th style="text-align:right">지분당 단가</th></tr></thead>
+        <tbody>${summaryBody}</tbody>
+      </table>
+    </div>
+    <p class="chart__unit">평형마다 실거래를 묶어 <strong>중위값</strong>을 낸 값입니다. 구역·단지 비교용입니다.</p>
+  </div>
+
+  <div class="datatable__view" data-view="detail" hidden>
+    <div class="table-wrap">
+      <table class="datatable__table">
+        <thead><tr><th>계약일</th><th>구역</th><th>단지</th><th>동</th><th>평형</th><th style="text-align:right">전용(㎡)</th><th style="text-align:right">층</th><th style="text-align:right">거래금액</th><th style="text-align:right">평당가(만원)</th><th>거래유형</th></tr></thead>
+        <tbody>${detailBody}</tbody>
+      </table>
+    </div>
+    <p class="chart__unit">묶지 않은 <strong>거래 한 건 한 건</strong>입니다(단지별 최대 30건). 동은 국토교통부가 비공개 처리한 거래에서는 표시되지 않습니다.</p>
+  </div>
+
+  <p class="datatable__empty" hidden>조건에 맞는 항목이 없습니다.</p>
+  <p class="chart__unit">두 보기는 <strong>같은 국토교통부 실거래</strong>를 묶는 방식만 다릅니다. 평당가는 전용면적 기준이며 해제된 거래는 제외했습니다.</p>
 </div>`;
     },
 

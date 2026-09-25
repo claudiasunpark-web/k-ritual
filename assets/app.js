@@ -276,31 +276,50 @@ document.querySelectorAll('[data-widget="contribution-calculator"]').forEach((fo
   recalc();
 });
 
-/* ── 단지·평형 시세표 필터 ───────────────────────────── */
-document.querySelectorAll('[data-widget="complex-table"], [data-widget="trade-log"]').forEach((root) => {
-  const tbody = root.querySelector('tbody');
+/* ── 실거래 표: 보기 전환 + 필터·정렬 ─────────────────── */
+document.querySelectorAll('[data-widget="trade-table"]').forEach((root) => {
   const empty = root.querySelector('.datatable__empty');
-  if (!tbody) return;
-  const all = [...tbody.querySelectorAll('tr')];
+  const views = [...root.querySelectorAll('.datatable__view')];
+  const buttons = [...root.querySelectorAll('.viewswitch button')];
   const f = (name) => root.querySelector(`[data-filter="${name}"]`);
 
+  // 뷰마다 행 목록과 정렬 상자를 미리 잡아 둡니다.
+  const state = new Map(
+    views.map((v) => [
+      v.dataset.view,
+      {
+        el: v,
+        tbody: v.querySelector('tbody'),
+        rows: [...v.querySelectorAll('tbody tr')],
+        sort: root.querySelector(`[data-filter="sort"][data-view="${v.dataset.view}"]`),
+      },
+    ]),
+  );
+  let current = views.find((v) => !v.hidden)?.dataset.view ?? views[0]?.dataset.view;
+
   const apply = () => {
+    const view = state.get(current);
+    if (!view?.tbody) return;
     const zone = f('zone')?.value ?? '';
     const q = (f('q')?.value ?? '').trim().toLowerCase();
-    const [key, dir] = (f('sort')?.value ?? 'perPyeong-desc').split('-');
-    const attr = { perPyeong: 'perpyeong', amount: 'amount', pyeongNum: 'pyeongnum', date: 'date' }[key];
+    const [key, dir] = (view.sort?.value ?? 'date-desc').split('-');
+    const attr = {
+      perPyeong: 'perpyeong',
+      amount: 'amount',
+      pyeongNum: 'pyeongnum',
+      count: 'count',
+      date: 'date',
+    }[key];
 
     let visible = 0;
-    for (const tr of all) {
-      const okZone = !zone || tr.dataset.zone === zone;
-      const okQ = !q || tr.dataset.search.toLowerCase().includes(q);
-      const show = okZone && okQ;
+    for (const tr of view.rows) {
+      const show = (!zone || tr.dataset.zone === zone) && (!q || tr.dataset.search.toLowerCase().includes(q));
       tr.hidden = !show;
       if (show) visible += 1;
     }
     if (empty) empty.hidden = visible > 0;
 
-    const sorted = [...all].sort((a, b) => {
+    const sorted = [...view.rows].sort((a, b) => {
       // 계약일은 문자열 비교(YYYY-MM-DD 는 사전순 = 날짜순), 나머지는 수치 비교
       if (attr === 'date') {
         const av = a.dataset.date || '';
@@ -315,12 +334,25 @@ document.querySelectorAll('[data-widget="complex-table"], [data-widget="trade-lo
       const bv = Number(b.dataset[attr]) || 0;
       return dir === 'asc' ? av - bv : bv - av;
     });
-    for (const tr of sorted) tbody.appendChild(tr);
+    for (const tr of sorted) view.tbody.appendChild(tr);
   };
 
+  const switchTo = (name) => {
+    if (!state.has(name)) return;
+    current = name;
+    for (const [key, v] of state) v.el.hidden = key !== name;
+    for (const btn of buttons) btn.setAttribute('aria-pressed', String(btn.dataset.view === name));
+    // 정렬 상자도 활성 뷰의 것만 보여 줍니다.
+    root.querySelectorAll('[data-for-view]').forEach((el) => {
+      el.hidden = el.dataset.forView !== name;
+    });
+    apply();
+  };
+
+  buttons.forEach((btn) => btn.addEventListener('click', () => switchTo(btn.dataset.view)));
   root.querySelectorAll('[data-filter]').forEach((el) => {
     el.addEventListener('input', apply);
     el.addEventListener('change', apply);
   });
-  apply();
+  switchTo(current);
 });

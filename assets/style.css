@@ -561,3 +561,15 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 /* 평형대 선택 필터 + 표본 적은 지점 표시 */
 .filters--chart { grid-template-columns: minmax(200px, 300px); margin: 10px 0 0; }
 .tooltip__few { font-size: 11px; color: var(--text-muted); margin-left: 5px; }
+
+/* ── 표 보기 전환 ──────────────────────────────────────── */
+.viewswitch { display: inline-flex; gap: 2px; padding: 3px; margin-bottom: 14px;
+  background: color-mix(in oklab, var(--text-primary) 5%, transparent); border-radius: 999px; }
+.viewswitch button {
+  border: 0; background: transparent; color: var(--text-secondary);
+  font: inherit; font-size: 13.5px; padding: 7px 16px; min-height: 36px;
+  border-radius: 999px; cursor: pointer;
+}
+.viewswitch button[aria-pressed="true"] { background: var(--surface-1); color: var(--text-primary); font-weight: 600; box-shadow: var(--shadow); }
+.viewswitch button:disabled { opacity: 0.4; cursor: not-allowed; }
+.viewswitch button:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
