@@ -9,6 +9,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { fetchMonth, normalize, monthRange } from './lib/molit.mjs';
+import { parseLandShare } from './lib/landshare.mjs';
 
 const ROOT = new URL('..', import.meta.url);
 const read = (p) => JSON.parse(readFileSync(new URL(p, ROOT), 'utf8'));
@@ -175,11 +176,12 @@ const complexes = [...byComplex.values()]
           minAmountManKRW: Math.min(...basis.map((t) => t.amountManKRW)),
           maxAmountManKRW: Math.max(...basis.map((t) => t.amountManKRW)),
           lastTrade: { date: ts[0].date, amountManKRW: ts[0].amountManKRW, floor: ts[0].floor },
-          landSharePyeong: complex.landSharePyeong?.[key] ?? null,
+          // 입력은 '106.38/26830.06' 같은 원문 그대로도 받습니다(landshare.mjs).
+          landSharePyeong: parseLandShare(complex.landSharePyeong?.[key])?.pyeong ?? null,
           // 동별 값이 있으면 {동명: 평} 으로 실어 보냅니다(압구정은 동별로 다릅니다).
           landShareByDong: Object.fromEntries(
             Object.entries(complex.landSharePyeongByDong ?? {})
-              .map(([dong, m]) => [dong, m?.[key]])
+              .map(([dong, m]) => [dong, parseLandShare(m?.[key])?.pyeong])
               .filter(([, v]) => Number.isFinite(v)),
           ),
         };

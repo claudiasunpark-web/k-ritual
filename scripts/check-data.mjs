@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /** 데이터 정합성 점검. node scripts/check-data.mjs */
 import { readFileSync, existsSync } from 'node:fs';
+import { parseLandShare } from './lib/landshare.mjs';
 
 const ROOT = new URL('..', import.meta.url);
 const read = (p) => JSON.parse(readFileSync(new URL(p, ROOT), 'utf8'));
@@ -54,6 +55,22 @@ for (const [short, longs] of shadowed)
     `별칭 '${short}'가 ${[...longs].join(', ')} 에도 포함됩니다 — 긴 별칭 우선 매칭으로 처리됩니다`,
   );
 
+// 대지지분 입력값 검증 — 해석 불가한 값은 조용히 무시되면 안 됩니다.
+let shareCount = 0;
+for (const c of complexes.complexes) {
+  for (const [area, v] of Object.entries(c.landSharePyeong ?? {})) {
+    if (parseLandShare(v) === null) problems.push(`complexes/${c.id}: 대지지분 해석 불가 (전용 ${area}) → ${JSON.stringify(v)}`);
+    else shareCount += 1;
+  }
+  for (const [dong, m] of Object.entries(c.landSharePyeongByDong ?? {})) {
+    for (const [area, v] of Object.entries(m ?? {})) {
+      if (parseLandShare(v) === null)
+        problems.push(`complexes/${c.id}: 대지지분 해석 불가 (${dong} 전용 ${area}) → ${JSON.stringify(v)}`);
+      else shareCount += 1;
+    }
+  }
+}
+
 // 단계 검증
 for (const z of zones.zones) {
   if (z.stageDone == null) problems.push(`zones/${z.id}: stageDone 없음`);
@@ -74,7 +91,11 @@ for (const z of zones.zones) {
   if (!z.constructionCostBillionKRW) gaps.push('총공사비');
   if (gaps.length) missing.push(`  ${z.shortName}: ${gaps.join(', ')}`);
 }
-const noShare = complexes.complexes.filter((c) => Object.keys(c.landSharePyeong ?? {}).length === 0);
+const noShare = complexes.complexes.filter(
+  (c) =>
+    Object.keys(c.landSharePyeong ?? {}).length === 0 &&
+    Object.keys(c.landSharePyeongByDong ?? {}).length === 0,
+);
 
 // 시세 데이터
 const tradePath = new URL('data/trades/apgujeong.json', ROOT);
@@ -99,5 +120,10 @@ if (notes.length) {
   for (const n of [...new Set(notes)]) console.log(`  · ${n}`);
 }
 if (missing.length) console.log(`\n구역별 미확인 항목:\n${missing.join('\n')}`);
-console.log(`\n대지지분 미입력 단지 ${noShare.length}/${complexes.complexes.length}개 — 채우면 '지분당 단가'가 활성화됩니다`);
+console.log(
+  `\n대지지분: ${shareCount}개 값 입력됨 · 미입력 단지 ${noShare.length}/${complexes.complexes.length}개`,
+);
+console.log(
+  "  입력 형식은 '106.38/26830.06'(씨:리얼 대지권지분비율), '106.38㎡', '32.18평' 모두 가능합니다.",
+);
 process.exit(problems.length ? 1 : 0);
