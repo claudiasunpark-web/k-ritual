@@ -77,7 +77,7 @@ jobs:
       - name: OSM 지형 수집
         # 강·도로·건물 윤곽은 거의 바뀌지 않으므로 파일이 없을 때만 받습니다.
         # 다시 받고 싶으면 커밋 메시지에 [osm] 을 넣어 주세요.
-        timeout-minutes: 12
+        timeout-minutes: 20
         continue-on-error: true
         id: osm
         run: |

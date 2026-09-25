@@ -8,7 +8,10 @@
 //  - OSM 데이터는 ODbL 입니다. 렌더링한 지도는 'Produced Work' 이므로
 //    출처 표기(© OpenStreetMap 기여자)만 하면 상업적 이용이 가능합니다.
 //
-// 사용: node scripts/fetch-osm.mjs [--bbox s,w,n,e] [--out data/osm/apgujeong.geojson]
+// 한 번에 다 요청하면 모든 Overpass 서버가 504 로 끊습니다(응답이 수십 MB).
+// 그래서 레이어별로 잘게 나눠 요청하고, 건물은 bbox 를 격자로 더 쪼갭니다.
+//
+// 사용: node scripts/fetch-osm.mjs [--bbox s,w,n,e] [--out 경로] [--only 레이어]
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
@@ -19,10 +22,11 @@ const argOf = (flag, dflt) => {
   return i >= 0 && args[i + 1] ? args[i + 1] : dflt;
 };
 
-// 압구정동 일대. 북쪽은 한강 북안까지(강을 띠로 보여주기 위해),
-// 남쪽은 압구정로 아래 도산대로 상권까지 포함합니다.
-const BBOX = argOf('--bbox', '37.5185,127.0080,37.5450,127.0570');
+// 압구정동 일대. 북쪽은 한강이 띠로 보이는 높이까지,
+// 남쪽은 압구정로 아래 도산대로 상권까지.
+const BBOX = argOf('--bbox', '37.5190,127.0120,37.5430,127.0530');
 const OUT = argOf('--out', 'data/osm/apgujeong.geojson');
+const ONLY = argOf('--only', '');
 
 const ENDPOINTS = [
   'https://overpass-api.de/api/interpreter',
@@ -31,28 +35,81 @@ const ENDPOINTS = [
   'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
 ];
 
-const QUERY = `[out:json][timeout:240];
-(
-  way["natural"="water"](${BBOX});
-  relation["natural"="water"](${BBOX});
-  way["waterway"~"^(riverbank|river|stream|canal)$"](${BBOX});
-  way["highway"~"^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|motorway_link|trunk_link|primary_link|secondary_link|footway|pedestrian)$"](${BBOX});
-  way["railway"~"^(subway|rail)$"](${BBOX});
-  node["railway"="station"](${BBOX});
-  way["building"](${BBOX});
-  relation["building"](${BBOX});
-  way["landuse"](${BBOX});
-  way["leisure"~"^(park|garden|pitch|sports_centre)$"](${BBOX});
-  way["amenity"~"^(school|university|hospital|kindergarten)$"](${BBOX});
-  node["amenity"~"^(school|hospital)$"](${BBOX});
-  way["shop"="department_store"](${BBOX});
-  node["shop"="department_store"](${BBOX});
-  way["bridge"="yes"](${BBOX});
-  node["place"~"^(suburb|quarter|neighbourhood)$"](${BBOX});
-);
-out geom;`;
+const [S, W, N, E] = BBOX.split(',').map(Number);
+const bx = (s, w, n, e) => `${s},${w},${n},${e}`;
 
-async function ask(endpoint) {
+/** bbox 를 cols×rows 격자로 쪼갭니다. 건물처럼 무거운 레이어에 씁니다. */
+function tiles(cols, rows) {
+  const out = [];
+  for (let r = 0; r < rows; r += 1) {
+    for (let c = 0; c < cols; c += 1) {
+      out.push(bx(
+        S + ((N - S) * r) / rows, W + ((E - W) * c) / cols,
+        S + ((N - S) * (r + 1)) / rows, W + ((E - W) * (c + 1)) / cols,
+      ));
+    }
+  }
+  return out;
+}
+
+// ── 레이어 정의 ─────────────────────────────────────────────
+// 각 레이어는 여러 요청으로 나뉠 수 있습니다. required=true 인 레이어가
+// 하나라도 비면 지도를 그릴 수 없으므로 실패로 처리합니다.
+const LAYERS = [
+  {
+    id: 'water',
+    required: true,
+    parts: [BBOX].map((b) => `
+      way["natural"="water"](${b});
+      relation["natural"="water"](${b});
+      way["waterway"~"^(riverbank|river|stream|canal)$"](${b});`),
+  },
+  {
+    id: 'roads-major',
+    required: true,
+    parts: [BBOX].map((b) => `
+      way["highway"~"^(motorway|trunk|primary|secondary|tertiary|motorway_link|trunk_link|primary_link|secondary_link)$"](${b});`),
+  },
+  {
+    id: 'roads-minor',
+    required: false,
+    parts: tiles(2, 2).map((b) => `
+      way["highway"~"^(residential|unclassified|living_street|service)$"](${b});`),
+  },
+  {
+    id: 'rail',
+    required: false,
+    parts: [BBOX].map((b) => `
+      way["railway"~"^(subway|rail)$"](${b});
+      node["railway"="station"](${b});`),
+  },
+  {
+    id: 'plots',
+    required: false,
+    parts: [BBOX].map((b) => `
+      way["landuse"](${b});
+      way["leisure"~"^(park|garden|pitch|sports_centre)$"](${b});
+      way["amenity"~"^(school|university|hospital|kindergarten)$"](${b});
+      way["shop"="department_store"](${b});
+      node["shop"="department_store"](${b});
+      node["amenity"~"^(school|hospital)$"](${b});
+      node["place"~"^(suburb|quarter|neighbourhood)$"](${b});`),
+  },
+  {
+    // 가장 무거운 레이어 — 2×3 격자로 쪼갭니다.
+    id: 'buildings',
+    required: true,
+    parts: tiles(2, 3).map((b) => `
+      way["building"](${b});
+      relation["building"](${b});`),
+  },
+];
+
+// ── 요청 ────────────────────────────────────────────────────
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let endpointIdx = 0;
+
+async function ask(endpoint, body) {
   const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -60,42 +117,54 @@ async function ask(endpoint) {
       // Overpass 이용정책상 식별 가능한 User-Agent 를 요구합니다.
       'User-Agent': 'apgujeong-ebook/1.0 (static site build; contact via repository)',
     },
-    body: new URLSearchParams({ data: QUERY }),
-    signal: AbortSignal.timeout(300000),
+    body: new URLSearchParams({ data: body }),
+    signal: AbortSignal.timeout(120000),
   });
+  const text = await res.text();
   if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-  return res.json();
+  try {
+    return JSON.parse(text);
+  } catch {
+    // Overpass 는 쿼리 오류를 JSON 이 아닌 HTML 로 돌려줍니다.
+    const hint = text.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 240);
+    throw new Error(`JSON 아님: ${hint}`);
+  }
 }
 
-async function fetchOverpass() {
+/** 한 조각을 여러 서버에 돌려가며 시도합니다. */
+async function fetchPart(label, statements) {
+  // timeout 을 낮게 잡아야 Overpass 가 스스로 포기하고 오류를 돌려줍니다.
+  // 높게 두면 앞단 프록시가 먼저 504 로 끊어 원인을 알 수 없습니다.
+  const query = `[out:json][timeout:90];\n(${statements}\n);\nout geom;`;
   const errors = [];
-  for (const endpoint of ENDPOINTS) {
+  for (let i = 0; i < ENDPOINTS.length * 2; i += 1) {
+    const endpoint = ENDPOINTS[endpointIdx % ENDPOINTS.length];
+    endpointIdx += 1;
     const host = new URL(endpoint).host;
-    for (let attempt = 1; attempt <= 2; attempt += 1) {
-      try {
-        process.stdout.write(`  ${host} 요청 (${attempt}/2) ... `);
-        const json = await ask(endpoint);
-        console.log(`받음 (요소 ${json.elements?.length ?? 0}개)`);
-        return json;
-      } catch (err) {
-        console.log(`실패: ${err.message}`);
-        errors.push(`${host}: ${err.message}`);
-        if (attempt < 2) await new Promise((r) => setTimeout(r, 5000));
-      }
+    try {
+      process.stdout.write(`  ${label} ← ${host} ... `);
+      const json = await ask(endpoint, query);
+      const n = json.elements?.length ?? 0;
+      console.log(`${n}개`);
+      return json.elements ?? [];
+    } catch (err) {
+      console.log(`실패 (${err.message})`);
+      errors.push(`${host}: ${err.message}`);
+      await sleep(3000);
     }
   }
-  throw new Error(`모든 Overpass 서버 실패\n  ${errors.join('\n  ')}`);
+  throw new Error(`${label} 실패\n    ${errors.join('\n    ')}`);
 }
 
-// ── 좌표 정리 ───────────────────────────────────────────────
+// ── 좌표·태그 정리 ──────────────────────────────────────────
 // 소수 5자리 = 약 1.1m. 이 축척의 지도에는 충분하고 파일이 1/3 로 줄어듭니다.
 const r5 = (n) => Math.round(n * 1e5) / 1e5;
 
 // 지도에 쓰는 태그만 남깁니다. 원본 태그를 전부 들고 있으면 파일이 수 배로 커집니다.
 const KEEP_TAGS = [
-  'name', 'name:ko', 'name:en', 'building', 'building:levels', 'highway', 'railway',
+  'name', 'name:ko', 'building', 'building:levels', 'highway', 'railway',
   'natural', 'waterway', 'landuse', 'leisure', 'amenity', 'shop', 'bridge',
-  'place', 'tunnel', 'layer', 'ref', 'station', 'operator',
+  'place', 'tunnel', 'layer', 'ref',
 ];
 
 function slimTags(tags = {}) {
@@ -107,8 +176,8 @@ function slimTags(tags = {}) {
 function closed(coords) {
   if (coords.length < 3) return false;
   const [ax, ay] = coords[0];
-  const [bx, by] = coords[coords.length - 1];
-  return ax === bx && ay === by;
+  const [bx2, by] = coords[coords.length - 1];
+  return ax === bx2 && ay === by;
 }
 
 // 면으로 그려야 하는 태그 (닫힌 선이면 폴리곤)
@@ -155,22 +224,47 @@ function toFeature(el) {
 
 // ── 실행 ────────────────────────────────────────────────────
 console.log(`OSM 지형 수집 — bbox ${BBOX}`);
-const raw = await fetchOverpass();
-
+const seen = new Set(); // 격자 경계에 걸친 요소가 중복으로 들어옵니다.
 const features = [];
-for (const el of raw.elements ?? []) {
-  const f = toFeature(el);
-  if (f) features.push(f);
+const missing = [];
+const counts = {};
+
+for (const layer of LAYERS) {
+  if (ONLY && ONLY !== layer.id) continue;
+  let got = 0;
+  try {
+    for (let i = 0; i < layer.parts.length; i += 1) {
+      const label = layer.parts.length > 1 ? `${layer.id} ${i + 1}/${layer.parts.length}` : layer.id;
+      const elements = await fetchPart(label, layer.parts[i]);
+      for (const el of elements) {
+        const key = `${el.type}${el.id}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const f = toFeature(el);
+        if (f) { features.push(f); got += 1; }
+      }
+      await sleep(1500); // 서버에 예의
+    }
+  } catch (err) {
+    console.log(`  ! ${err.message}`);
+    missing.push(layer.id);
+    if (layer.required) {
+      console.error(`\n필수 레이어 '${layer.id}' 를 못 받았습니다. 지도를 그릴 수 없어 중단합니다.`);
+      process.exit(1);
+    }
+  }
+  counts[layer.id] = got;
 }
 
-const [s, w, n, e] = BBOX.split(',').map(Number);
 const geojson = {
   type: 'FeatureCollection',
   // 출처 표기 의무를 데이터 자체에 박아 둡니다.
   attribution: '© OpenStreetMap 기여자, ODbL',
   license: 'https://www.openstreetmap.org/copyright',
   fetchedAt: new Date().toISOString().slice(0, 10),
-  bbox: [w, s, e, n],
+  bbox: [W, S, E, N],
+  layers: counts,
+  missingLayers: missing,
   features,
 };
 
@@ -183,20 +277,24 @@ const tally = (fn) => {
   for (const f of features) { const k = fn(f); if (k) m.set(k, (m.get(k) ?? 0) + 1); }
   return [...m].sort((a, b) => b[1] - a[1]);
 };
+const show = (name, fn, n = 12) =>
+  console.log(`${name}:`, tally(fn).slice(0, n).map(([k, v]) => `${k}=${v}`).join(' ') || '없음');
 
 const kb = Math.round(JSON.stringify(geojson).length / 1024);
-console.log(`\n피처 ${features.length}개 → ${OUT} (${kb}KB)`);
-console.log('\nhighway:', tally((f) => f.properties.highway).slice(0, 14).map(([k, v]) => `${k}=${v}`).join(' '));
-console.log('building:', tally((f) => f.properties.building).slice(0, 10).map(([k, v]) => `${k}=${v}`).join(' '));
-console.log('landuse:', tally((f) => f.properties.landuse).slice(0, 10).map(([k, v]) => `${k}=${v}`).join(' '));
-console.log('leisure/amenity/shop:', tally((f) => f.properties.leisure || f.properties.amenity || f.properties.shop).slice(0, 12).map(([k, v]) => `${k}=${v}`).join(' '));
-console.log('natural/waterway:', tally((f) => f.properties.natural || f.properties.waterway).map(([k, v]) => `${k}=${v}`).join(' '));
-console.log('railway:', tally((f) => f.properties.railway).map(([k, v]) => `${k}=${v}`).join(' '));
+console.log(`\n레이어별 피처:`, Object.entries(counts).map(([k, v]) => `${k}=${v}`).join(' '));
+if (missing.length) console.log(`못 받은 레이어: ${missing.join(', ')}`);
+console.log(`합계 ${features.length}개 → ${OUT} (${kb}KB)`);
+
+show('highway', (f) => f.properties.highway, 14);
+show('building', (f) => f.properties.building, 10);
+show('landuse', (f) => f.properties.landuse, 10);
+show('leisure/amenity/shop', (f) => f.properties.leisure || f.properties.amenity || f.properties.shop);
+show('natural/waterway', (f) => f.properties.natural || f.properties.waterway);
+show('railway', (f) => f.properties.railway);
 
 // 단지 이름이 붙은 건물·구획 — 구역 매칭에 쓸 후보를 그대로 보여 줍니다.
-const named = features
-  .filter((f) => f.properties.name && /아파트|apt|현대|한양|미성|신현대|구현대|한강|압구정/i.test(f.properties.name))
-  .map((f) => f.properties.name);
-const uniq = [...new Set(named)].sort();
-console.log(`\n단지로 보이는 이름 ${uniq.length}종:`);
-console.log(uniq.slice(0, 120).map((s) => `  ${s}`).join('\n'));
+const uniq = [...new Set(features
+  .filter((f) => f.properties.name && /아파트|빌라|현대|한양|미성|압구정|갤러리아|역$|초등|중학|고등/.test(f.properties.name))
+  .map((f) => f.properties.name))].sort();
+console.log(`\n이름 있는 후보 ${uniq.length}종:`);
+console.log(uniq.map((s) => `  ${s}`).join('\n'));
