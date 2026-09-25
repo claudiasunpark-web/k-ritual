@@ -272,7 +272,12 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   push(`<rect width="${W}" height="${H}" fill="var(--map-land)"/>`);
 
   // 한강 — 물가 선 두 가닥을 이어 면으로 만듭니다.
-  const bankLines = water.filter((f) => f.properties.bank === 'yes').flatMap((f) => linesOf(f));
+  // 한강 물가 선만 씁니다. 중랑천 등 다른 물길의 물가가 섞이면 남안·북안
+  // 판정이 깨져 엉뚱한 면이 그려집니다.
+  const bankLines = water
+    .filter((f) => f.properties.bank === 'yes' && f.properties.name === '한강')
+    .flatMap((f) => linesOf(f))
+    .filter((l) => l.length >= 2);
   const centerline = water
     .find((f) => f.properties.waterway === 'river' && f.properties.name === '한강')
     ?.geometry?.coordinates;
@@ -382,7 +387,8 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   const MARGIN = 26;
   const labelOnLine = (re, text, cls, opts = {}) => {
     const cand = inView.filter((f) => f.properties.name && re.test(f.properties.name)
-      && (!opts.bridgeOnly || f.properties.bridge === 'yes'));
+      && (!opts.bridgeOnly || f.properties.bridge === 'yes')
+      && (!opts.where || opts.where(f)));
     if (!cand.length) return;
 
     // 화면 안에 있는 꼭짓점만 씁니다. 화면 밖 선의 이름표를 테두리로 끌어오면
@@ -417,7 +423,10 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
       + `${escapeHtml(text)}</text>`);
   };
 
-  labelOnLine(/^한강$/, '한 강', 'geomap__water-label', { dy: -6 });
+  // 물가 선도 이름이 '한강'입니다. 그냥 두면 이름표가 강 한가운데가 아니라
+  // 물가에, 그것도 뭍 쪽에 찍힙니다. 중심선에만 붙입니다.
+  labelOnLine(/^한강$/, '한 강', 'geomap__water-label',
+    { dy: -6, where: (f) => f.properties.waterway === 'river' });
   labelOnLine(/올림픽대로/, '올림픽대로', 'geomap__road-label');
   labelOnLine(/^압구정로$/, '압구정로', 'geomap__road-label');
   labelOnLine(/^도산대로$/, '도산대로', 'geomap__road-label');

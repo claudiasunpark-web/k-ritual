@@ -164,7 +164,14 @@ export async function fetchOsmApi(bbox, { cols = 6, rows = 6, log = console.log 
         if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
         const xml = await res.text();
         bodies.push(xml);
-        parseOsmXml(xml, ctx, 'nodes');
+        // 1차는 노드 표를 채우는 것이 목적이지만, 태그가 붙은 노드(지하철역 등)는
+        // 그 자체로 피처입니다. 여기서 안 담으면 통째로 사라집니다.
+        for (const el of parseOsmXml(xml, ctx, 'nodes')) {
+          const key = `${el.type}${el.id}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          all.push(el);
+        }
         log(`  osm-api ${i + 1}/${parts.length} ... ${Math.round(xml.length / 1024)}KB`);
         ok = true;
       } catch (err) {
