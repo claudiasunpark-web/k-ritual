@@ -107,7 +107,9 @@ jobs:
             echo "지형 데이터 변동 없음 — 커밋하지 않습니다."
             exit 0
           fi
-          COUNT=$(node -e "console.log(require('./data/osm/apgujeong.geojson').features.length)")
+          # require() 는 확장자로 형식을 정합니다. .geojson 은 JSON 으로 보지 않고
+          # 자바스크립트로 읽으려다 실패하므로 직접 읽어서 파싱합니다.
+          COUNT=$(node -e "const fs=require('node:fs');console.log(JSON.parse(fs.readFileSync('./data/osm/apgujeong.geojson','utf8')).features.length)")
           git commit -m "OSM 지형 갱신: 피처 ${COUNT}개 [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
