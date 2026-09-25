@@ -4,8 +4,9 @@
  *   node scripts/land-share-todo.mjs            # 화면에 요약 출력
  *   node scripts/land-share-todo.mjs --csv      # 엑셀용 CSV 파일 생성
  *
- * 대지지분은 분양면적 비율로 배분되므로 같은 단지·같은 평형이면 동이 달라도 같습니다.
- * 따라서 '동 개수'가 아니라 '단지 × 평형 조합 개수'만큼만 찾으면 됩니다.
+ * 압구정은 같은 단지·같은 평형이라도 동에 따라 대지지분이 다릅니다.
+ * 따라서 조사 단위는 '단지 × 동 × 평형'입니다. 실거래에 동이 나타난 경우
+ * 그 조합을 펼쳐 보여 주고, 동이 비공개인 단지는 평형 단위로만 셉니다.
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
@@ -33,35 +34,45 @@ if (!trades) {
 const rows = [];
 for (const c of trades.complexes) {
   const meta = complexesDoc.complexes.find((x) => x.id === c.id);
+  // 실거래에 나타난 동 목록. 없으면 동 미상(빈 문자열) 한 줄로 셉니다.
+  const dongs = (c.dongs ?? []).length ? c.dongs : [''];
   for (const s of c.sizes) {
-    rows.push({
-      zone: zoneName.get(c.zone) ?? c.zone,
-      zoneId: c.zone,
-      complexId: c.id,
-      complex: c.label,
-      pyeong: s.pyeongLabel,
-      area: s.area,
-      tradeCount: s.count,
-      filled: meta?.landSharePyeong?.[s.area.toFixed(2)] ?? null,
-    });
+    const key = s.area.toFixed(2);
+    for (const dong of dongs) {
+      const byDong = dong ? meta?.landSharePyeongByDong?.[dong]?.[key] : undefined;
+      const common = meta?.landSharePyeong?.[key];
+      rows.push({
+        zone: zoneName.get(c.zone) ?? c.zone,
+        zoneId: c.zone,
+        complexId: c.id,
+        complex: c.label,
+        dong,
+        pyeong: s.pyeongLabel,
+        area: s.area,
+        tradeCount: s.count,
+        filled: byDong ?? common ?? null,
+        filledBy: Number.isFinite(byDong) ? '동별' : Number.isFinite(common) ? '단지공통' : null,
+      });
+    }
   }
 }
-rows.sort((a, b) =>
-  a.zoneId === b.zoneId
-    ? a.complex === b.complex
-      ? a.area - b.area
-      : a.complex.localeCompare(b.complex, 'ko')
-    : a.zoneId.localeCompare(b.zoneId),
-);
+rows.sort((a, b) => {
+  if (a.zoneId !== b.zoneId) return a.zoneId.localeCompare(b.zoneId);
+  if (a.complex !== b.complex) return a.complex.localeCompare(b.complex, 'ko');
+  if (a.dong !== b.dong) return a.dong.localeCompare(b.dong, 'ko', { numeric: true });
+  return a.area - b.area;
+});
 
 const todo = rows.filter((r) => r.filled === null);
 const done = rows.length - todo.length;
 
 if (process.argv.includes('--csv')) {
   // 엑셀에서 바로 열리도록 BOM을 붙입니다.
-  const header = '구역,단지,평형,전용면적(㎡),실거래건수,대지지분(평) ← 여기에 입력';
+  const header = '구역,단지,동,평형,전용면적(㎡),실거래건수,대지지분(평) ← 여기에 입력';
   const body = rows
-    .map((r) => [r.zone, r.complex, r.pyeong, r.area, r.tradeCount, r.filled ?? ''].join(','))
+    .map((r) =>
+      [r.zone, r.complex, r.dong || '(동 미상)', r.pyeong, r.area, r.tradeCount, r.filled ?? ''].join(','),
+    )
     .join('\n');
   const out = new URL('대지지분-입력표.csv', ROOT);
   writeFileSync(out, `﻿${header}\n${body}\n`);
@@ -70,10 +81,11 @@ if (process.argv.includes('--csv')) {
 } else {
   const byZone = new Map();
   for (const r of rows) {
-    if (!byZone.has(r.zone)) byZone.set(r.zone, { 단지: new Set(), 평형조합: 0, 남음: 0 });
+    if (!byZone.has(r.zone)) byZone.set(r.zone, { 단지: new Set(), 동: new Set(), 조합: 0, 남음: 0 });
     const e = byZone.get(r.zone);
     e.단지.add(r.complex);
-    e.평형조합 += 1;
+    if (r.dong) e.동.add(`${r.complex}/${r.dong}`);
+    e.조합 += 1;
     if (r.filled === null) e.남음 += 1;
   }
 
@@ -82,9 +94,19 @@ if (process.argv.includes('--csv')) {
   );
   console.table(
     Object.fromEntries(
-      [...byZone].map(([k, v]) => [k, { 단지수: v.단지.size, '찾아야 할 개수': v.평형조합, 미입력: v.남음 }]),
+      [...byZone].map(([k, v]) => [
+        k,
+        { 단지수: v.단지.size, '확인된 동': v.동.size, '찾아야 할 조합': v.조합, 미입력: v.남음 },
+      ]),
     ),
   );
+  console.log(
+    '※ 압구정은 동별로 대지지분이 다릅니다. 조사 단위는 단지 × 동 × 평형입니다.',
+  );
+  console.log(
+    '  실거래에 동이 나타난 것만 펼쳤습니다. 국토부가 동을 비공개한 거래는 "(동 미상)"으로 한 줄만 나옵니다.',
+  );
+  console.log('  실제 동 수는 이보다 많습니다 — 거래가 없던 동은 여기 나타나지 않습니다.\n');
   console.log(`전체: ${rows.length}개 중 ${done}개 입력됨, ${todo.length}개 남음\n`);
 
   // 거래가 많은 평형 = 먼저 채울 가치가 큰 평형
@@ -93,7 +115,7 @@ if (process.argv.includes('--csv')) {
     console.log('먼저 채우면 효과가 큰 평형 (실거래가 많은 순 상위 15개):');
     for (const r of priority) {
       console.log(
-        `  ${r.zone}  ${r.complex.padEnd(16, ' ')} ${r.pyeong.padStart(6, ' ')}  전용 ${String(r.area).padStart(7, ' ')}㎡  거래 ${String(r.tradeCount).padStart(3, ' ')}건`,
+        `  ${r.zone}  ${r.complex.padEnd(16, ' ')} ${(r.dong || '동미상').padStart(6, ' ')}동  ${r.pyeong.padStart(6, ' ')}  전용 ${String(r.area).padStart(7, ' ')}㎡  거래 ${String(r.tradeCount).padStart(3, ' ')}건`,
       );
     }
   }

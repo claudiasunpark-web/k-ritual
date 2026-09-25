@@ -68,6 +68,7 @@ for (const c of complexesDoc.complexes) {
       maxAmountManKRW: Math.round(amount * 1.09),
       lastTrade: { date: '2026-08-15', amountManKRW: amount, floor: 3 + Math.floor(rand() * 12) },
       landSharePyeong: c.landSharePyeong?.[area.toFixed(2)] ?? null,
+      landShareByDong: {},
     });
     // 평형마다 몇 건씩 만들어 개별 거래 표가 비지 않게 합니다.
     for (let k = 0; k < 2 + Math.floor(rand() * 3); k += 1) {
@@ -76,6 +77,7 @@ for (const c of complexesDoc.complexes) {
       const amt = Math.round((amount * jitter) / 1000) * 1000;
       recentTrades.push({
         date: `2026-${String(m > 0 ? m : 12 + m).padStart(2, '0')}-${String(3 + Math.floor(rand() * 25)).padStart(2, '0')}`,
+        dong: rand() > 0.4 ? `${101 + Math.floor(rand() * 12)}` : null,
         pyeong: Math.round(pyeong),
         area,
         amountManKRW: amt,
@@ -87,6 +89,7 @@ for (const c of complexesDoc.complexes) {
   }
 
   recentTrades.sort((a, b) => (a.date < b.date ? 1 : -1));
+  const dongs = [...new Set(recentTrades.map((t) => t.dong).filter(Boolean))].sort();
   // lastTrade 를 실제로 생성된 최신 거래에서 가져옵니다(날짜가 전부 같아지지 않게).
   for (const sz of sizes) {
     const newest = recentTrades.find((t) => t.area === sz.area);
@@ -104,6 +107,7 @@ for (const c of complexesDoc.complexes) {
     medianPerPyeongManKRW: med,
     buildYear: 1976 + Math.floor(rand() * 12),
     sizes,
+    dongs,
     recentTrades,
   });
   zoneTrades.get(c.zone)?.push(med);

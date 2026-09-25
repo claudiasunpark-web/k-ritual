@@ -1,6 +1,6 @@
 {
   "asOf": "2026-09-19",
-  "howToFill": "landSharePyeong(대지지분)은 공개 언론 자료로는 신뢰도가 낮아 비워두었습니다. 확인 경로: (1) 등기부등본 표제부 '대지권의 표시' — 인터넷등기소 iros.go.kr, 유료이지만 가장 확정적 (2) 일사편리 부동산종합증명서 — kras.go.kr, 무료 (3) 씨:리얼 SEE:REAL — seereal.lh.or.kr, 무료이며 회원가입 불필요 (4) 집합건축물대장 전유부의 '대지권비율' — 정부24, 무료. 부동산공시가격 알리미에는 대지지분이 나오지 않습니다. 키는 전용면적을 소수점 2자리 문자열로, 값은 대지지분 평수로 넣습니다 (예: 전용 196.21㎡ 세대의 대지지분이 59.4평이면 \"196.21\": 59.4). 값을 채우면 사이트의 '지분 대비 가격' 계산과 시세표의 '지분당 단가'가 자동으로 활성화됩니다.",
+  "howToFill": "압구정은 같은 단지·같은 평형이라도 동에 따라 대지지분이 다릅니다. 그래서 값을 두 군데에 넣을 수 있습니다. (1) landSharePyeongByDong: 동별 값. {\"동명\": {\"전용면적\": 대지지분평}} 형태이며 가장 정확합니다. (2) landSharePyeong: 동 구분 없는 단지 공통 값. {\"전용면적\": 대지지분평} 형태이며, 동별 값이 없을 때만 대신 쓰입니다. 사이트는 동별 값을 먼저 찾고, 없으면 단지 공통 값을 쓰며, 둘 다 없으면 '미입력'으로 둡니다. 확인 경로: (1) 등기부등본 표제부 '대지권의 표시' — 인터넷등기소 iros.go.kr, 유료이지만 가장 확정적이며 호 단위로 정확합니다 (2) 일사편리 부동산종합증명서 — kras.go.kr, 무료 (3) 씨:리얼 SEE:REAL — seereal.lh.or.kr, 무료이며 회원가입 불필요 (4) 집합건축물대장 전유부의 '대지권비율' — 정부24, 무료. 부동산공시가격 알리미에는 대지지분이 나오지 않습니다.",
   "lawdCd": "11680",
   "umdName": "압구정동",
   "complexes": [
@@ -13,7 +13,8 @@
         "미성 1",
         "미성1차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-ms2",
@@ -24,7 +25,8 @@
         "미성 2",
         "미성2차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-sh",
@@ -39,7 +41,8 @@
         "신현대11",
         "신현대12"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd1",
@@ -50,7 +53,8 @@
         "현대1차",
         "구현대1"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd2",
@@ -61,7 +65,8 @@
         "현대2차",
         "구현대2"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd3",
@@ -72,7 +77,8 @@
         "현대3차",
         "구현대3"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd4",
@@ -83,7 +89,8 @@
         "현대4차",
         "구현대4"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd5",
@@ -94,7 +101,8 @@
         "현대5차",
         "구현대5"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd6",
@@ -106,7 +114,8 @@
         "현대6,7",
         "현대(6,7차)"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd7",
@@ -116,7 +125,8 @@
         "현대7",
         "현대7차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd10",
@@ -128,7 +138,8 @@
         "현대10,13,14",
         "현대(10,13,14차)"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd13",
@@ -138,7 +149,8 @@
         "현대13",
         "현대13차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd14",
@@ -148,7 +160,8 @@
         "현대14",
         "현대14차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-drv",
@@ -158,7 +171,8 @@
         "대림빌라트",
         "대림빌라"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hd8",
@@ -168,7 +182,8 @@
         "현대8",
         "현대8차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy3",
@@ -178,7 +193,8 @@
         "한양3",
         "한양3차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy4",
@@ -188,7 +204,8 @@
         "한양4",
         "한양4차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy6",
@@ -198,7 +215,8 @@
         "한양6",
         "한양6차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy1",
@@ -208,7 +226,8 @@
         "한양1",
         "한양1차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy2",
@@ -218,7 +237,8 @@
         "한양2",
         "한양2차"
       ],
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy5",
@@ -229,7 +249,8 @@
         "한양5차"
       ],
       "units": 343,
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy7",
@@ -240,7 +261,8 @@
         "한양7차"
       ],
       "units": 239,
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     },
     {
       "id": "c-hy8",
@@ -251,7 +273,8 @@
         "한양8차"
       ],
       "units": 90,
-      "landSharePyeong": {}
+      "landSharePyeong": {},
+      "landSharePyeongByDong": {}
     }
   ]
 }

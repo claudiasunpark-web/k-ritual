@@ -38,6 +38,7 @@ function pick(row, candidates) {
 const FIELD = {
   aptName: ['aptNm', 'aptName', '아파트'],
   aptSeq: ['aptSeq', '단지일련번호'],
+  aptDong: ['aptDong', '아파트동명', '동'],
   area: ['excluUseAr', 'excluUseAr1', '전용면적'],
   amount: ['dealAmount', '거래금액'],
   year: ['dealYear', '년'],
@@ -73,6 +74,8 @@ export function normalize(row) {
   return {
     aptName: name,
     aptSeq: pick(row, FIELD.aptSeq),
+    // 동명은 비공개인 건이 많아 빈 값일 수 있습니다.
+    dong: (pick(row, FIELD.aptDong) || '').trim() || null,
     umd: pick(row, FIELD.umd),
     jibun: pick(row, FIELD.jibun),
     area: Math.round(area * 100) / 100,

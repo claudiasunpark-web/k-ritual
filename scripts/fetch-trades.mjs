@@ -176,6 +176,12 @@ const complexes = [...byComplex.values()]
           maxAmountManKRW: Math.max(...basis.map((t) => t.amountManKRW)),
           lastTrade: { date: ts[0].date, amountManKRW: ts[0].amountManKRW, floor: ts[0].floor },
           landSharePyeong: complex.landSharePyeong?.[key] ?? null,
+          // 동별 값이 있으면 {동명: 평} 으로 실어 보냅니다(압구정은 동별로 다릅니다).
+          landShareByDong: Object.fromEntries(
+            Object.entries(complex.landSharePyeongByDong ?? {})
+              .map(([dong, m]) => [dong, m?.[key]])
+              .filter(([, v]) => Number.isFinite(v)),
+          ),
         };
       })
       .sort((a, b) => a.area - b.area);
@@ -196,6 +202,7 @@ const complexes = [...byComplex.values()]
       // 최근 거래를 그대로 보관합니다(단지별 최대 30건).
       recentTrades: trades.slice(0, 30).map((t) => ({
         date: t.date,
+        dong: t.dong,
         pyeong: Math.round(t.pyeong),
         area: t.area,
         amountManKRW: t.amountManKRW,
@@ -203,6 +210,8 @@ const complexes = [...byComplex.values()]
         floor: t.floor,
         dealType: t.dealType,
       })),
+      // 압구정은 동별로 대지지분이 다르므로, 거래에 나타난 동 목록을 남깁니다.
+      dongs: [...new Set(trades.map((t) => t.dong).filter(Boolean))].sort(),
     };
   })
   .sort((a, b) => (a.zone === b.zone ? a.label.localeCompare(b.label, 'ko') : a.zone.localeCompare(b.zone)));
@@ -262,8 +271,10 @@ const out = {
 mkdirSync(new URL('data/trades/', ROOT), { recursive: true });
 writeFileSync(new URL('data/trades/apgujeong.json', ROOT), `${JSON.stringify(out, null, 2)}\n`);
 
+const withDong = all.filter((t) => t.dong).length;
 console.log(`
 완료: 압구정동 ${all.length}건 → ${complexes.length}개 단지 집계`);
+console.log(`     동 정보가 있는 거래 ${withDong}건 (${Math.round((withDong / all.length) * 100)}%)`);
 console.log(`     data/trades/apgujeong.json 갱신`);
 if (out.unmapped.length) {
   console.log(`

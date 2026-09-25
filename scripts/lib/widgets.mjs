@@ -5,6 +5,26 @@ import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
 
+/**
+ * 지분당 단가 칸.
+ * 압구정은 같은 평형이라도 동에 따라 대지지분이 달라, 동별 값이 있으면
+ * 단일 숫자 대신 범위를 보여 주고 단일 값으로 뭉뚱그리지 않습니다.
+ */
+function shareCell(r) {
+  const byDong = Object.entries(r.landShareByDong ?? {});
+  if (byDong.length && r.amount) {
+    const unit = byDong.map(([, share]) => Math.round(r.amount / share));
+    const lo = Math.min(...unit);
+    const hi = Math.max(...unit);
+    const label = lo === hi ? `${comma(lo)}만` : `${comma(lo)}~${comma(hi)}만`;
+    return `<span title="동 ${byDong.length}개 기준">${label}</span><br><span class="muted" style="font-size:11px">동별 ${byDong.length}개</span>`;
+  }
+  if (r.landShare && r.amount) {
+    return `${comma(Math.round(r.amount / r.landShare))}만<br><span class="muted" style="font-size:11px">단지 공통값</span>`;
+  }
+  return '<span class="muted" title="data/complexes.json 의 landSharePyeongByDong(동별) 또는 landSharePyeong(단지 공통)을 채우면 계산됩니다">미입력</span>';
+}
+
 /** 202609 → 2026.09 */
 const ymDot = (ym) => (ym && String(ym).length === 6 ? `${String(ym).slice(0, 4)}.${String(ym).slice(4)}` : (ym ?? '—'));
 
@@ -181,6 +201,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
           count: s.count,
           last: s.lastTrade?.date ?? '',
           landShare: s.landSharePyeong,
+          landShareByDong: s.landShareByDong ?? {},
         })),
       );
       const options = zones.zones
@@ -222,11 +243,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         <td style="text-align:right">${comma(r.perPyeong)}</td>
         <td style="text-align:right">${comma(r.count)}</td>
         <td>${escapeHtml(r.last)}</td>
-        <td style="text-align:right">${
-          r.landShare && r.amount
-            ? `${comma(Math.round(r.amount / r.landShare))}만`
-            : '<span class="muted" title="data/complexes.json 의 landSharePyeong 을 채우면 계산됩니다">미입력</span>'
-        }</td>
+        <td style="text-align:right">${shareCell(r)}</td>
       </tr>`,
         )
         .join('')}</tbody>
@@ -275,19 +292,20 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   <div class="table-wrap">
     <table class="datatable__table">
       <thead><tr>
-        <th>계약일</th><th>구역</th><th>단지</th><th>평형</th>
+        <th>계약일</th><th>구역</th><th>단지</th><th>동</th><th>평형</th>
         <th style="text-align:right">전용(㎡)</th><th style="text-align:right">층</th>
         <th style="text-align:right">거래금액</th><th style="text-align:right">평당가(만원)</th><th>거래유형</th>
       </tr></thead>
       <tbody>${rows
         .map(
           (r) => `<tr data-zone="${r.zone}"
-        data-search="${escapeHtml(`${zoneLabel(r.zone)} ${r.complex} ${r.pyeong}평 ${r.date}`)}"
+        data-search="${escapeHtml(`${zoneLabel(r.zone)} ${r.complex} ${r.dong ?? ''} ${r.pyeong}평 ${r.date}`)}"
         data-date="${escapeHtml(r.date)}" data-amount="${r.amountManKRW ?? 0}"
         data-perpyeong="${r.perPyeongManKRW ?? 0}" data-pyeongnum="${r.pyeong ?? 0}">
         <td>${escapeHtml(r.date)}</td>
         <td>${escapeHtml(zoneLabel(r.zone))}</td>
         <td>${escapeHtml(r.complex)}</td>
+        <td>${r.dong ? escapeHtml(r.dong) : '<span class="muted">비공개</span>'}</td>
         <td>${r.pyeong}평</td>
         <td style="text-align:right">${r.area}</td>
         <td style="text-align:right">${r.floor ?? '—'}</td>
@@ -300,7 +318,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     </table>
   </div>
   <p class="datatable__empty" hidden>조건에 맞는 거래가 없습니다.</p>
-  <p class="chart__unit">단지별 최근 거래를 최대 30건까지 그대로 보여 줍니다. 평당가는 전용면적 기준이며, 해제된 거래는 제외했습니다. 같은 단지에서도 <strong>평형·층에 따라 평당가가 크게 다릅니다</strong> — 집계값이 아니라 이 표로 확인하세요.</p>
+  <p class="chart__unit">단지별 최근 거래를 최대 30건까지 그대로 보여 줍니다. 평당가는 전용면적 기준이며, 해제된 거래는 제외했습니다. 같은 단지에서도 <strong>동·평형·층에 따라 값이 크게 다릅니다</strong> — 집계값이 아니라 이 표로 확인하세요. 동은 국토교통부가 비공개 처리한 거래에서는 표시되지 않습니다.</p>
 </div>`;
     },
 
