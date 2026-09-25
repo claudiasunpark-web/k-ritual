@@ -82,9 +82,13 @@ jobs:
         timeout-minutes: 20
         continue-on-error: true
         id: osm
+        env:
+          # git log -1 을 쓰면 안 됩니다. 앞의 '실거래 되커밋' 단계가 이미
+          # 커밋을 하나 얹어서, 사람이 밀어 넣은 커밋 메시지가 아니라
+          # 그 자동 커밋 메시지를 읽게 됩니다 ([osm] 표시가 사라집니다).
+          PUSHED_MSG: ${{ github.event.head_commit.message }}
         run: |
-          MSG=$(git log -1 --pretty=%B || true)
-          if [ -f data/osm/apgujeong.geojson ] && ! printf '%s' "$MSG" | grep -q '\[osm\]'; then
+          if [ -f data/osm/apgujeong.geojson ] && ! printf '%s' "$PUSHED_MSG" | grep -q '\[osm\]'; then
             echo "data/osm/apgujeong.geojson 있음 — 건너뜁니다."
             echo "fetched=false" >> "$GITHUB_OUTPUT"
             exit 0
