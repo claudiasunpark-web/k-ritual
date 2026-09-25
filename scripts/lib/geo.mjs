@@ -131,3 +131,46 @@ export function linesOf(feature) {
   if (g.type === 'Polygon') return g.coordinates;
   return [];
 }
+
+/** 두 선분이 실제로 교차하는가 (끝점이 닿기만 한 경우는 제외). */
+function segmentsCross([ax, ay], [bx, by], [cx, cy], [dx, dy]) {
+  const d1 = (dx - cx) * (ay - cy) - (dy - cy) * (ax - cx);
+  const d2 = (dx - cx) * (by - cy) - (dy - cy) * (bx - cx);
+  const d3 = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+  const d4 = (bx - ax) * (dy - ay) - (by - ay) * (dx - ax);
+  return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0));
+}
+
+/**
+ * 선 하나가 다른 선들 중 하나라도 가로지르는가.
+ *
+ * 한강 다리를 고르는 데 씁니다. OSM 의 bridge=yes 는 고가도로·입체교차로까지
+ * 전부 포함하므로, 그것만 보고 '한남대로 다리 = 한남대교' 라고 적으면
+ * 강을 건너지도 않는 고가도로에 다리 이름이 찍힙니다.
+ */
+export function crossesAny(line, others) {
+  return crossPoint(line, others) !== null;
+}
+
+/**
+ * 선이 다른 선들과 처음 만나는 지점. 안 만나면 null.
+ * 다리 이름표를 '강을 건너는 그 자리'에 찍는 데 씁니다.
+ */
+export function crossPoint(line, others) {
+  for (let i = 0; i < line.length - 1; i += 1) {
+    const [ax, ay] = line[i];
+    const [bx, by] = line[i + 1];
+    for (const other of others) {
+      for (let j = 0; j < other.length - 1; j += 1) {
+        const [cx, cy] = other[j];
+        const [dx, dy] = other[j + 1];
+        if (!segmentsCross([ax, ay], [bx, by], [cx, cy], [dx, dy])) continue;
+        const den = (bx - ax) * (dy - cy) - (by - ay) * (dx - cx);
+        if (!den) continue;
+        const t = ((cx - ax) * (dy - cy) - (cy - ay) * (dx - cx)) / den;
+        return { at: [ax + t * (bx - ax), ay + t * (by - ay)], dir: [bx - ax, by - ay] };
+      }
+    }
+  }
+  return null;
+}

@@ -11,12 +11,13 @@
 import { escapeHtml } from './format.mjs';
 import {
   projector, toPath, ringArea, centroid, pointInRing, bboxOf, inBbox, ringsOf, linesOf, mercY,
+  crossesAny, crossPoint,
 } from './geo.mjs';
 
 // ── 보여줄 범위 ─────────────────────────────────────────────
 // 북: 한강 본류가 띠로 보이는 높이. 남: 압구정로 아래 도산대로 상권까지.
 // 서: 동호대교. 동: 영동대교.
-const VIEW = { west: 127.0175, south: 37.5218, east: 127.0490, north: 37.5378 };
+const VIEW = { west: 127.0165, south: 37.5225, east: 127.0487, north: 37.5415 };
 
 const W = 980;
 // 메르카토르 상에서 실제 비율이 되도록 높이를 계산합니다 (형상이 눌리지 않게).
@@ -57,8 +58,13 @@ const POI_RULES = [
 
 // 한강 다리는 OSM 에 '동호대교'가 아니라 그 다리가 나르는 도로 이름으로
 // 올라가 있습니다. 어느 도로가 어느 다리인지는 정해져 있으므로 표로 둡니다.
+//
+// 값은 실제 교차 지점으로 확인했습니다 (도로가 한강 중심선을 건너는 경도):
+//   한남대로 127.0127 · 논현로 127.0210 · 언주로 127.0350
+// 처음에 '동호로 → 동호대교' 로 적었는데 틀렸습니다. 동호로는 강 북쪽
+// 성동구 길이고, 동호대교를 나르는 것은 논현로입니다.
 const BRIDGE_BY_ROAD = new Map([
-  ['동호로', '동호대교'],
+  ['논현로', '동호대교'],
   ['언주로', '성수대교'],
   ['영동대로', '영동대교'],
   ['한남대로', '한남대교'],
@@ -154,7 +160,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   const buildings = [];
   const roadsBy = new Map(ROAD_ORDER.map((k) => [k, []]));
   const subway = [];
-  const bridges = [];
+  const bridgeCandidates = [];
   const pois = [];
 
   for (const f of inView) {
@@ -166,7 +172,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     if (p.railway === 'subway') { subway.push(f); continue; }
     if (p.highway && ROAD[p.highway]) {
       roadsBy.get(p.highway)?.push(f);
-      if (p.bridge === 'yes' && p.name && BRIDGE_BY_ROAD.has(p.name)) bridges.push(f);
+      if (p.bridge === 'yes' && p.name && BRIDGE_BY_ROAD.has(p.name)) bridgeCandidates.push(f);
       continue;
     }
     if (/^(park|garden|pitch|sports_centre)$/.test(p.leisure ?? '')) { greens.push(f); continue; }
@@ -176,6 +182,17 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     }
     if (p.building) { buildings.push(f); continue; }
   }
+
+  // 강을 실제로 가로지르는 것만 한강 다리입니다.
+  // 강 '중심선'만 씁니다. 연못·저수지 폴리곤까지 넣으면 그 테두리를 스치는
+  // 고가도로가 다리로 잡힙니다.
+  const riverLines = water
+    .filter((f) => f.properties.waterway === 'river' && f.properties.name === '한강')
+    .flatMap((f) => linesOf(f))
+    .filter((l) => l.length >= 2);
+  const bridges = riverLines.length
+    ? bridgeCandidates.filter((f) => linesOf(f).some((l) => crossesAny(l, riverLines)))
+    : [];
 
   for (const f of inView) {
     const name = f.properties.name;
@@ -334,9 +351,30 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   labelOnLine(/^압구정로$/, '압구정로', 'geomap__road-label');
   labelOnLine(/^도산대로$/, '도산대로', 'geomap__road-label');
   labelOnLine(/^언주로$/, '언주로', 'geomap__road-label');
-  // 같은 다리가 상·하행 여러 조각으로 올라와 있어 이름당 한 번만 씁니다.
-  for (const road of new Set(bridges.map((f) => f.properties.name))) {
-    labelOnLine(new RegExp(`^${road}$`), BRIDGE_BY_ROAD.get(road), 'geomap__bridge-label', { bridgeOnly: true });
+  // 다리 이름은 '강을 건너는 그 자리'에 찍습니다. 선 전체의 가운데에 찍으면
+  // 강에서 한참 떨어진 접속도로 위에 다리 이름이 올라갑니다. 건너는 지점이
+  // 화면 밖이면 아예 쓰지 않습니다 — 없는 자리에 이름이 적히는 것보다 낫습니다.
+  const bridgeDone = new Set();
+  for (const f of bridges) {
+    const road = f.properties.name;
+    if (bridgeDone.has(road)) continue; // 상·하행 여러 조각으로 올라와 있습니다
+    for (const line of linesOf(f)) {
+      const hit = crossPoint(line, riverLines);
+      if (!hit) continue;
+      const [lon, lat] = hit.at;
+      if (lon < VIEW.west || lon > VIEW.east || lat < VIEW.south || lat > VIEW.north) continue;
+      const [x, y] = project(hit.at);
+      const [dxp, dyp] = [project([lon + hit.dir[0] * 1e-4, lat + hit.dir[1] * 1e-4])[0] - x,
+        project([lon + hit.dir[0] * 1e-4, lat + hit.dir[1] * 1e-4])[1] - y];
+      let deg = (Math.atan2(dyp, dxp) * 180) / Math.PI;
+      if (deg > 90) deg -= 180;
+      if (deg < -90) deg += 180;
+      push(`<text class="geomap__bridge-label" x="${x.toFixed(1)}" y="${y.toFixed(1)}"`
+        + ` text-anchor="middle" transform="rotate(${deg.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})">`
+        + `${escapeHtml(BRIDGE_BY_ROAD.get(road))}</text>`);
+      bridgeDone.add(road);
+      break;
+    }
   }
 
   // 주요 시설
