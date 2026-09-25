@@ -57,11 +57,10 @@ jobs:
           fi
 
       - name: 수집한 실거래 되커밋
-        # 예약 실행과 수동 실행에서만 커밋합니다. push 이벤트에서 커밋하면
-        # 그 커밋이 다시 워크플로를 깨워 무한 반복이 됩니다.
-        if: |
-          steps.fetch.outputs.fetched == 'true' &&
-          (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        # push 에서도 커밋합니다. 되커밋 메시지에 [skip ci] 가 붙어 GitHub 이
+        # 그 커밋으로는 워크플로를 다시 실행하지 않으므로 반복되지 않습니다.
+        # (workflow_dispatch 는 이 워크플로가 main 에 없어 쓸 수 없습니다.)
+        if: steps.fetch.outputs.fetched == 'true'
         run: |
           if git diff --quiet -- data/trades/; then
             echo "실거래 데이터 변동 없음 — 커밋하지 않습니다."
