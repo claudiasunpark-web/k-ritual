@@ -96,6 +96,63 @@ function zoneMatcher(complexes) {
   };
 }
 
+
+/**
+ * 물가 선(bank)들로 강을 면으로 만듭니다.
+ *
+ * OSM 의 한강은 멀티폴리곤 관계이고, 그 테두리는 서울 전체를 도는 거대한
+ * 고리입니다. 우리가 받은 범위 안에서는 고리가 아니라 '남쪽 물가 선'과
+ * '북쪽 물가 선' 두 가닥으로만 들어옵니다. 그래서 고리를 그대로 채울 수 없고,
+ * 두 가닥을 남안(서→동) + 북안(동→서) 로 이어 닫아야 강이 띠가 됩니다.
+ *
+ * 중심선을 기준으로 남/북을 가릅니다. 중심선이 없으면 포기하고 null 을
+ * 돌려줍니다 — 잘못 이은 면을 그리느니 선으로 두는 편이 낫습니다.
+ */
+function riverBand(bankLines, centerline, view) {
+  if (!bankLines.length || !centerline?.length) return null;
+
+  // 경도 → 중심선 위도 (선형 보간). 중심선은 서→동 정렬이 아닐 수 있습니다.
+  const center = [...centerline].sort((a, b) => a[0] - b[0]);
+  const centerLatAt = (lon) => {
+    if (lon <= center[0][0]) return center[0][1];
+    if (lon >= center[center.length - 1][0]) return center[center.length - 1][1];
+    for (let i = 1; i < center.length; i += 1) {
+      if (center[i][0] >= lon) {
+        const [x0, y0] = center[i - 1];
+        const [x1, y1] = center[i];
+        return x1 === x0 ? y0 : y0 + ((y1 - y0) * (lon - x0)) / (x1 - x0);
+      }
+    }
+    return center[center.length - 1][1];
+  };
+
+  const south = [];
+  const north = [];
+  for (const line of bankLines) {
+    // 화면 경도 구간에 걸치는 가닥만 씁니다.
+    const seg = line.filter(([lon]) => lon >= view.west - 0.004 && lon <= view.east + 0.004);
+    if (seg.length < 2) continue;
+    // 가닥 전체의 평균으로 남/북을 정합니다. 점 하나로 정하면 물가가
+    // 구불거리는 곳에서 뒤집힙니다.
+    let above = 0;
+    for (const [lon, lat] of seg) if (lat > centerLatAt(lon)) above += 1;
+    (above > seg.length / 2 ? north : south).push(seg);
+  }
+  if (!south.length || !north.length) return null;
+
+  // 각 가닥을 서→동으로 맞추고, 가닥들도 서→동 순으로 이어 붙입니다.
+  const chain = (groups) => {
+    const fixed = groups.map((g) => (g[0][0] <= g[g.length - 1][0] ? g : [...g].reverse()));
+    fixed.sort((a, b) => a[0][0] - b[0][0]);
+    return fixed.flat();
+  };
+
+  const southChain = chain(south);
+  const northChain = chain(north);
+  // 남안은 서→동, 북안은 동→서로 돌려 닫으면 강 띠가 됩니다.
+  return [[...southChain, ...northChain.reverse()]];
+}
+
 // ── 본체 ────────────────────────────────────────────────────
 /**
  * @param {{geojson:object, zones:object, complexes:object, title?:string, id?:string}} opts
@@ -214,12 +271,26 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
 
   push(`<rect width="${W}" height="${H}" fill="var(--map-land)"/>`);
 
-  // 한강
-  const waterPath = water.map((f) => toPath(ringsOf(f), project, { close: true })).filter(Boolean).join(' ');
-  const waterLines = water.filter((f) => !ringsOf(f).length)
-    .map((f) => toPath(linesOf(f), project)).filter(Boolean).join(' ');
-  if (waterPath) push(`<path d="${waterPath}" fill="var(--map-water)"/>`);
-  if (waterLines) push(`<path d="${waterLines}" fill="none" stroke="var(--map-water)" stroke-width="5"/>`);
+  // 한강 — 물가 선 두 가닥을 이어 면으로 만듭니다.
+  const bankLines = water.filter((f) => f.properties.bank === 'yes').flatMap((f) => linesOf(f));
+  const centerline = water
+    .find((f) => f.properties.waterway === 'river' && f.properties.name === '한강')
+    ?.geometry?.coordinates;
+  const band = riverBand(bankLines, centerline, VIEW);
+
+  const ponds = water.filter((f) => f.properties.bank !== 'yes' && ringsOf(f).length);
+  const pondPath = ponds.map((f) => toPath(ringsOf(f), project, { close: true })).filter(Boolean).join(' ');
+
+  if (band) {
+    push(`<path d="${toPath(band, project, { close: true })}" fill="var(--map-water)"/>`);
+  } else {
+    // 물가 선을 못 받았으면 중심선을 굵게 그립니다. 폭은 실제와 다르므로
+    // 면인 척하지 않고 선으로 둡니다.
+    const lines = water.filter((f) => !ringsOf(f).length)
+      .map((f) => toPath(linesOf(f), project)).filter(Boolean).join(' ');
+    if (lines) push(`<path d="${lines}" fill="none" stroke="var(--map-water)" stroke-width="5"/>`);
+  }
+  if (pondPath) push(`<path d="${pondPath}" fill="var(--map-water)"/>`);
 
   // 공원·녹지
   const greenPath = greens.map((f) => toPath(ringsOf(f), project, { close: true })).filter(Boolean).join(' ');

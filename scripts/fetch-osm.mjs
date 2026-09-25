@@ -174,7 +174,7 @@ const r5 = (n) => Math.round(n * 1e5) / 1e5;
 const KEEP_TAGS = [
   'name', 'name:ko', 'building', 'building:levels', 'highway', 'railway',
   'natural', 'waterway', 'landuse', 'leisure', 'amenity', 'shop', 'bridge',
-  'place', 'tunnel', 'layer', 'ref',
+  'place', 'tunnel', 'layer', 'ref', 'bank',
 ];
 
 function slimTags(tags = {}) {
