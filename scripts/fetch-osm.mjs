@@ -15,6 +15,7 @@
 
 import { writeFile, mkdir } from 'node:fs/promises';
 import { dirname } from 'node:path';
+import { fetchOsmApi } from './lib/osmapi.mjs';
 
 const args = process.argv.slice(2);
 const argOf = (flag, dflt) => {
@@ -27,6 +28,11 @@ const argOf = (flag, dflt) => {
 const BBOX = argOf('--bbox', '37.5190,127.0120,37.5430,127.0530');
 const OUT = argOf('--out', 'data/osm/apgujeong.geojson');
 const ONLY = argOf('--only', '');
+// overpass | osmapi | auto — auto 는 Overpass 를 먼저 쓰고 실패하면 공식 API 로 넘어갑니다.
+const SOURCE = argOf('--source', 'auto');
+// Overpass 가 느릴 때 여기서 시간을 다 쓰면 안 됩니다. 이 시간을 넘기면
+// 받다 만 것은 그대로 두고 공식 API 로 넘어갑니다.
+const OVERPASS_BUDGET_MS = Number(argOf('--overpass-budget', '360')) * 1000;
 
 const ENDPOINTS = [
   'https://overpass-api.de/api/interpreter',
@@ -137,7 +143,7 @@ async function fetchPart(label, statements) {
   // 높게 두면 앞단 프록시가 먼저 504 로 끊어 원인을 알 수 없습니다.
   const query = `[out:json][timeout:90];\n(${statements}\n);\nout geom;`;
   const errors = [];
-  for (let i = 0; i < ENDPOINTS.length * 2; i += 1) {
+  for (let i = 0; i < ENDPOINTS.length; i += 1) {
     const endpoint = ENDPOINTS[endpointIdx % ENDPOINTS.length];
     endpointIdx += 1;
     const host = new URL(endpoint).host;
@@ -222,38 +228,104 @@ function toFeature(el) {
   return null;
 }
 
+// ── 공식 API 로 받은 것 중 지도에 쓰는 것만 남기기 ──────────
+// Overpass 와 달리 태그로 거르지 않고 전부 오므로 여기서 거릅니다.
+const ROAD_TAGS = /^(motorway|trunk|primary|secondary|tertiary|residential|unclassified|living_street|service|motorway_link|trunk_link|primary_link|secondary_link)$/;
+
+const WANTED = (t = {}) =>
+  t.building != null
+  || t.natural === 'water'
+  || /^(riverbank|river|stream|canal)$/.test(t.waterway ?? '')
+  || ROAD_TAGS.test(t.highway ?? '')
+  || /^(subway|rail)$/.test(t.railway ?? '')
+  || t.railway === 'station'
+  || t.landuse != null
+  || /^(park|garden|pitch|sports_centre)$/.test(t.leisure ?? '')
+  || /^(school|university|hospital|kindergarten)$/.test(t.amenity ?? '')
+  || t.shop === 'department_store'
+  || /^(suburb|quarter|neighbourhood)$/.test(t.place ?? '');
+
 // ── 실행 ────────────────────────────────────────────────────
-console.log(`OSM 지형 수집 — bbox ${BBOX}`);
+console.log(`OSM 지형 수집 — bbox ${BBOX} (source=${SOURCE})`);
 const seen = new Set(); // 격자 경계에 걸친 요소가 중복으로 들어옵니다.
 const features = [];
 const missing = [];
 const counts = {};
 
-for (const layer of LAYERS) {
-  if (ONLY && ONLY !== layer.id) continue;
+const addElements = (elements, bucket) => {
   let got = 0;
-  try {
-    for (let i = 0; i < layer.parts.length; i += 1) {
-      const label = layer.parts.length > 1 ? `${layer.id} ${i + 1}/${layer.parts.length}` : layer.id;
-      const elements = await fetchPart(label, layer.parts[i]);
-      for (const el of elements) {
-        const key = `${el.type}${el.id}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        const f = toFeature(el);
-        if (f) { features.push(f); got += 1; }
-      }
-      await sleep(1500); // 서버에 예의
+  for (const el of elements) {
+    const key = `${el.type}${el.id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    const f = toFeature(el);
+    if (f) { features.push(f); got += 1; }
+  }
+  counts[bucket] = (counts[bucket] ?? 0) + got;
+  return got;
+};
+
+async function viaOverpass() {
+  const deadline = Date.now() + OVERPASS_BUDGET_MS;
+  for (const layer of LAYERS) {
+    if (ONLY && ONLY !== layer.id) continue;
+    counts[layer.id] = 0;
+    if (Date.now() > deadline) {
+      console.log(`  ${layer.id} 건너뜀 — Overpass 시간 예산(${OVERPASS_BUDGET_MS / 1000}초) 초과`);
+      missing.push(layer.id);
+      if (layer.required) throw new Error('Overpass 시간 예산 초과');
+      continue;
     }
-  } catch (err) {
-    console.log(`  ! ${err.message}`);
-    missing.push(layer.id);
-    if (layer.required) {
-      console.error(`\n필수 레이어 '${layer.id}' 를 못 받았습니다. 지도를 그릴 수 없어 중단합니다.`);
-      process.exit(1);
+    try {
+      for (let i = 0; i < layer.parts.length; i += 1) {
+        if (Date.now() > deadline) throw new Error('Overpass 시간 예산 초과');
+        const label = layer.parts.length > 1 ? `${layer.id} ${i + 1}/${layer.parts.length}` : layer.id;
+        addElements(await fetchPart(label, layer.parts[i]), layer.id);
+        await sleep(1500); // 서버에 예의
+      }
+    } catch (err) {
+      console.log(`  ! ${err.message}`);
+      missing.push(layer.id);
+      // 필수 레이어가 비면 Overpass 로는 지도를 못 그립니다.
+      if (layer.required) throw err;
     }
   }
-  counts[layer.id] = got;
+}
+
+async function viaOsmApi() {
+  const elements = await fetchOsmApi({ s: S, w: W, n: N, e: E }, { cols: 6, rows: 6 });
+  const wanted = elements.filter((el) => WANTED(el.tags));
+  console.log(`  쓸 만한 요소 ${wanted.length}개 / 받은 ${elements.length}개`);
+  addElements(wanted, 'osm-api');
+}
+
+if (SOURCE === 'osmapi') {
+  await viaOsmApi();
+} else {
+  try {
+    await viaOverpass();
+  } catch (err) {
+    if (SOURCE === 'overpass') {
+      console.error(`\nOverpass 실패로 중단합니다: ${err.message}`);
+      process.exit(1);
+    }
+    console.log(`\nOverpass 로는 못 받았습니다 — 공식 API(api.openstreetmap.org)로 다시 시도합니다.`);
+    // Overpass 에서 부분적으로 받은 것은 그대로 두고 부족한 것만 채웁니다.
+    await viaOsmApi();
+  }
+}
+
+// 필수 레이어에 해당하는 것이 하나라도 있어야 지도를 그립니다.
+const has = (fn) => features.some(fn);
+const missingEssential = [
+  ['건물', (f) => f.properties.building],
+  ['도로', (f) => f.properties.highway],
+  ['물길', (f) => f.properties.natural === 'water' || f.properties.waterway],
+].filter(([, fn]) => !has(fn)).map(([n]) => n);
+
+if (missingEssential.length) {
+  console.error(`\n${missingEssential.join('·')} 을(를) 하나도 못 받았습니다. 지도를 그릴 수 없어 중단합니다.`);
+  process.exit(1);
 }
 
 const geojson = {
