@@ -16,7 +16,7 @@ import {
 // ── 보여줄 범위 ─────────────────────────────────────────────
 // 북: 한강 본류가 띠로 보이는 높이. 남: 압구정로 아래 도산대로 상권까지.
 // 서: 동호대교. 동: 영동대교.
-const VIEW = { west: 127.0145, south: 37.5205, east: 127.0505, north: 37.5395 };
+const VIEW = { west: 127.0175, south: 37.5218, east: 127.0490, north: 37.5378 };
 
 const W = 980;
 // 메르카토르 상에서 실제 비율이 되도록 높이를 계산합니다 (형상이 눌리지 않게).
@@ -29,28 +29,40 @@ const ZONE_COLOR = {
 };
 
 // 도로 등급별 굵기. 폭이 아니라 '위계'를 보여 주는 값입니다.
+// service(주차장 통로·건물 진입로)는 뺐습니다. 이 축척에서 읽히지 않으면서
+// 수가 많아 파일만 키웁니다. living_street 은 골목 상권이라 남깁니다.
 const ROAD = {
   motorway: 7, trunk: 6.2, primary: 4.6, secondary: 3.2, tertiary: 2.3,
-  unclassified: 1.4, residential: 1.4,
+  unclassified: 1.4, residential: 1.4, living_street: 1.2,
   motorway_link: 3, trunk_link: 2.8, primary_link: 2.4, secondary_link: 1.8,
 };
-const ROAD_ORDER = ['residential', 'unclassified', 'secondary_link', 'primary_link', 'trunk_link',
-  'motorway_link', 'tertiary', 'secondary', 'primary', 'trunk', 'motorway'];
+const ROAD_ORDER = ['living_street', 'residential', 'unclassified', 'secondary_link', 'primary_link',
+  'trunk_link', 'motorway_link', 'tertiary', 'secondary', 'primary', 'trunk', 'motorway'];
 
 // 지도에 이름을 띄울 주요 시설. OSM 이름이 조금씩 달라 부분 일치로 찾습니다.
+// OSM 의 역 이름에는 '역'이 붙지 않습니다 (압구정, 압구정로데오).
+// 그래서 railway=station 인 것만 따로 보고, 이름은 우리가 붙입니다.
 const POI_RULES = [
-  { match: /갤러리아/, label: '갤러리아백화점', kind: 'shop' },
-  { match: /^압구정역|압구정역$/, label: '압구정역 (3호선)', kind: 'station' },
-  { match: /압구정로데오/, label: '압구정로데오역 (수인분당선)', kind: 'station' },
-  { match: /신사역/, label: '신사역 (3호선)', kind: 'station' },
-  { match: /^압구정초/, label: '압구정초', kind: 'school' },
-  { match: /^압구정중/, label: '압구정중', kind: 'school' },
-  { match: /^압구정고/, label: '압구정고', kind: 'school' },
-  { match: /신사중/, label: '신사중', kind: 'school' },
-  { match: /청담고/, label: '청담고', kind: 'school' },
+  { match: /갤러리아백화점/, label: '갤러리아백화점', kind: 'shop' },
+  { match: /^압구정$/, label: '압구정역 (3호선)', kind: 'station', station: true },
+  { match: /^압구정로데오$/, label: '압구정로데오역 (수인분당선)', kind: 'station', station: true },
+  { match: /^청담$/, label: '청담역 (7호선)', kind: 'station', station: true },
+  { match: /^서울압구정초등학교$/, label: '압구정초', kind: 'school' },
+  { match: /^압구정중학교$/, label: '압구정중', kind: 'school' },
+  { match: /^압구정고등학교$/, label: '압구정고', kind: 'school' },
+  { match: /^신사중학교$/, label: '신사중', kind: 'school' },
+  { match: /^청담고등학교$/, label: '청담고', kind: 'school' },
+  { match: /^현대고등학교$/, label: '현대고', kind: 'school' },
 ];
 
-const BRIDGE_RULES = [/동호대교/, /성수대교/, /영동대교/, /한남대교/];
+// 한강 다리는 OSM 에 '동호대교'가 아니라 그 다리가 나르는 도로 이름으로
+// 올라가 있습니다. 어느 도로가 어느 다리인지는 정해져 있으므로 표로 둡니다.
+const BRIDGE_BY_ROAD = new Map([
+  ['동호로', '동호대교'],
+  ['언주로', '성수대교'],
+  ['영동대로', '영동대교'],
+  ['한남대로', '한남대교'],
+]);
 
 // ── 단지 이름 → 구역 찾기 ───────────────────────────────────
 function zoneMatcher(complexes) {
@@ -154,7 +166,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     if (p.railway === 'subway') { subway.push(f); continue; }
     if (p.highway && ROAD[p.highway]) {
       roadsBy.get(p.highway)?.push(f);
-      if (p.bridge === 'yes' && p.name && BRIDGE_RULES.some((re) => re.test(p.name))) bridges.push(f);
+      if (p.bridge === 'yes' && p.name && BRIDGE_BY_ROAD.has(p.name)) bridges.push(f);
       continue;
     }
     if (/^(park|garden|pitch|sports_centre)$/.test(p.leisure ?? '')) { greens.push(f); continue; }
@@ -168,7 +180,8 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   for (const f of inView) {
     const name = f.properties.name;
     if (!name) continue;
-    const rule = POI_RULES.find((r) => r.match.test(name));
+    const rule = POI_RULES.find((r) => r.match.test(name)
+      && (!r.station || f.properties.railway === 'station'));
     if (!rule) continue;
     if (pois.some((x) => x.label === rule.label)) continue; // 중복 표시 방지
     const at = f.geometry.type === 'Point'
@@ -220,7 +233,9 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
 
   // 건물 — 구역 밖은 회색 한 덩이로, 구역 안은 구역색으로.
   const other = buildings.filter((f) => !zoneOf.has(f));
-  const otherPath = other.map((f) => toPath(ringsOf(f), project, { close: true })).filter(Boolean).join(' ');
+  const otherPath = other
+    .map((f) => toPath(ringsOf(f), project, { close: true, decimals: 0 }))
+    .filter(Boolean).join(' ');
   if (otherPath) {
     push(`<path d="${otherPath}" fill="var(--map-bldg)" stroke="var(--map-bldg-edge)" stroke-width="0.4"/>`);
   }
@@ -278,16 +293,19 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   // 전체 꼭짓점으로 방향을 잡고, 글자 위치만 화면 안으로 당겨 넣습니다.
   const MARGIN = 26;
   const labelOnLine = (re, text, cls, opts = {}) => {
-    const cand = inView.filter((f) => f.properties.name && re.test(f.properties.name));
+    const cand = inView.filter((f) => f.properties.name && re.test(f.properties.name)
+      && (!opts.bridgeOnly || f.properties.bridge === 'yes'));
     if (!cand.length) return;
 
-    let best = null; // 가장 긴 조각
+    // 화면 안에 있는 꼭짓점만 씁니다. 화면 밖 선의 이름표를 테두리로 끌어오면
+    // 거기 있지도 않은 것이 지도에 적히게 됩니다(한남대교가 그렇게 잘못 찍혔습니다).
+    let best = null; // 화면 안에 가장 길게 걸친 조각
     for (const f of cand) {
       for (const line of [...linesOf(f), ...ringsOf(f)]) {
         if (line.length < 2) continue;
         const shown = line.filter((c) => inBbox(c, viewBbox));
-        const pts = shown.length >= 2 ? shown : line;
-        if (!best || pts.length > best.length) best = pts;
+        if (shown.length < 2) continue;
+        if (!best || shown.length > best.length) best = shown;
       }
     }
     if (!best) return;
@@ -299,11 +317,12 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     if (deg > 90) deg -= 180;
     if (deg < -90) deg += 180;
 
-    let [x, y] = project(best[mid]);
-    // 글자가 테두리 밖으로 나가면 화면 안으로 당깁니다.
-    x = Math.min(Math.max(x, MARGIN), W - MARGIN);
-    y = Math.min(Math.max(y, MARGIN), H - MARGIN);
-    if (!Number.isFinite(x) || !Number.isFinite(y)) return;
+    const [px, py] = project(best[mid]);
+    if (!Number.isFinite(px) || !Number.isFinite(py)) return;
+    // 글자가 테두리에 걸리면 살짝만 당깁니다. 이미 화면 안 점이므로
+    // 위치가 크게 어긋나지 않습니다.
+    const x = Math.min(Math.max(px, MARGIN), W - MARGIN);
+    const y = Math.min(Math.max(py, MARGIN), H - MARGIN);
 
     push(`<text class="${cls}" x="${x.toFixed(1)}" y="${(y + (opts.dy ?? 0)).toFixed(1)}"`
       + ` text-anchor="middle" transform="rotate(${deg.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})">`
@@ -315,8 +334,9 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   labelOnLine(/^압구정로$/, '압구정로', 'geomap__road-label');
   labelOnLine(/^도산대로$/, '도산대로', 'geomap__road-label');
   labelOnLine(/^언주로$/, '언주로', 'geomap__road-label');
-  for (const f of bridges) {
-    labelOnLine(new RegExp(`^${f.properties.name}$`), f.properties.name, 'geomap__bridge-label');
+  // 같은 다리가 상·하행 여러 조각으로 올라와 있어 이름당 한 번만 씁니다.
+  for (const road of new Set(bridges.map((f) => f.properties.name))) {
+    labelOnLine(new RegExp(`^${road}$`), BRIDGE_BY_ROAD.get(road), 'geomap__bridge-label', { bridgeOnly: true });
   }
 
   // 주요 시설

@@ -303,7 +303,32 @@ async function viaOsmApi() {
   addElements(wanted, 'osm-api');
 }
 
+/**
+ * 물길만 Overpass 로 따로 받습니다.
+ *
+ * 한강은 OSM 에서 멀티폴리곤 '관계(relation)'로 올라가 있습니다. 공식 API 는
+ * 관계의 구성원 중 bbox 안에 걸친 것만 돌려주므로 강 테두리가 끊긴 채 와서
+ * 면으로 채울 수 없습니다(그래서 가는 선 하나로만 나옵니다).
+ * Overpass 는 `out geom` 으로 관계 구성원의 좌표를 통째로 주므로 면이 됩니다.
+ * 물길만 받는 질의는 아주 가벼워서, Overpass 가 붐벼도 대체로 통과합니다.
+ */
+async function waterViaOverpass() {
+  const layer = LAYERS.find((l) => l.id === 'water');
+  try {
+    for (let i = 0; i < layer.parts.length; i += 1) {
+      addElements(await fetchPart('water(overpass)', layer.parts[i]), 'water-overpass');
+    }
+    return true;
+  } catch (err) {
+    console.log(`  물길 Overpass 실패 — 강이 면이 아니라 선으로 그려집니다: ${err.message}`);
+    return false;
+  }
+}
+
 if (SOURCE === 'osmapi') {
+  // 물길을 먼저 받아야 합니다. 나중에 받으면 공식 API 가 이미 넣어 둔
+  // 같은 id 의 선 버전이 중복으로 걸러져 면을 못 받습니다.
+  await waterViaOverpass();
   await viaOsmApi();
 } else {
   try {

@@ -37,11 +37,16 @@ export function projector(view, { width, height, pad = 0 }) {
   return { project, metersPerPx, width, height };
 }
 
-/** 소수점 1자리로 줄여 SVG 크기를 절반으로 만듭니다. 화면에서는 차이가 없습니다. */
-const r1 = (n) => Math.round(n * 10) / 10;
-
-/** 좌표 배열 → SVG path 문자열. close=true 면 면으로 닫습니다. */
-export function toPath(rings, project, { close = false } = {}) {
+/**
+ * 좌표 배열 → SVG path 문자열. close=true 면 면으로 닫습니다.
+ *
+ * decimals 는 좌표 자릿수입니다. 1자리면 화면에서 차이가 없고, 건물 윤곽처럼
+ * 수천 개가 쌓이는 것은 0자리(정수 픽셀)로 해도 눈에 띄지 않으면서
+ * 파일이 크게 줄어듭니다.
+ */
+export function toPath(rings, project, { close = false, decimals = 1 } = {}) {
+  const f = 10 ** decimals;
+  const r1 = (n) => Math.round(n * f) / f;
   const parts = [];
   for (const ring of rings) {
     if (!ring || ring.length < 2) continue;
