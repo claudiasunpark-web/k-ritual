@@ -28,8 +28,12 @@ const argOf = (flag, dflt) => {
 const BBOX = argOf('--bbox', '37.5190,127.0120,37.5430,127.0530');
 const OUT = argOf('--out', 'data/osm/apgujeong.geojson');
 const ONLY = argOf('--only', '');
-// overpass | osmapi | auto — auto 는 Overpass 를 먼저 쓰고 실패하면 공식 API 로 넘어갑니다.
-const SOURCE = argOf('--source', 'auto');
+// osmapi | overpass | auto
+//
+// 기본값은 공식 API 입니다. 실측: 공식 API 는 36조각을 30초에 실패 0으로 받았고,
+// Overpass 는 세 번 시도해 한 번도 끝내지 못했습니다(504 또는 17분 초과).
+// auto 는 Overpass 를 먼저 쓰고 막히면 공식 API 로 넘어갑니다 — 8분쯤 더 걸립니다.
+const SOURCE = argOf('--source', 'osmapi');
 // Overpass 가 느릴 때 여기서 시간을 다 쓰면 안 됩니다. 이 시간을 넘기면
 // 받다 만 것은 그대로 두고 공식 API 로 넘어갑니다.
 const OVERPASS_BUDGET_MS = Number(argOf('--overpass-budget', '360')) * 1000;

@@ -62,13 +62,15 @@ jobs:
         # (workflow_dispatch 는 이 워크플로가 main 에 없어 쓸 수 없습니다.)
         if: steps.fetch.outputs.fetched == 'true'
         run: |
-          if git diff --quiet -- data/trades/; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # git diff 는 추적하지 않는 새 파일을 보지 못합니다. 먼저 add 한 뒤
+          # 스테이지와 비교해야 '처음 만들어진 파일'도 잡힙니다.
+          git add -A data/trades/
+          if git diff --cached --quiet -- data/trades/; then
             echo "실거래 데이터 변동 없음 — 커밋하지 않습니다."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/trades/
           COUNT=$(node -e "const t=require('./data/trades/apgujeong.json');console.log(t.totals.trades)")
           RANGE=$(node -e "const t=require('./data/trades/apgujeong.json');console.log(t.range.from+'~'+t.range.to)")
           git commit -m "실거래가 갱신: 압구정동 ${COUNT}건 (${RANGE}) [skip ci]"
@@ -97,13 +99,14 @@ jobs:
       - name: 수집한 OSM 지형 되커밋
         if: steps.osm.outputs.fetched == 'true'
         run: |
-          if git diff --quiet -- data/osm/; then
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # 위와 같은 이유로 add 를 먼저 합니다.
+          git add -A data/osm/
+          if git diff --cached --quiet -- data/osm/; then
             echo "지형 데이터 변동 없음 — 커밋하지 않습니다."
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/osm/
           COUNT=$(node -e "console.log(require('./data/osm/apgujeong.geojson').features.length)")
           git commit -m "OSM 지형 갱신: 피처 ${COUNT}개 [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
