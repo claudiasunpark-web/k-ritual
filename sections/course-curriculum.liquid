@@ -1,0 +1,55 @@
+{%- if section.blocks.size > 0 -%}
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width page-width--narrow">
+    <div class="section-heading">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    </div>
+    <ol class="curriculum">
+      {%- for block in section.blocks -%}
+        <li class="curriculum__item" {{ block.shopify_attributes }}>
+          <span class="curriculum__index">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <div class="curriculum__body">
+            <div class="curriculum__head">
+              <h3>{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.duration != blank -%}<span class="curriculum__duration">{{ block.settings.duration | escape }}</span>{%- endif -%}
+            </div>
+            {%- if block.settings.text != blank -%}<div class="rte">{{ block.settings.text }}</div>{%- endif -%}
+          </div>
+        </li>
+      {%- endfor -%}
+    </ol>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "커리큘럼",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨", "default": "What you'll learn" },
+    { "type": "text", "id": "heading", "label": "제목", "default": "Class curriculum" },
+    { "type": "select", "id": "background", "label": "배경", "default": "surface", "options": [
+      { "value": "default", "label": "기본" }, { "value": "surface", "label": "강조" }
+    ] },
+    { "type": "paragraph", "content": "클래스마다 커리큘럼이 다르다면, 상품별로 다른 템플릿(예: product.beginner)을 만들어 지정하세요." }
+  ],
+  "blocks": [
+    {
+      "type": "module",
+      "name": "단계",
+      "settings": [
+        { "type": "text", "id": "title", "label": "제목", "default": "Introduction & history" },
+        { "type": "text", "id": "duration", "label": "소요 시간", "default": "20 min" },
+        { "type": "richtext", "id": "text", "label": "설명", "default": "<p>Describe what students will do in this part of the class.</p>" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "커리큘럼",
+    "blocks": [{ "type": "module" }, { "type": "module" }, { "type": "module" }]
+  }]
+}
+{% endschema %}

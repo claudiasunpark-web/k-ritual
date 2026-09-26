@@ -1,0 +1,76 @@
+{
+  "general": {
+    "page": "Page {{ page }}",
+    "view_all": "View all",
+    "previous": "Previous",
+    "next": "Next",
+    "menu": "Menu",
+    "close": "Close",
+    "home": "Home"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "cart_count": "{{ count }} items in cart",
+    "open_menu": "Open menu"
+  },
+  "header": {
+    "cart": "Cart",
+    "account": "Account",
+    "search": "Search"
+  },
+  "courses": {
+    "from_price": "From {{ price }}",
+    "sold_out": "Sold out",
+    "enroll": "Enroll now",
+    "choose_session": "Choose a session",
+    "seats_left": {
+      "one": "Only {{ count }} seat left",
+      "other": "{{ count }} seats left"
+    },
+    "almost_full": "Almost full",
+    "quantity": "Number of students",
+    "level": "Level",
+    "duration": "Duration",
+    "format": "Format",
+    "no_courses": "No classes are available yet. Check back soon!",
+    "sale": "Sale",
+    "curriculum": "Curriculum",
+    "view_course": "View class"
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty.",
+    "continue": "Browse classes",
+    "remove": "Remove",
+    "update": "Update",
+    "subtotal": "Subtotal",
+    "taxes_note": "Taxes and discounts are calculated at checkout.",
+    "checkout": "Check out",
+    "note": "Notes for the instructor (optional)",
+    "session": "Session"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search classes",
+    "submit": "Search",
+    "results_for": "{{ count }} results for “{{ terms }}”",
+    "no_results": "No results for “{{ terms }}”."
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send",
+    "success": "Thanks! We'll get back to you soon."
+  },
+  "not_found": {
+    "title": "Page not found",
+    "text": "The page you were looking for doesn't exist."
+  },
+  "newsletter": {
+    "email": "Email address",
+    "subscribe": "Subscribe",
+    "success": "Thanks for subscribing!"
+  }
+}

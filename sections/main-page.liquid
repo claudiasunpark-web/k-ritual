@@ -1,0 +1,10 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <div class="page-header"><h1>{{ page.title | escape }}</h1></div>
+    <div class="rte">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "페이지 내용", "settings": [] }
+{% endschema %}

@@ -1,0 +1,56 @@
+{%- comment -%}
+  Renders a class card.
+  Accepts: product (product object or blank for a placeholder)
+{%- endcomment -%}
+{%- if product != blank -%}
+  {%- liquid
+    assign level = product.metafields.course.level.value
+    assign duration = product.metafields.course.duration.value
+    assign format = product.metafields.course.format.value
+    assign start = product.metafields.course.start_date.value
+  -%}
+  <article class="course-card">
+    <a href="{{ product.url }}" class="course-card__media">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 800 | image_tag: loading: 'lazy', widths: '400, 600, 800', sizes: '(min-width: 990px) 33vw, (min-width: 750px) 50vw, 100vw', alt: product.featured_media.alt | default: product.title }}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
+      {%- endif -%}
+      {%- unless product.available -%}
+        <span class="badge badge--muted">{{ 'courses.sold_out' | t }}</span>
+      {%- else -%}
+        {%- if product.compare_at_price > product.price -%}
+          <span class="badge">{{ 'courses.sale' | t }}</span>
+        {%- elsif level != blank -%}
+          <span class="badge badge--light">{{ level }}</span>
+        {%- endif -%}
+      {%- endunless -%}
+    </a>
+    <div class="course-card__body">
+      <h3 class="course-card__title"><a href="{{ product.url }}">{{ product.title | escape }}</a></h3>
+      {%- if start != blank or duration != blank or format != blank -%}
+        <ul class="course-card__meta">
+          {%- if start != blank -%}<li>{% render 'icon', name: 'calendar' %}{{ start | date: '%Y.%m.%d' }}</li>{%- endif -%}
+          {%- if duration != blank -%}<li>{% render 'icon', name: 'clock' %}{{ duration }}</li>{%- endif -%}
+          {%- if format != blank -%}<li>{% render 'icon', name: 'location' %}{{ format }}</li>{%- endif -%}
+        </ul>
+      {%- endif -%}
+      <div class="course-card__footer">
+        {% render 'price', product: product %}
+        <a href="{{ product.url }}" class="text-link">{{ 'courses.view_course' | t }} →</a>
+      </div>
+    </div>
+  </article>
+{%- else -%}
+  <article class="course-card course-card--placeholder">
+    <div class="course-card__media">{{ 'product-1' | placeholder_svg_tag: 'placeholder' }}</div>
+    <div class="course-card__body">
+      <h3 class="course-card__title">Your class title</h3>
+      <ul class="course-card__meta">
+        <li>{% render 'icon', name: 'clock' %}2 hours</li>
+        <li>{% render 'icon', name: 'location' %}In person</li>
+      </ul>
+      <div class="course-card__footer"><span class="price">{{ 8000 | money }}</span></div>
+    </div>
+  </article>
+{%- endif -%}

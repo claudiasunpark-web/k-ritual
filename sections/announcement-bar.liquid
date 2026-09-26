@@ -1,0 +1,20 @@
+{%- if section.settings.text != blank -%}
+  <div class="announcement">
+    {%- if section.settings.link != blank -%}
+      <a href="{{ section.settings.link }}">{{ section.settings.text | escape }}</a>
+    {%- else -%}
+      <p>{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "공지 바",
+  "class": "section-announcement",
+  "settings": [
+    { "type": "text", "id": "text", "label": "공지 문구", "default": "Spring cohort now open — limited seats" },
+    { "type": "url", "id": "link", "label": "링크" }
+  ]
+}
+{% endschema %}

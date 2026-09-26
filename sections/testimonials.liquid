@@ -1,0 +1,50 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width">
+    <div class="section-heading section-heading--center">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    </div>
+    <div class="testimonial-grid">
+      {%- for block in section.blocks -%}
+        <figure class="testimonial" {{ block.shopify_attributes }}>
+          <blockquote class="rte">{{ block.settings.quote }}</blockquote>
+          <figcaption>
+            <strong>{{ block.settings.author | escape }}</strong>
+            {%- if block.settings.detail != blank -%}<span>{{ block.settings.detail | escape }}</span>{%- endif -%}
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "수강 후기",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨", "default": "Reviews" },
+    { "type": "text", "id": "heading", "label": "제목", "default": "What students say" },
+    { "type": "select", "id": "background", "label": "배경", "default": "default", "options": [
+      { "value": "default", "label": "기본" }, { "value": "surface", "label": "강조" }
+    ] }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "후기",
+      "settings": [
+        { "type": "richtext", "id": "quote", "label": "후기 내용", "default": "<p>The best class I've taken this year. I left with skills I use every day.</p>" },
+        { "type": "text", "id": "author", "label": "이름", "default": "Student name" },
+        { "type": "text", "id": "detail", "label": "수강한 클래스 등", "default": "Took the Beginner class" }
+      ]
+    }
+  ],
+  "max_blocks": 9,
+  "presets": [{
+    "name": "수강 후기",
+    "blocks": [{ "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" }]
+  }]
+}
+{% endschema %}

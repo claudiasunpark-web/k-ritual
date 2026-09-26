@@ -1,0 +1,55 @@
+<header class="site-header">
+  <div class="page-width site-header__inner">
+    <details class="mobile-nav">
+      <summary class="icon-button" aria-label="{{ 'accessibility.open_menu' | t }}">{% render 'icon', name: 'menu' %}</summary>
+      <nav class="mobile-nav__panel">
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    </details>
+
+    <a href="{{ routes.root_url }}" class="site-header__logo" style="--logo-width: {{ section.settings.logo_width }}px">
+      {%- if section.settings.logo != blank -%}
+        {{ section.settings.logo | image_url: width: 600 | image_tag: alt: shop.name }}
+      {%- else -%}
+        {{ shop.name }}
+      {%- endif -%}
+    </a>
+
+    <nav class="site-nav" aria-label="Main">
+      <ul>
+        {%- for link in section.settings.menu.links -%}
+          <li><a href="{{ link.url }}"{% if link.active %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </nav>
+
+    <div class="site-header__icons">
+      <a href="{{ routes.search_url }}" class="icon-button" aria-label="{{ 'header.search' | t }}">{% render 'icon', name: 'search' %}</a>
+      {%- if shop.customer_accounts_enabled -%}
+        <a href="{{ routes.account_url }}" class="icon-button" aria-label="{{ 'header.account' | t }}">{% render 'icon', name: 'account' %}</a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="icon-button cart-link" aria-label="{{ 'header.cart' | t }}">
+        {% render 'icon', name: 'cart' %}
+        {%- if cart.item_count > 0 -%}
+          <span class="cart-count" aria-label="{{ 'accessibility.cart_count' | t: count: cart.item_count }}">{{ cart.item_count }}</span>
+        {%- endif -%}
+      </a>
+    </div>
+  </div>
+</header>
+
+{% schema %}
+{
+  "name": "헤더",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "로고" },
+    { "type": "range", "id": "logo_width", "label": "로고 너비", "min": 60, "max": 300, "step": 10, "unit": "px", "default": 140 },
+    { "type": "link_list", "id": "menu", "label": "메뉴", "default": "main-menu" }
+  ]
+}
+{% endschema %}

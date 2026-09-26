@@ -1,0 +1,34 @@
+<section class="section">
+  <div class="page-width">
+    <div class="page-header">
+      <h1>{{ collection.title | escape }}</h1>
+      {%- if section.settings.show_description and collection.description != blank -%}
+        <div class="rte page-header__text">{{ collection.description }}</div>
+      {%- endif -%}
+    </div>
+
+    {%- paginate collection.products by section.settings.per_page -%}
+      <div class="course-grid course-grid--{{ section.settings.columns }}">
+        {%- for product in collection.products -%}
+          {% render 'course-card', product: product %}
+        {%- else -%}
+          <p class="empty-state">{{ 'courses.no_courses' | t }}</p>
+        {%- endfor -%}
+      </div>
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "클래스 컬렉션",
+  "settings": [
+    { "type": "checkbox", "id": "show_description", "label": "컬렉션 설명 표시", "default": true },
+    { "type": "range", "id": "per_page", "label": "한 페이지 개수", "min": 6, "max": 24, "step": 3, "default": 12 },
+    { "type": "select", "id": "columns", "label": "한 줄 개수 (데스크톱)", "default": "3", "options": [
+      { "value": "2", "label": "2" }, { "value": "3", "label": "3" }, { "value": "4", "label": "4" }
+    ] }
+  ]
+}
+{% endschema %}

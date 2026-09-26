@@ -1,0 +1,66 @@
+<footer class="site-footer">
+  <div class="page-width site-footer__grid">
+    <div class="site-footer__brand">
+      <p class="site-footer__name">{{ shop.name }}</p>
+      {%- if section.settings.about != blank -%}
+        <div class="rte">{{ section.settings.about }}</div>
+      {%- endif -%}
+      {% render 'social-links' %}
+    </div>
+
+    {%- if section.settings.menu != blank -%}
+      <nav class="site-footer__menu" aria-label="Footer">
+        <p class="site-footer__heading">{{ section.settings.menu.title | escape }}</p>
+        <ul>
+          {%- for link in section.settings.menu.links -%}
+            <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+
+    {%- if section.settings.show_newsletter -%}
+      <div class="site-footer__newsletter">
+        <p class="site-footer__heading">{{ section.settings.newsletter_heading | escape }}</p>
+        {%- form 'customer', id: 'FooterNewsletter', class: 'newsletter-form' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="form-success">{{ 'newsletter.success' | t }}</p>
+          {%- else -%}
+            <div class="inline-field">
+              <label class="visually-hidden" for="FooterNewsletterEmail">{{ 'newsletter.email' | t }}</label>
+              <input id="FooterNewsletterEmail" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'newsletter.email' | t }}">
+              <button type="submit" class="button">{{ 'newsletter.subscribe' | t }}</button>
+            </div>
+            {%- if form.errors -%}<p class="form-error">{{ form.errors | default_errors }}</p>{%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+  </div>
+
+  <div class="page-width site-footer__bottom">
+    <small>&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }} · {{ powered_by_link }}</small>
+    {%- if section.settings.show_payment_icons -%}
+      <ul class="payment-icons">
+        {%- for type in shop.enabled_payment_types -%}
+          <li>{{ type | payment_type_svg_tag: class: 'payment-icon' }}</li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "푸터",
+  "class": "section-footer",
+  "settings": [
+    { "type": "richtext", "id": "about", "label": "소개 문구", "default": "<p>Small-group classes rooted in Korean ritual and craft.</p>" },
+    { "type": "link_list", "id": "menu", "label": "푸터 메뉴", "default": "footer" },
+    { "type": "checkbox", "id": "show_newsletter", "label": "뉴스레터 구독 폼 표시", "default": true },
+    { "type": "text", "id": "newsletter_heading", "label": "뉴스레터 제목", "default": "Get notified when new classes open" },
+    { "type": "checkbox", "id": "show_payment_icons", "label": "결제수단 아이콘 표시", "default": true }
+  ]
+}
+{% endschema %}

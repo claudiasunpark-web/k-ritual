@@ -1,0 +1,46 @@
+<section class="hero hero--{{ section.settings.height }}{% if section.settings.image == blank %} hero--no-image{% endif %}" style="--overlay: {{ section.settings.overlay | divided_by: 100.0 }}">
+  <div class="hero__media">
+    {%- if section.settings.image != blank -%}
+      {{ section.settings.image | image_url: width: 2400 | image_tag: widths: '750, 1100, 1500, 2000, 2400', sizes: '100vw', fetchpriority: 'high', alt: section.settings.image.alt }}
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder' }}
+    {%- endif -%}
+  </div>
+  <div class="page-width hero__content hero__content--{{ section.settings.alignment }}">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+    <h1 class="hero__heading">{{ section.settings.heading | escape }}</h1>
+    {%- if section.settings.text != blank -%}<div class="hero__text rte">{{ section.settings.text }}</div>{%- endif -%}
+    <div class="button-row">
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link | default: routes.all_products_collection_url }}" class="button">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+      {%- if section.settings.button_label_2 != blank -%}
+        <a href="{{ section.settings.button_link_2 }}" class="button button--secondary">{{ section.settings.button_label_2 | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "메인 배너 (Hero)",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "배경 이미지" },
+    { "type": "range", "id": "overlay", "label": "이미지 어둡게", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 },
+    { "type": "select", "id": "height", "label": "높이", "default": "large", "options": [
+      { "value": "small", "label": "작게" }, { "value": "medium", "label": "중간" }, { "value": "large", "label": "크게" }
+    ] },
+    { "type": "select", "id": "alignment", "label": "글자 정렬", "default": "left", "options": [
+      { "value": "left", "label": "왼쪽" }, { "value": "center", "label": "가운데" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨", "default": "Small-group classes" },
+    { "type": "text", "id": "heading", "label": "제목", "default": "Learn the rituals behind Korean beauty & craft" },
+    { "type": "richtext", "id": "text", "label": "설명", "default": "<p>Hands-on classes taught by practitioners. In person and online, limited to 12 students per session.</p>" },
+    { "type": "text", "id": "button_label", "label": "버튼 1 문구", "default": "Browse classes" },
+    { "type": "url", "id": "button_link", "label": "버튼 1 링크", "default": "/collections/all" },
+    { "type": "text", "id": "button_label_2", "label": "버튼 2 문구", "default": "About us" },
+    { "type": "url", "id": "button_link_2", "label": "버튼 2 링크" }
+  ],
+  "presets": [{ "name": "메인 배너 (Hero)" }]
+}
+{% endschema %}

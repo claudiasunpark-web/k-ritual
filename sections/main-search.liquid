@@ -1,0 +1,42 @@
+<section class="section">
+  <div class="page-width">
+    <div class="page-header">
+      <h1>{{ 'search.title' | t }}</h1>
+      <form action="{{ routes.search_url }}" method="get" role="search" class="inline-field search-form">
+        <input type="hidden" name="type" value="product">
+        <label class="visually-hidden" for="SearchInput">{{ 'search.placeholder' | t }}</label>
+        <input id="SearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'search.placeholder' | t }}">
+        <button type="submit" class="button">{{ 'search.submit' | t }}</button>
+      </form>
+    </div>
+
+    {%- if search.performed -%}
+      {%- paginate search.results by 12 -%}
+        {%- if search.results_count > 0 -%}
+          <p class="search-summary">{{ 'search.results_for' | t: count: search.results_count, terms: search.terms }}</p>
+          <div class="course-grid course-grid--3">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}
+                {% render 'course-card', product: item %}
+              {%- else -%}
+                <article class="course-card course-card--text">
+                  <div class="course-card__body">
+                    <h3 class="course-card__title"><a href="{{ item.url }}">{{ item.title | escape }}</a></h3>
+                    <p>{{ item.content | strip_html | truncatewords: 25 }}</p>
+                  </div>
+                </article>
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <p class="empty-state">{{ 'search.no_results' | t: terms: search.terms }}</p>
+        {%- endif -%}
+      {%- endpaginate -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "검색 결과", "settings": [] }
+{% endschema %}

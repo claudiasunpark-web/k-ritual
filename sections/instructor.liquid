@@ -1,0 +1,42 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width split{% if section.settings.image_position == 'right' %} split--reverse{% endif %}">
+    <div class="split__media">
+      {%- if section.settings.image != blank -%}
+        {{ section.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '500, 800, 1200', sizes: '(min-width: 750px) 50vw, 100vw' }}
+      {%- else -%}
+        {{ 'lifestyle-2' | placeholder_svg_tag: 'placeholder' }}
+      {%- endif -%}
+    </div>
+    <div class="split__content">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.subheading != blank -%}<p class="split__sub">{{ section.settings.subheading | escape }}</p>{%- endif -%}
+      <div class="rte">{{ section.settings.text }}</div>
+      {%- if section.settings.button_label != blank -%}
+        <a href="{{ section.settings.button_link }}" class="button button--secondary">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "강사 소개 / 이미지+글",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "사진" },
+    { "type": "select", "id": "image_position", "label": "사진 위치", "default": "left", "options": [
+      { "value": "left", "label": "왼쪽" }, { "value": "right", "label": "오른쪽" }
+    ] },
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨", "default": "Your instructor" },
+    { "type": "text", "id": "heading", "label": "제목 (이름)", "default": "Instructor name" },
+    { "type": "text", "id": "subheading", "label": "부제 (경력 등)", "default": "10+ years of teaching experience" },
+    { "type": "richtext", "id": "text", "label": "소개", "default": "<p>Share your story: how you started, what you teach, and why students love learning with you.</p>" },
+    { "type": "text", "id": "button_label", "label": "버튼 문구" },
+    { "type": "url", "id": "button_link", "label": "버튼 링크" },
+    { "type": "select", "id": "background", "label": "배경", "default": "default", "options": [
+      { "value": "default", "label": "기본" }, { "value": "surface", "label": "강조" }
+    ] }
+  ],
+  "presets": [{ "name": "강사 소개 / 이미지+글" }]
+}
+{% endschema %}

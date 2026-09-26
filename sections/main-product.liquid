@@ -1,0 +1,212 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign form_id = 'CourseForm-' | append: section.id
+  assign low_threshold = settings.seats_low_threshold
+-%}
+
+<section class="section course" data-course-section="{{ section.id }}">
+  <div class="page-width course__grid">
+    <div class="course__media">
+      {%- if product.media.size > 0 -%}
+        <div class="course__gallery">
+          {%- for media in product.media limit: section.settings.media_limit -%}
+            <div class="course__media-item{% if forloop.first %} course__media-item--main{% endif %}">
+              {%- case media.media_type -%}
+                {%- when 'image' -%}
+                  {%- liquid
+                    assign loading = 'lazy'
+                    if forloop.first
+                      assign loading = 'eager'
+                    endif
+                  -%}
+                  {{ media | image_url: width: 1400 | image_tag: widths: '600, 900, 1200, 1400', sizes: '(min-width: 990px) 55vw, 100vw', loading: loading, alt: media.alt }}
+                {%- when 'video' or 'external_video' -%}
+                  {{ media | media_tag: image_size: '1400x' }}
+                {%- else -%}
+                  {{ media | media_tag }}
+              {%- endcase -%}
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <div class="course__media-item course__media-item--main">{{ 'product-1' | placeholder_svg_tag: 'placeholder' }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="course__info">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'eyebrow' -%}
+            <p class="eyebrow" {{ block.shopify_attributes }}>{{ block.settings.text | default: product.type | escape }}</p>
+
+          {%- when 'title' -%}
+            <h1 class="course__title" {{ block.shopify_attributes }}>{{ product.title | escape }}</h1>
+
+          {%- when 'price' -%}
+            <div class="course__price" {{ block.shopify_attributes }} data-price-wrapper>
+              {% render 'price', product: product, variant: current_variant %}
+            </div>
+
+          {%- when 'info' -%}
+            {%- liquid
+              assign info_value = block.settings.value
+              if info_value == blank and block.settings.metafield != blank
+                assign info_value = product.metafields.course[block.settings.metafield].value
+              endif
+            -%}
+            {%- if info_value != blank -%}
+              <div class="course__fact" {{ block.shopify_attributes }}>
+                {% render 'icon', name: block.settings.icon %}
+                <span class="course__fact-label">{{ block.settings.label | escape }}</span>
+                <span class="course__fact-value">{{ info_value }}</span>
+              </div>
+            {%- endif -%}
+
+          {%- when 'description' -%}
+            <div class="course__description rte" {{ block.shopify_attributes }}>{{ product.description }}</div>
+
+          {%- when 'text' -%}
+            <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+
+          {%- when 'collapsible' -%}
+            <details class="accordion__item" {{ block.shopify_attributes }}{% if block.settings.open %} open{% endif %}>
+              <summary>{{ block.settings.heading | escape }}</summary>
+              <div class="rte">
+                {{ block.settings.content }}
+                {%- if block.settings.page != blank -%}{{ block.settings.page.content }}{%- endif -%}
+              </div>
+            </details>
+
+          {%- when 'buy_buttons' -%}
+            {%- liquid
+              assign picker_label = block.settings.picker_label
+              if picker_label == blank
+                assign picker_label = 'courses.choose_session' | t
+              endif
+              assign enroll_label = block.settings.button_label
+              if enroll_label == blank
+                assign enroll_label = 'courses.enroll' | t
+              endif
+            -%}
+            <div class="course__buy" {{ block.shopify_attributes }}>
+              {%- form 'product', product, id: form_id, class: 'course-form', novalidate: 'novalidate' -%}
+                <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-input>
+
+                {%- unless product.has_only_default_variant -%}
+                  <fieldset class="session-picker">
+                    <legend>{{ picker_label | escape }}</legend>
+                    {%- for variant in product.variants -%}
+                      {%- liquid
+                        assign tracked = false
+                        if variant.inventory_management == 'shopify' and variant.inventory_policy == 'deny'
+                          assign tracked = true
+                        endif
+                      -%}
+                      <label class="session-option{% unless variant.available %} is-disabled{% endunless %}">
+                        <input
+                          type="radio"
+                          name="session-{{ section.id }}"
+                          value="{{ variant.id }}"
+                          data-price="{{ variant.price | money | escape }}"
+                          data-compare-price="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                          {% if variant.id == current_variant.id %}checked{% endif %}
+                          {% unless variant.available %}disabled{% endunless %}
+                        >
+                        <span class="session-option__body">
+                          <span class="session-option__title">{{ variant.title | escape }}</span>
+                          <span class="session-option__meta">
+                            {%- if variant.available == false -%}
+                              <span class="tag tag--muted">{{ 'courses.sold_out' | t }}</span>
+                            {%- elsif settings.show_seats_left and tracked -%}
+                              {%- if variant.inventory_quantity <= low_threshold -%}
+                                <span class="tag tag--alert">{{ 'courses.seats_left' | t: count: variant.inventory_quantity }}</span>
+                              {%- else -%}
+                                <span class="tag">{{ 'courses.seats_left' | t: count: variant.inventory_quantity }}</span>
+                              {%- endif -%}
+                            {%- endif -%}
+                          </span>
+                        </span>
+                        <span class="session-option__price">{{ variant.price | money }}</span>
+                      </label>
+                    {%- endfor -%}
+                  </fieldset>
+                {%- endunless -%}
+
+                {%- if block.settings.show_quantity -%}
+                  <div class="field field--quantity">
+                    <label for="Quantity-{{ section.id }}">{{ 'courses.quantity' | t }}</label>
+                    <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" max="{{ block.settings.max_quantity }}">
+                  </div>
+                {%- endif -%}
+
+                <button
+                  type="submit"
+                  name="add"
+                  class="button button--full"
+                  data-add-button
+                  data-label-enroll="{{ enroll_label | escape }}"
+                  data-label-sold-out="{{ 'courses.sold_out' | t | escape }}"
+                  {% unless current_variant.available %}disabled{% endunless %}
+                >
+                  {%- if current_variant.available -%}{{ enroll_label | escape }}{%- else -%}{{ 'courses.sold_out' | t }}{%- endif -%}
+                </button>
+
+                {%- if block.settings.show_dynamic_checkout -%}
+                  {{ form | payment_button }}
+                {%- endif -%}
+              {%- endform -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+  {{ product | structured_data }}
+</script>
+
+{% schema %}
+{
+  "name": "클래스 상세",
+  "tag": "div",
+  "class": "section-main-product",
+  "settings": [
+    { "type": "range", "id": "media_limit", "label": "보여줄 사진 수", "min": 1, "max": 10, "step": 1, "default": 5 },
+    { "type": "paragraph", "content": "TIP: 일정(날짜/시간)은 상품의 '옵션(Variant)'으로 추가하세요. 재고 추적을 켜면 재고 수량 = 남은 좌석 수가 됩니다." }
+  ],
+  "blocks": [
+    { "type": "eyebrow", "name": "카테고리 문구", "limit": 1, "settings": [
+      { "type": "text", "id": "text", "label": "문구 (비워두면 상품 유형)" }
+    ] },
+    { "type": "title", "name": "제목", "limit": 1 },
+    { "type": "price", "name": "가격", "limit": 1 },
+    { "type": "info", "name": "클래스 정보 (한 줄)", "settings": [
+      { "type": "select", "id": "icon", "label": "아이콘", "default": "clock", "options": [
+        { "value": "clock", "label": "시계" }, { "value": "calendar", "label": "달력" }, { "value": "location", "label": "장소" },
+        { "value": "level", "label": "난이도" }, { "value": "users", "label": "인원" }, { "value": "check", "label": "체크" }
+      ] },
+      { "type": "text", "id": "label", "label": "항목명", "default": "Duration" },
+      { "type": "text", "id": "value", "label": "값 (모든 클래스에 동일하게 표시)", "info": "클래스마다 다르게 하려면 비워두고 아래 메타필드 키를 입력하세요." },
+      { "type": "text", "id": "metafield", "label": "메타필드 키 (course.○○○)", "info": "예: duration → 상품의 course.duration 메타필드 값을 표시합니다. 값이 없으면 줄이 숨겨집니다." }
+    ] },
+    { "type": "description", "name": "상품 설명", "limit": 1 },
+    { "type": "text", "name": "텍스트", "settings": [
+      { "type": "richtext", "id": "text", "label": "내용", "default": "<p>Text</p>" }
+    ] },
+    { "type": "collapsible", "name": "접이식 정보", "settings": [
+      { "type": "text", "id": "heading", "label": "제목", "default": "Refund policy" },
+      { "type": "richtext", "id": "content", "label": "내용" },
+      { "type": "page", "id": "page", "label": "또는 페이지 내용 불러오기" },
+      { "type": "checkbox", "id": "open", "label": "처음부터 펼치기", "default": false }
+    ] },
+    { "type": "buy_buttons", "name": "일정 선택 + 신청 버튼", "limit": 1, "settings": [
+      { "type": "text", "id": "picker_label", "label": "일정 선택 제목 (비워두면 기본)" },
+      { "type": "text", "id": "button_label", "label": "버튼 문구 (비워두면 기본)" },
+      { "type": "checkbox", "id": "show_quantity", "label": "수강 인원 선택 표시", "default": true },
+      { "type": "range", "id": "max_quantity", "label": "한 번에 신청 가능한 최대 인원", "min": 1, "max": 20, "step": 1, "default": 6 },
+      { "type": "checkbox", "id": "show_dynamic_checkout", "label": "바로 결제 버튼 (Shop Pay 등) 표시", "default": true }
+    ] }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,45 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "eyebrow": { "type": "eyebrow", "settings": {} },
+        "title": { "type": "title", "settings": {} },
+        "price": { "type": "price", "settings": {} },
+        "info_duration": { "type": "info", "settings": { "icon": "clock", "label": "Duration", "metafield": "duration" } },
+        "info_level": { "type": "info", "settings": { "icon": "level", "label": "Level", "metafield": "level" } },
+        "info_format": { "type": "info", "settings": { "icon": "location", "label": "Format", "metafield": "format" } },
+        "info_size": { "type": "info", "settings": { "icon": "users", "label": "Class size", "metafield": "class_size" } },
+        "buy": { "type": "buy_buttons", "settings": {} },
+        "description": { "type": "description", "settings": {} },
+        "included": { "type": "collapsible", "settings": { "heading": "What's included", "content": "<p>All materials, tea and snacks, and a take-home guide.</p>" } },
+        "refund": { "type": "collapsible", "settings": { "heading": "Refund & reschedule policy", "content": "<p>Full refund up to 7 days before the class. After that, you can transfer to another session once.</p>" } }
+      },
+      "block_order": ["eyebrow", "title", "price", "info_duration", "info_level", "info_format", "info_size", "buy", "description", "included", "refund"],
+      "settings": {}
+    },
+    "curriculum": {
+      "type": "course-curriculum",
+      "blocks": {
+        "m1": { "type": "module", "settings": { "title": "Welcome & background", "duration": "15 min", "text": "<p>The history and meaning behind the practice.</p>" } },
+        "m2": { "type": "module", "settings": { "title": "Guided demonstration", "duration": "30 min", "text": "<p>Watch each step up close with the instructor.</p>" } },
+        "m3": { "type": "module", "settings": { "title": "Hands-on practice", "duration": "60 min", "text": "<p>Practice at your own station with one-on-one feedback.</p>" } },
+        "m4": { "type": "module", "settings": { "title": "Wrap-up & Q&A", "duration": "15 min", "text": "<p>Take-home tips and time for your questions.</p>" } }
+      },
+      "block_order": ["m1", "m2", "m3", "m4"],
+      "settings": {}
+    },
+    "instructor": { "type": "instructor", "settings": { "background": "default" } },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "What should I bring?", "answer": "<p>Just yourself! Everything you need is provided.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "Can I change my session date?", "answer": "<p>Yes — contact us at least 7 days before your class and we'll move you to another session.</p>" } }
+      },
+      "block_order": ["q1", "q2"],
+      "settings": { "background": "surface" }
+    },
+    "more": { "type": "featured-courses", "settings": { "eyebrow": "", "heading": "You might also like", "limit": 3 } }
+  },
+  "order": ["main", "curriculum", "instructor", "faq", "more"]
+}

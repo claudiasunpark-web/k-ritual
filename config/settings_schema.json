@@ -1,0 +1,72 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "K-Ritual Classes",
+    "theme_version": "1.0.0",
+    "theme_author": "K-Ritual",
+    "theme_documentation_url": "https://github.com/claudiasunpark-web/k-ritual",
+    "theme_support_url": "https://github.com/claudiasunpark-web/k-ritual"
+  },
+  {
+    "name": "색상",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "배경색", "default": "#FAF7F2" },
+      { "type": "color", "id": "color_surface", "label": "카드/섹션 배경색", "default": "#F1EBE1" },
+      { "type": "color", "id": "color_text", "label": "글자색", "default": "#1F1B16" },
+      { "type": "color", "id": "color_accent", "label": "포인트 색 (버튼 등)", "default": "#8C3B2A" },
+      { "type": "color", "id": "color_accent_text", "label": "포인트 색 위 글자색", "default": "#FFFFFF" }
+    ]
+  },
+  {
+    "name": "글꼴",
+    "settings": [
+      {
+        "type": "select",
+        "id": "font_heading",
+        "label": "제목 글꼴",
+        "default": "Noto+Serif+KR",
+        "options": [
+          { "value": "Noto+Serif+KR", "label": "Noto Serif KR (명조)" },
+          { "value": "Gowun+Batang", "label": "Gowun Batang (명조)" },
+          { "value": "Noto+Sans+KR", "label": "Noto Sans KR (고딕)" },
+          { "value": "Playfair+Display", "label": "Playfair Display (영문)" }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "font_body",
+        "label": "본문 글꼴",
+        "default": "Noto+Sans+KR",
+        "options": [
+          { "value": "Noto+Sans+KR", "label": "Noto Sans KR" },
+          { "value": "Nanum+Gothic", "label": "Nanum Gothic" },
+          { "value": "Inter", "label": "Inter (영문)" }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "레이아웃",
+    "settings": [
+      { "type": "range", "id": "page_width", "label": "페이지 최대 너비", "min": 960, "max": 1600, "step": 20, "unit": "px", "default": 1200 },
+      { "type": "range", "id": "corner_radius", "label": "모서리 둥글기", "min": 0, "max": 24, "step": 2, "unit": "px", "default": 12 },
+      { "type": "image_picker", "id": "favicon", "label": "파비콘 (32x32)" }
+    ]
+  },
+  {
+    "name": "클래스 표시",
+    "settings": [
+      { "type": "checkbox", "id": "show_seats_left", "label": "남은 좌석 수 표시 (재고 추적 시)", "default": true },
+      { "type": "range", "id": "seats_low_threshold", "label": "'마감 임박' 표시 기준 좌석 수", "min": 1, "max": 20, "step": 1, "default": 5 }
+    ]
+  },
+  {
+    "name": "소셜 미디어",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram URL" },
+      { "type": "text", "id": "social_youtube", "label": "YouTube URL" },
+      { "type": "text", "id": "social_tiktok", "label": "TikTok URL" },
+      { "type": "text", "id": "social_facebook", "label": "Facebook URL" }
+    ]
+  }
+]

@@ -1,0 +1,17 @@
+<article class="section">
+  <div class="page-width page-width--narrow">
+    <div class="page-header">
+      <p class="eyebrow">{{ article.published_at | date: '%Y.%m.%d' }}</p>
+      <h1>{{ article.title | escape }}</h1>
+    </div>
+    {%- if article.image -%}
+      <div class="article__image">{{ article.image | image_url: width: 1400 | image_tag: widths: '700, 1000, 1400', sizes: '(min-width: 800px) 760px, 100vw' }}</div>
+    {%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+    <p><a href="{{ blog.url }}" class="text-link">← {{ blog.title | escape }}</a></p>
+  </div>
+</article>
+
+{% schema %}
+{ "name": "블로그 글", "settings": [] }
+{% endschema %}

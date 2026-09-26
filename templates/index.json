@@ -1,0 +1,40 @@
+{
+  "sections": {
+    "hero": { "type": "hero", "settings": {} },
+    "courses": { "type": "featured-courses", "settings": {} },
+    "features": {
+      "type": "features",
+      "blocks": {
+        "f1": { "type": "feature", "settings": { "title": "Small groups", "text": "<p>Max 12 students per session, so you get personal feedback.</p>" } },
+        "f2": { "type": "feature", "settings": { "title": "All materials included", "text": "<p>Tools and ingredients are ready for you when you arrive.</p>" } },
+        "f3": { "type": "feature", "settings": { "title": "Take-home guide", "text": "<p>Keep practicing with a printed guide and video recap.</p>" } }
+      },
+      "block_order": ["f1", "f2", "f3"],
+      "settings": {}
+    },
+    "instructor": { "type": "instructor", "settings": {} },
+    "testimonials": {
+      "type": "testimonials",
+      "blocks": {
+        "t1": { "type": "testimonial", "settings": {} },
+        "t2": { "type": "testimonial", "settings": { "quote": "<p>Warm, calm and incredibly detailed. I'm already booked for the next level.</p>", "author": "Student name", "detail": "Took the Intermediate class" } },
+        "t3": { "type": "testimonial", "settings": { "quote": "<p>We booked a private session for our team — everyone loved it.</p>", "author": "Student name", "detail": "Private group booking" } }
+      },
+      "block_order": ["t1", "t2", "t3"],
+      "settings": {}
+    },
+    "faq": {
+      "type": "faq",
+      "blocks": {
+        "q1": { "type": "question", "settings": { "question": "Do I need any experience?", "answer": "<p>No experience needed. Each class lists its level so you can pick the right one.</p>" } },
+        "q2": { "type": "question", "settings": { "question": "What is your refund policy?", "answer": "<p>Full refund up to 7 days before the class. After that, you can transfer to another session once.</p>" } },
+        "q3": { "type": "question", "settings": { "question": "How do I join an online class?", "answer": "<p>You'll receive the join link by email after checkout and again 24 hours before class.</p>" } },
+        "q4": { "type": "question", "settings": { "question": "Can I buy a class as a gift?", "answer": "<p>Yes! Gift cards are available and can be used for any class.</p>" } }
+      },
+      "block_order": ["q1", "q2", "q3", "q4"],
+      "settings": {}
+    },
+    "cta": { "type": "rich-text", "settings": {} }
+  },
+  "order": ["hero", "courses", "features", "instructor", "testimonials", "faq", "cta"]
+}

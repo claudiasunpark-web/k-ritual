@@ -1,0 +1,49 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width page-width--narrow">
+    <div class="section-heading section-heading--center">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        <h2>{{ section.settings.heading | escape }}</h2>
+      </div>
+    </div>
+    <div class="accordion">
+      {%- for block in section.blocks -%}
+        <details class="accordion__item" {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.question | escape }}</summary>
+          <div class="rte">{{ block.settings.answer }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "자주 묻는 질문 (FAQ)",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨", "default": "FAQ" },
+    { "type": "text", "id": "heading", "label": "제목", "default": "Frequently asked questions" },
+    { "type": "select", "id": "background", "label": "배경", "default": "default", "options": [
+      { "value": "default", "label": "기본" }, { "value": "surface", "label": "강조" }
+    ] }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "질문",
+      "settings": [
+        { "type": "text", "id": "question", "label": "질문", "default": "Do I need any experience?" },
+        { "type": "richtext", "id": "answer", "label": "답변", "default": "<p>No experience needed. Each class lists its level so you can pick the right one.</p>" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "자주 묻는 질문 (FAQ)",
+    "blocks": [
+      { "type": "question", "settings": { "question": "Do I need any experience?", "answer": "<p>No experience needed. Each class lists its level so you can pick the right one.</p>" } },
+      { "type": "question", "settings": { "question": "What is your refund policy?", "answer": "<p>Full refund up to 7 days before the class. After that, you can transfer to another session once.</p>" } },
+      { "type": "question", "settings": { "question": "How do I join an online class?", "answer": "<p>You'll receive the join link by email after checkout and again 24 hours before class.</p>" } }
+    ]
+  }]
+}
+{% endschema %}

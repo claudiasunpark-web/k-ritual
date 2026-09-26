@@ -1,0 +1,40 @@
+<section class="section">
+  <div class="page-width page-width--narrow">
+    <div class="page-header">
+      <h1>{{ page.title | escape }}</h1>
+      {%- if page.content != blank -%}<div class="rte page-header__text">{{ page.content }}</div>{%- endif -%}
+    </div>
+
+    {%- form 'contact', id: 'ContactForm', class: 'contact-form' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="form-success">{{ 'contact.success' | t }}</p>
+      {%- endif -%}
+      {%- if form.errors -%}
+        <p class="form-error">{{ form.errors | default_errors }}</p>
+      {%- endif -%}
+      <div class="field-row">
+        <div class="field">
+          <label for="ContactName">{{ 'contact.name' | t }}</label>
+          <input id="ContactName" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}">
+        </div>
+        <div class="field">
+          <label for="ContactEmail">{{ 'contact.email' | t }} *</label>
+          <input id="ContactEmail" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}">
+        </div>
+      </div>
+      <div class="field">
+        <label for="ContactPhone">{{ 'contact.phone' | t }}</label>
+        <input id="ContactPhone" type="tel" name="contact[phone]" autocomplete="tel" value="{{ form.phone }}">
+      </div>
+      <div class="field">
+        <label for="ContactBody">{{ 'contact.message' | t }}</label>
+        <textarea id="ContactBody" name="contact[body]" rows="6">{{ form.body }}</textarea>
+      </div>
+      <button type="submit" class="button">{{ 'contact.send' | t }}</button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "문의 폼", "settings": [] }
+{% endschema %}

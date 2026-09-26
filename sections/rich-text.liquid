@@ -1,0 +1,29 @@
+<section class="section section--{{ section.settings.background }}">
+  <div class="page-width page-width--narrow text-center">
+    {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+    {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    {%- if section.settings.text != blank -%}<div class="rte">{{ section.settings.text }}</div>{%- endif -%}
+    {%- if section.settings.button_label != blank -%}
+      <div class="button-row button-row--center">
+        <a href="{{ section.settings.button_link }}" class="button">{{ section.settings.button_label | escape }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "텍스트 / 행동 유도(CTA)",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "상단 작은 글씨" },
+    { "type": "text", "id": "heading", "label": "제목", "default": "Private & group bookings" },
+    { "type": "richtext", "id": "text", "label": "내용", "default": "<p>Planning a team event, birthday or bridal party? We host private classes for groups of 6 or more.</p>" },
+    { "type": "text", "id": "button_label", "label": "버튼 문구", "default": "Contact us" },
+    { "type": "url", "id": "button_link", "label": "버튼 링크" },
+    { "type": "select", "id": "background", "label": "배경", "default": "surface", "options": [
+      { "value": "default", "label": "기본" }, { "value": "surface", "label": "강조" }
+    ] }
+  ],
+  "presets": [{ "name": "텍스트 / 행동 유도(CTA)" }]
+}
+{% endschema %}
