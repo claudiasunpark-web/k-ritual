@@ -2,7 +2,8 @@
 import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
 import { zoneMap } from './zonemap.mjs';
 import { geoMap, analyzeGeography } from './geomap.mjs';
-import { locatorBase, locatorFor } from './minimap.mjs';
+import { locatorBase, locatorFor, zoneLocator } from './minimap.mjs';
+import { findFacilities, zoneDistances, nearestByGroup, mapMarkers } from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
@@ -47,8 +48,23 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       zoneBuildings: analysis.zoneBuildings,
       riverBandRings: analysis.riverBandRings,
     });
-    locator = { ...base, geojson: osm };
+    const facilities = findFacilities(osm);
+    locator = {
+      ...base,
+      geojson: osm,
+      facilities,
+      markers: mapMarkers(facilities),
+      dist: zoneDistances({
+        zoneBuildings: analysis.zoneBuildings,
+        facilities,
+        bankLines: analysis.bankLines,
+      }),
+    };
   }
+
+  // 직선거리를 사람이 읽는 형태로. 100m 미만은 자릿수를 더 줄이지 않습니다 —
+  // 직선거리를 10m 단위로 쓰면 실측한 것처럼 보입니다.
+  const km = (v) => (v == null ? '—' : v < 1 ? `${Math.round(v * 1000 / 10) * 10}m` : `${v.toFixed(1)}km`);
 
   return {
     /** 표지의 장별 카드 목차 */
@@ -85,6 +101,86 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     'real-map': (args) => {
       if (!osm?.features?.length) return zoneMap({ zones });
       return geoMap({ geojson: osm, zones, complexes, title: args || undefined });
+    },
+
+    /**
+     * 구역별 입지 — 항목별로 흩어진 입지 정보를 구역 하나로 모아 봅니다.
+     * 거리는 모두 직선거리이며, 도보 경로가 아닙니다.
+     */
+    'zone-location': (args) => {
+      if (!locator) {
+        return '<p class="muted">지형 데이터가 없어 구역별 입지 분석을 만들 수 없습니다.</p>';
+      }
+      const only = args ? args.split(/[\s,]+/).filter(Boolean) : null;
+      const list = zones.zones.filter((z) => !only || only.includes(z.id) || only.includes(z.shortName));
+
+      // 각 구역에 적용되는 입지 항목을 범주별로 모읍니다.
+      const itemsFor = (zoneId) => location.categories.map((c) => ({
+        title: c.title,
+        items: c.items.filter((it) => (it.zones ?? []).includes(zoneId)),
+      })).filter((c) => c.items.length);
+
+      // 그 구역에서 가장 가까운 것에 표시를 달기 위해, 항목별 최솟값을 구합니다.
+      const best = new Map();
+      for (const fac of locator.facilities) {
+        let lo = Infinity;
+        for (const d of locator.dist.values()) {
+          const v = d.to.get(fac.key);
+          if (v != null && v < lo) lo = v;
+        }
+        best.set(fac.key, lo);
+      }
+      let riverBest = Infinity;
+      for (const d of locator.dist.values()) if (d.river != null && d.river < riverBest) riverBest = d.river;
+
+      const groups = ['상권', '교통', '학교'];
+
+      return `<div class="zonelocs">${list.map((z) => {
+        const d = locator.dist.get(z.id);
+        if (!d) return '';
+        const rows = [];
+        rows.push('<tr class="zoneloc__grouprow"><th colspan="2" scope="colgroup">한강</th></tr>');
+        rows.push(`<tr><th scope="row">물가까지<span class="zoneloc__caveat">올림픽대로로 차단</span></th>`
+          + `<td class="${d.river != null && Math.abs(d.river - riverBest) < 0.001 ? 'is-best' : ''}">${km(d.river)}</td></tr>`);
+        for (const g of groups) {
+          const inGroup = locator.facilities.filter((f) => f.group === g);
+          if (!inGroup.length) continue;
+          rows.push(`<tr class="zoneloc__grouprow"><th colspan="2" scope="colgroup">${escapeHtml(g)}</th></tr>`);
+          for (const fac of inGroup) {
+            const v = d.to.get(fac.key);
+            const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
+            rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}</th><td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
+          }
+        }
+
+        const near = groups.map((g) => {
+          const n = nearestByGroup(d, locator.facilities, g);
+          return n ? `<li><span class="zoneloc__k">${escapeHtml(g)}</span> 가장 가까운 곳은 <strong>${escapeHtml(n.label)}</strong> ${km(n.km)}</li>` : '';
+        }).filter(Boolean).join('');
+
+        return `<section class="zoneloc zoneloc--risk-${z.riskLevel}" id="zoneloc-${z.id}">
+  <header class="zoneloc__head">
+    <h4 class="zoneloc__title">${escapeHtml(z.name)}</h4>
+    <span class="zoneloc__sub">${escapeHtml((z.complexes ?? []).map((c) => c.name).join(', '))}</span>
+  </header>
+  <div class="zoneloc__grid">
+    <div class="zoneloc__mapwrap">
+      ${zoneLocator({ zone: z, facilities: locator.markers, zoneIds: locator.zoneIds })}
+      <p class="zoneloc__mapnote">색칠된 것이 ${escapeHtml(z.shortName)} 건물입니다. 점은 주요 시설.</p>
+    </div>
+    <div class="zoneloc__body">
+      <ul class="zoneloc__near">${near}</ul>
+      <div class="table-wrap zoneloc__tablewrap">
+        <table class="zoneloc__table">
+          <caption>단지 중심에서 직선거리 · <strong>굵은 칸</strong>은 6개 구역 중 가장 가까움</caption>
+          <tbody>${rows.join('')}</tbody>
+        </table>
+      </div>
+      <div class="zoneloc__items">${itemsFor(z.id).map((c) => `<p class="zoneloc__cat"><span class="zoneloc__k">${escapeHtml(c.title)}</span> ${c.items.map((it) => escapeHtml(it.name)).join(' · ')}</p>`).join('')}</div>
+    </div>
+  </div>
+</section>`;
+      }).join('')}</div>`;
     },
 
     /** 구역별 카드 */
@@ -503,7 +599,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     'location-cards': (args) => {
       const only = args ? args.split(/[\s,]+/).filter(Boolean) : null;
       const cats = location.categories.filter((c) => !only || only.includes(c.id));
-      const mapOf = (it) => (locator ? locatorFor({ item: it, geojson: locator.geojson, zoneIds: locator.zoneIds, zoneLabel }) : '');
+      const mapOf = (it) => (locator ? locatorFor({ item: it, geojson: locator.geojson, zoneIds: locator.zoneIds, zoneLabel, base: locator }) : '');
       return `${locator ? locator.symbol : ''}<div class="loccats">${cats
         .map(
           (c) => `<section class="loccat" id="loc-${c.id}">

@@ -722,3 +722,90 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 @media print {
   .locitem__body { grid-template-columns: 1fr 240px; }
 }
+
+/* ── 위치도 표시 요소 ──────────────────────────────────── */
+.locmap__commercial { fill: var(--series-2); fill-opacity: 0.16; stroke: none; }
+.locmap__area {
+  fill: var(--series-2); fill-opacity: 0.35;
+  stroke: var(--series-2); stroke-width: 1.2;
+}
+.locmap__road {
+  fill: none; stroke: var(--series-2); stroke-width: 2.6;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+.locmap__ramp {
+  fill: none; stroke: var(--series-2); stroke-width: 1; opacity: 0.75;
+}
+.locmap__dot { fill: var(--series-2); stroke: var(--map-land); stroke-width: 1.4; }
+.locmap__dot--school { fill: var(--series-7); }
+.locmap__dot--station { fill: var(--series-1); }
+.locmap__dot--park { fill: var(--series-6); }
+.locmap__dot--shop { fill: var(--series-2); }
+
+/* 예정 노선은 확정된 것과 반드시 다르게 보여야 합니다. */
+.locmap__planned {
+  stroke: var(--critical); stroke-width: 2.2; stroke-dasharray: 6 4; stroke-linecap: round;
+}
+.locmap__planned-end { fill: none; stroke: var(--critical); stroke-width: 1.8; }
+
+.locmap text, .zoneloc__map text {
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  fill: var(--text-primary);
+  paint-order: stroke fill; stroke: var(--map-land); stroke-width: 3px; stroke-linejoin: round;
+}
+.locmap__label--road { font-weight: 500; fill: var(--text-secondary); }
+.locmap__label--planned { fill: var(--critical); font-weight: 700; }
+
+/* ── 구역별 입지 ───────────────────────────────────────── */
+.zonelocs { display: grid; gap: 22px; margin: 24px 0; }
+.zoneloc {
+  padding: 18px; background: var(--surface-1);
+  border: 1px solid var(--border); border-top: 3px solid var(--baseline);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.zoneloc--risk-low { border-top-color: var(--good); }
+.zoneloc--risk-medium { border-top-color: var(--warning); }
+.zoneloc--risk-high { border-top-color: var(--critical); }
+.zoneloc__head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+.zoneloc__title { font-size: 17px; margin: 0; }
+.zoneloc__sub { font-size: 12.5px; color: var(--text-muted); }
+.zoneloc__grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 22px; margin-top: 14px; align-items: start; }
+.zoneloc__map {
+  display: block; width: 100%; height: auto;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--map-land);
+}
+.zoneloc__mapnote { margin: 6px 0 0; font-size: 11.5px; color: var(--text-muted); }
+.zoneloc__near { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 6px; font-size: 14px; }
+.zoneloc__k {
+  display: inline-block; min-width: 42px; font-size: 11.5px; font-weight: 700;
+  color: var(--text-muted); text-transform: none;
+}
+/* 표가 넓으면 이름과 숫자가 멀어져 눈이 따라가지 못합니다. */
+.zoneloc__tablewrap { margin-bottom: 14px; max-width: 360px; }
+.zoneloc__grouprow th {
+  padding-top: 10px; font-size: 11px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--text-muted); border-top: 1px solid var(--grid);
+}
+.zoneloc__caveat {
+  display: block; font-size: 10.5px; color: var(--text-muted); font-weight: 400;
+}
+.zoneloc__table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.zoneloc__table caption {
+  caption-side: top; text-align: left; padding: 8px 10px;
+  font-size: 11.5px; color: var(--text-muted);
+}
+.zoneloc__table th, .zoneloc__table td { padding: 5px 10px; border-top: 1px solid var(--grid); }
+.zoneloc__table th { text-align: left; font-weight: 500; color: var(--text-secondary); }
+.zoneloc__table td { text-align: right; font-variant-numeric: tabular-nums; }
+.zoneloc__table td.is-best { font-weight: 750; color: var(--text-primary); }
+.zoneloc__table td.is-best::after { content: " ★"; font-size: 10px; color: var(--series-4); }
+.zoneloc__cat { margin: 0 0 6px; font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+
+@media (max-width: 760px) {
+  .zoneloc__grid { grid-template-columns: 1fr; }
+  .zoneloc__mapwrap { max-width: 320px; }
+}
+@media print {
+  .zoneloc { break-inside: avoid; box-shadow: none; }
+  .zoneloc__grid { grid-template-columns: 240px 1fr; }
+}

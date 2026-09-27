@@ -243,6 +243,7 @@ export function analyzeGeography({ geojson, zones, complexes }) {
     zoneOf,
     zoneBuildings,
     water: waterFeatures,
+    bankLines,
     riverBandRings: riverBand(bankLines, centerline, VIEW),
   };
 }
