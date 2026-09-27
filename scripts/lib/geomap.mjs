@@ -24,6 +24,10 @@ const W = 980;
 // mercY 와 경도가 같은 단위(도)여야 합니다 — geo.mjs 의 주석 참고.
 const H = Math.round((W * (mercY(VIEW.north) - mercY(VIEW.south))) / (VIEW.east - VIEW.west));
 
+// 화면 판정용 경계 상자. VIEW 에서만 나오는 값이라 한 번만 만듭니다.
+// 살짝 여유(0.002도 ≈ 200m)를 두어 테두리에 걸친 것이 잘려 나가지 않게 합니다.
+const viewBbox = [VIEW.west - 0.002, VIEW.south - 0.002, VIEW.east + 0.002, VIEW.north + 0.002];
+
 const ZONE_COLOR = {
   z1: 'var(--series-1)', z2: 'var(--series-2)', z3: 'var(--series-3)',
   z4: 'var(--series-4)', z5: 'var(--series-5)', z6: 'var(--series-7)',
@@ -157,8 +161,13 @@ function riverBand(bankLines, centerline, view) {
 /**
  * @param {{geojson:object, zones:object, complexes:object, title?:string, id?:string}} opts
  */
-export function geoMap({ geojson, zones, complexes, title = '압구정 실제 지형도', id = 'geo-map' }) {
-  const { project, metersPerPx } = projector(VIEW, { width: W, height: H });
+/**
+ * 화면 안 피처를 고르고, 건물을 구역에 맞추고, 한강 물가 선으로 강 면을 만듭니다.
+ *
+ * 큰 지형도와 항목별 작은 위치도가 같은 판정을 써야 합니다. 여기서 한 번만
+ * 계산하고 둘 다 이 결과를 씁니다 — 따로 계산하면 조용히 어긋납니다.
+ */
+export function analyzeGeography({ geojson, zones, complexes }) {
   const matchZone = zoneMatcher(complexes);
   const features = geojson.features ?? [];
 
@@ -167,7 +176,6 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   // '꼭짓점이 화면 안에 있는가'로 보면 안 됩니다. 한강처럼 화면을 통째로
   // 가로지르는 피처는 꼭짓점이 모두 화면 밖에 있을 수 있습니다. 경계 상자가
   // 겹치는지로 판정해야 그런 피처가 사라지지 않습니다.
-  const viewBbox = [VIEW.west - 0.002, VIEW.south - 0.002, VIEW.east + 0.002, VIEW.north + 0.002];
   const touchesView = (f) => {
     if (f.geometry?.type === 'Point') return inBbox(f.geometry.coordinates, viewBbox);
     const coords = [...ringsOf(f), ...linesOf(f)].flat();
@@ -209,6 +217,40 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
       if (pointInRing(c, a.ring)) { zoneOf.set(f, a.hit); break; }
     }
   }
+
+  // 구역별 건물. 구획 폴리곤은 뺍니다 — 칠하는 것은 건물입니다.
+  const zoneBuildings = new Map(zones.zones.map((z) => [z.id, []]));
+  for (const [f, hit] of zoneOf) {
+    if (!f.properties.building) continue;
+    zoneBuildings.get(hit.zone)?.push(f);
+  }
+
+  // ── 한강 ─────────────────────────────────────────────────
+  const waterFeatures = inView.filter((f) => f.properties.natural === 'water'
+    || /^(riverbank|river|stream|canal)$/.test(f.properties.waterway ?? ''));
+  // 한강 물가 선만 씁니다. 중랑천 등 다른 물길의 물가가 섞이면 남안·북안
+  // 판정이 깨져 엉뚱한 면이 그려집니다.
+  const bankLines = waterFeatures
+    .filter((f) => f.properties.bank === 'yes' && f.properties.name === '한강')
+    .flatMap((f) => linesOf(f))
+    .filter((l) => l.length >= 2);
+  const centerline = waterFeatures
+    .find((f) => f.properties.waterway === 'river' && f.properties.name === '한강')
+    ?.geometry?.coordinates;
+
+  return {
+    inView,
+    zoneOf,
+    zoneBuildings,
+    water: waterFeatures,
+    riverBandRings: riverBand(bankLines, centerline, VIEW),
+  };
+}
+
+export function geoMap({ geojson, zones, complexes, title = '압구정 실제 지형도', id = 'geo-map' }) {
+  const { project, metersPerPx } = projector(VIEW, { width: W, height: H });
+  const analysis = analyzeGeography({ geojson, zones, complexes });
+  const { inView, zoneOf } = analysis;
 
   // ── 레이어별 분류 ─────────────────────────────────────────
   const water = [];
@@ -271,17 +313,8 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
 
   push(`<rect width="${W}" height="${H}" fill="var(--map-land)"/>`);
 
-  // 한강 — 물가 선 두 가닥을 이어 면으로 만듭니다.
-  // 한강 물가 선만 씁니다. 중랑천 등 다른 물길의 물가가 섞이면 남안·북안
-  // 판정이 깨져 엉뚱한 면이 그려집니다.
-  const bankLines = water
-    .filter((f) => f.properties.bank === 'yes' && f.properties.name === '한강')
-    .flatMap((f) => linesOf(f))
-    .filter((l) => l.length >= 2);
-  const centerline = water
-    .find((f) => f.properties.waterway === 'river' && f.properties.name === '한강')
-    ?.geometry?.coordinates;
-  const band = riverBand(bankLines, centerline, VIEW);
+  // 한강 — 물가 선 두 가닥을 이어 면으로 만든 결과를 그대로 씁니다.
+  const band = analysis.riverBandRings;
 
   const ponds = water.filter((f) => f.properties.bank !== 'yes' && ringsOf(f).length);
   const pondPath = ponds.map((f) => toPath(ringsOf(f), project, { close: true })).filter(Boolean).join(' ');
@@ -334,11 +367,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   }
 
   const zoneList = zones.zones;
-  const perZone = new Map(zoneList.map((z) => [z.id, []]));
-  for (const [f, hit] of zoneOf) {
-    if (!f.properties.building) continue; // 구획 폴리곤은 칠하지 않습니다 (건물만)
-    perZone.get(hit.zone)?.push(f);
-  }
+  const perZone = analysis.zoneBuildings;
 
   push(`<g class="geomap__zones">`);
   for (const z of zoneList) {

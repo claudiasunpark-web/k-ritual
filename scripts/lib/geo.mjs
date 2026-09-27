@@ -174,3 +174,32 @@ export function crossPoint(line, others) {
   }
   return null;
 }
+
+/**
+ * 볼록 껍질 (Andrew monotone chain).
+ * 구역을 작은 지도에 한 덩이로 보여 줄 때, 건물 수백 개 대신 그 바깥선만 씁니다.
+ */
+export function convexHull(points) {
+  if (points.length < 3) return [...points];
+  const pts = [...points].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const half = (list) => {
+    const out = [];
+    for (const p of list) {
+      while (out.length >= 2 && cross(out[out.length - 2], out[out.length - 1], p) <= 0) out.pop();
+      out.push(p);
+    }
+    out.pop();
+    return out;
+  };
+  return [...half(pts), ...half([...pts].reverse())];
+}
+
+/** 점 수를 줄여 작은 지도용으로 가볍게 만듭니다 (n 개마다 하나씩, 끝점은 유지). */
+export function thin(points, step) {
+  if (step <= 1 || points.length <= 3) return points;
+  const out = points.filter((_, i) => i % step === 0);
+  const last = points[points.length - 1];
+  if (out[out.length - 1] !== last) out.push(last);
+  return out;
+}

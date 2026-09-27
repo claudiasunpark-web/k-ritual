@@ -1,7 +1,8 @@
 // 원고의 ::: 블록에 대응하는 인터랙티브 컴포넌트 생성기.
 import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
 import { zoneMap } from './zonemap.mjs';
-import { geoMap } from './geomap.mjs';
+import { geoMap, analyzeGeography } from './geomap.mjs';
+import { locatorBase, locatorFor } from './minimap.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
@@ -35,6 +36,19 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   const tradeComplexes = trades?.complexes ?? [];
 
   const zoneLabel = (id) => zoneById.get(id)?.shortName ?? id;
+
+  // 항목별 위치도는 같은 바탕 그림을 씁니다. 여기서 한 번만 만들고,
+  // 지형 자료가 없으면 위치도 없이 글만 나갑니다.
+  let locator = null;
+  if (osm?.features?.length) {
+    const analysis = analyzeGeography({ geojson: osm, zones, complexes });
+    const base = locatorBase({
+      geojson: osm,
+      zoneBuildings: analysis.zoneBuildings,
+      riverBandRings: analysis.riverBandRings,
+    });
+    locator = { ...base, geojson: osm };
+  }
 
   return {
     /** 표지의 장별 카드 목차 */
@@ -489,7 +503,8 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     'location-cards': (args) => {
       const only = args ? args.split(/[\s,]+/).filter(Boolean) : null;
       const cats = location.categories.filter((c) => !only || only.includes(c.id));
-      return `<div class="loccats">${cats
+      const mapOf = (it) => (locator ? locatorFor({ item: it, geojson: locator.geojson, zoneIds: locator.zoneIds, zoneLabel }) : '');
+      return `${locator ? locator.symbol : ''}<div class="loccats">${cats
         .map(
           (c) => `<section class="loccat" id="loc-${c.id}">
   <h4 class="loccat__title">${escapeHtml(c.title)}</h4>
@@ -497,10 +512,15 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     .map(
       (it) => `<li class="locitem locitem--${it.impact}">
     <div class="locitem__head"><span class="locitem__name">${escapeHtml(it.name)}</span><span class="locitem__impact">영향도 ${it.impact === 'high' ? '높음' : it.impact === 'medium' ? '중간' : '낮음'}</span></div>
+    <div class="locitem__body">
+    <div class="locitem__text">
     <p class="locitem__detail">${escapeHtml(it.detail)}</p>
     ${it.note ? `<p class="locitem__note">${escapeHtml(it.note)}</p>` : ''}
     <p class="locitem__zones">해당 구역: ${(it.zones ?? []).map((z) => escapeHtml(zoneLabel(z))).join(', ') || '전체'}</p>
     ${(it.sources ?? []).length ? `<p class="locitem__src">출처: ${it.sources.map((k) => (sources.sources[k] ? `<a href="${sources.sources[k].url}" target="_blank" rel="noopener noreferrer">${escapeHtml(sources.sources[k].publisher)}</a>` : escapeHtml(k))).join(' · ')}</p>` : ''}
+    </div>
+    ${mapOf(it)}
+    </div>
   </li>`,
     )
     .join('')}</ul>
