@@ -324,3 +324,90 @@ export function nearestPoint(from, pts) {
   }
   return best;
 }
+
+// ── 구역별 장단점 ───────────────────────────────────────────
+/**
+ * 구역별 입지를 범주별 강점·약점으로 정리합니다.
+ *
+ * 강점·약점은 의견이 아니라 순위입니다 — 6개 구역 중 1~2위면 강점,
+ * 5~6위면 약점으로 봅니다. 그래야 "좋다/나쁘다" 를 근거 없이 말하지 않습니다.
+ */
+const CATEGORIES = [
+  { id: 'edu', title: '교육', groups: ['학교'] },
+  { id: 'transit', title: '교통', groups: ['교통'] },
+  { id: 'river', title: '한강 접근성', groups: ['한강'] },
+  { id: 'amenity', title: '부대시설', groups: ['상권'] },
+];
+
+/** 시설별로 6개 구역을 가까운 순으로 매깁니다. */
+export function rankZones(dist, facilities) {
+  const ranks = new Map(); // facKey → { of: Map(zoneId → rank), min, max }
+  const put = (key, rows) => {
+    const sorted = rows.filter(([, v]) => v != null).sort((a, b) => a[1] - b[1]);
+    if (!sorted.length) return;
+    ranks.set(key, {
+      of: new Map(sorted.map(([z], i) => [z, i + 1])),
+      min: sorted[0][1],
+      max: sorted[sorted.length - 1][1],
+    });
+  };
+  for (const fac of facilities) put(fac.key, [...dist].map(([z, d]) => [z, d.to.get(fac.key)]));
+  // 한강 물가는 시설이 아니라 따로 계산합니다.
+  put('__river', [...dist].map(([z, d]) => [z, d.river]));
+  return ranks;
+}
+
+/**
+ * 한 구역의 범주별 정리.
+ * @returns {Array<{id,title,items:Array<{label,km,rank,kind}>}>}
+ */
+export function zoneVerdict({ zoneId, dist, facilities, ranks, access, roadAccess }) {
+  const d = dist.get(zoneId);
+  if (!d) return [];
+  const total = dist.size;
+
+  /**
+   * 순위 꼬리표를 달지 결정합니다.
+   *
+   * 두 가지를 조심합니다.
+   *  - 순위가 없는 항목(버스·램프처럼 시설 목록에 없는 것)은 꼬리표를 달지
+   *    않습니다. null 을 숫자와 비교하면 1위로 취급되어 버립니다.
+   *  - 6개 구역의 차이가 작으면 순위를 말하지 않습니다. 360m 와 370m 를
+   *    '가장 가까움' 과 '먼 편' 으로 갈라 적으면 사실은 맞지만 오해를 만듭니다.
+   */
+  const entry = (label, km, rank, spread) => {
+    let kind = 'mid';
+    const meaningful = spread == null || (spread.max - spread.min) >= 0.15 || (spread.max / spread.min) >= 1.5;
+    if (rank != null && meaningful) {
+      if (rank === 1) kind = 'best';
+      else if (rank <= 2) kind = 'good';
+      else if (rank >= total - 1) kind = 'weak';
+    }
+    return { label, km, rank: rank ?? null, kind };
+  };
+
+  return CATEGORIES.map((cat) => {
+    const items = [];
+
+    const ranked = (label, km, key, extra = {}) => {
+      const r = ranks.get(key);
+      items.push({ ...entry(label, km, r?.of.get(zoneId), r), ...extra });
+    };
+
+    if (cat.id === 'river' && d.river != null) ranked('한강 물가', d.river, '__river');
+
+    for (const fac of facilities.filter((f) => cat.groups.includes(f.group))) {
+      const v = d.to.get(fac.key);
+      if (v == null) continue;
+      ranked(fac.label, v, fac.key, { caveat: fac.caveat });
+    }
+
+    if (cat.id === 'transit') {
+      const ra = roadAccess?.get(zoneId);
+      if (ra?.ramp) items.push(entry('진출입 램프', ra.ramp.km, null));
+    }
+
+    items.sort((a, b) => a.km - b.km);
+    return { id: cat.id, title: cat.title, items };
+  }).filter((c) => c.items.length);
+}

@@ -5,7 +5,7 @@ import { geoMap, analyzeGeography } from './geomap.mjs';
 import { locatorBase, locatorFor, zoneLocator, accessArrows } from './minimap.mjs';
 import {
   findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm, formatKm,
-  rampPoints, bridgePoints, nearestPoint,
+  rampPoints, bridgePoints, nearestPoint, rankZones, zoneVerdict,
 } from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
@@ -97,6 +97,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       dist,
       access,
       roadAccess,
+      ranks: rankZones(dist, facilities),
     };
   }
 
@@ -163,77 +164,88 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       const only = args ? args.split(/[\s,]+/).filter(Boolean) : null;
       const list = zones.zones.filter((z) => !only || only.includes(z.id) || only.includes(z.shortName));
 
-      // 각 구역에 적용되는 입지 항목을 범주별로 모읍니다.
-      const itemsFor = (zoneId) => location.categories.map((c) => ({
-        title: c.title,
-        items: c.items.filter((it) => (it.zones ?? []).includes(zoneId)),
-      })).filter((c) => c.items.length);
+      // 그 구역에 적용되는 계획·조건을 범주별로 붙입니다.
+      // 그 구역에만 걸린 항목만 적습니다. 6개 구역 전부에 해당하는 것은
+      // 그 구역의 특징이 아니므로 여기서 말할 값이 없습니다.
+      const plansFor = (zoneId, catId) => {
+        const want = { river: 'river', edu: 'school', transit: 'transit', amenity: 'retail' }[catId];
+        const cat = location.categories.find((c) => c.id === want);
+        if (!cat) return [];
+        const total = zones.zones.length;
+        return cat.items
+          .filter((it) => (it.zones ?? []).includes(zoneId) && (it.zones ?? []).length < total)
+          .map((it) => it.name);
+      };
 
-      // 그 구역에서 가장 가까운 것에 표시를 달기 위해, 항목별 최솟값을 구합니다.
-      const best = new Map();
-      for (const fac of locator.facilities) {
-        let lo = Infinity;
-        for (const d of locator.dist.values()) {
-          const v = d.to.get(fac.key);
-          if (v != null && v < lo) lo = v;
+      // 강점·약점을 문장으로. 순위가 근거이므로 '좋다/나쁘다' 를 근거 없이
+      // 말하지 않습니다.
+      const phrase = (it) => {
+        const v = `<strong>${escapeHtml(it.label)} ${km(it.km)}</strong>`;
+        if (it.kind === 'best') return `${v} <span class="zv__tag zv__tag--best">6개 구역 중 1위</span>`;
+        if (it.kind === 'good') return `${v} <span class="zv__tag zv__tag--good">2위</span>`;
+        return v;
+      };
+
+      const catBlock = (z, cat) => {
+        const near = cat.items.slice(0, 3);
+        const plans = plansFor(z.id, cat.id);
+        // '가까운 순' 에 이미 나온 것은 다시 적지 않습니다.
+        const shown = new Set(near.map((i) => i.label));
+        const weak = cat.items.filter((i) => i.kind === 'weak' && !shown.has(i.label));
+        // 가까운 것들이 전부 구역 사이 비교로는 하위인 경우 — 그 사실을
+        // 숫자를 다시 나열하지 않고 한 줄로만 적습니다.
+        const allWeak = near.length > 0 && near.every((i) => i.kind === 'weak');
+
+        const lines = [];
+        lines.push(`<p class="zv__line"><span class="zv__k">가까운 순</span>${near.map(phrase).join(' · ')}</p>`);
+        if (weak.length) {
+          lines.push(`<p class="zv__line zv__line--weak"><span class="zv__k">먼 편</span>${weak.map((i) => `${escapeHtml(i.label)} ${km(i.km)}`).join(' · ')}</p>`);
+        } else if (allWeak) {
+          lines.push('<p class="zv__line zv__line--weak"><span class="zv__k">비교</span>'
+            + '위 거리는 6개 구역 사이에서는 하위입니다.</p>');
         }
-        best.set(fac.key, lo);
-      }
-      let riverBest = Infinity;
-      for (const d of locator.dist.values()) if (d.river != null && d.river < riverBest) riverBest = d.river;
-      let busBest = Infinity;
-      let busCountBest = 0;
-      for (const a of locator.access.values()) {
-        if (a.bus && a.bus.km < busBest) busBest = a.bus.km;
-        if (a.busWithin > busCountBest) busCountBest = a.busWithin;
-      }
 
-      const groups = ['상권', '교통', '학교'];
+        if (cat.id === 'transit') {
+          const a = locator.access.get(z.id);
+          if (a) {
+            const busNote = a.busWithin === 0
+              ? '<strong>반경 300m 안에 버스정류장이 없습니다.</strong>'
+              : `반경 300m 안에 정류장 ${a.busWithin}곳.`;
+            lines.push(`<p class="zv__line"><span class="zv__k">버스</span>${busNote}`
+              + `${a.bus?.name ? ` 가장 가까운 곳은 ${escapeHtml(a.bus.name)} ${km(a.bus.km)}.` : ''}</p>`);
+          }
+        }
+
+        if (cat.id === 'river') {
+          // 5구역에는 올림픽대로 아래 지하 보행통로가 있습니다. 여기서
+          // '걸어서 갈 수 없다' 고 쓰면 틀립니다.
+          const hasTunnel = plans.some((n) => n.includes('지하 보행통로'));
+          lines.push(hasTunnel
+            ? '<p class="zv__line zv__line--good"><span class="zv__k">보행</span>'
+              + '단지와 한강 사이에 올림픽대로가 있지만, <strong>지하 보행통로가 있어 걸어서 나갈 수 있습니다</strong>'
+              + ' (현장 확인 필요).</p>'
+            : '<p class="zv__line zv__line--weak"><span class="zv__k">차단</span>'
+              + '단지와 한강 사이에 <strong>올림픽대로</strong>가 있습니다. 직선거리가 짧아도 걸어서 갈 수 없습니다.</p>');
+        }
+
+        if (plans.length) {
+          lines.push(`<p class="zv__line zv__line--plan"><span class="zv__k">이 구역</span>${plans.map((n) => escapeHtml(n)).join(' · ')}</p>`);
+        }
+
+        const caveats = cat.items.filter((i) => i.caveat);
+        if (caveats.length) {
+          lines.push(`<p class="zv__line zv__line--caveat"><span class="zv__k">확인</span>${caveats.map((i) => `${escapeHtml(i.label)} — ${escapeHtml(i.caveat)}`).join(' · ')}</p>`);
+        }
+
+        return `<section class="zv__cat"><h5 class="zv__title">${escapeHtml(cat.title)}</h5>${lines.join('')}</section>`;
+      };
 
       return `<div class="zonelocs">${list.map((z) => {
-        const d = locator.dist.get(z.id);
-        if (!d) return '';
-        const rows = [];
-        rows.push('<tr class="zoneloc__grouprow"><th colspan="2" scope="colgroup">한강</th></tr>');
-        rows.push(`<tr><th scope="row">물가까지<span class="zoneloc__caveat">올림픽대로로 차단</span></th>`
-          + `<td class="${d.river != null && Math.abs(d.river - riverBest) < 0.001 ? 'is-best' : ''}">${km(d.river)}</td></tr>`);
-        for (const fac of locator.facilities.filter((f) => f.group === '한강')) {
-          const v = d.to.get(fac.key);
-          const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
-          rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}</th><td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
-        }
-        for (const g of groups) {
-          const inGroup = locator.facilities.filter((f) => f.group === g);
-          if (!inGroup.length) continue;
-          rows.push(`<tr class="zoneloc__grouprow"><th colspan="2" scope="colgroup">${escapeHtml(g)}</th></tr>`);
-          for (const fac of inGroup) {
-            const v = d.to.get(fac.key);
-            const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
-            rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}`
-              + `${fac.caveat ? `<span class="zoneloc__caveat">${escapeHtml(fac.caveat)}</span>` : ''}</th>`
-              + `<td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
-          }
-          // 교통 묶음 끝에 버스 접근성을 붙입니다.
-          if (g === '교통') {
-            const a = locator.access.get(z.id);
-            if (a?.bus) {
-              rows.push(`<tr><th scope="row">가장 가까운 버스정류장`
-                + `${a.bus.name ? `<span class="zoneloc__caveat">${escapeHtml(a.bus.name)}</span>` : ''}</th>`
-                + `<td class="${Math.abs(a.bus.km - busBest) < 0.001 ? 'is-best' : ''}">${km(a.bus.km)}</td></tr>`);
-              rows.push(`<tr><th scope="row">반경 ${a.radiusM}m 내 정류장</th>`
-                + `<td class="${a.busWithin === busCountBest ? 'is-best' : ''}">${a.busWithin}곳</td></tr>`);
-            }
-            if (a?.entrance) {
-              rows.push(`<tr><th scope="row">지하철 출입구</th><td>${km(a.entrance.km)}</td></tr>`);
-            }
-          }
-        }
-
-        const near = groups.map((g) => {
-          const n = nearestByGroup(d, locator.facilities, g);
-          return n ? `<li><span class="zoneloc__k">${escapeHtml(g)}</span> 가장 가까운 곳은 <strong>${escapeHtml(n.label)}</strong> ${km(n.km)}</li>` : '';
-        }).filter(Boolean).join('');
-
+        const cats = zoneVerdict({
+          zoneId: z.id, dist: locator.dist, facilities: locator.facilities,
+          ranks: locator.ranks, access: locator.access, roadAccess: locator.roadAccess,
+        });
+        if (!cats.length) return '';
         return `<section class="zoneloc zoneloc--risk-${z.riskLevel}" id="zoneloc-${z.id}">
   <header class="zoneloc__head">
     <h4 class="zoneloc__title">${escapeHtml(z.name)}</h4>
@@ -242,18 +254,9 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   <div class="zoneloc__grid">
     <div class="zoneloc__mapwrap">
       ${zoneLocator({ zone: z, facilities: locator.markers, zoneIds: locator.zoneIds, base: locator, nearestStop: locator.access.get(z.id)?.stop })}
-      <p class="zoneloc__mapnote">색칠된 것이 ${escapeHtml(z.shortName)} 건물입니다. 점은 주요 시설.</p>
+      <p class="zoneloc__mapnote">색칠된 것이 ${escapeHtml(z.shortName)} 건물입니다.</p>
     </div>
-    <div class="zoneloc__body">
-      <ul class="zoneloc__near">${near}</ul>
-      <div class="table-wrap zoneloc__tablewrap">
-        <table class="zoneloc__table">
-          <caption>단지 중심에서 직선거리 · <strong>굵은 칸</strong>은 6개 구역 중 가장 가까움</caption>
-          <tbody>${rows.join('')}</tbody>
-        </table>
-      </div>
-      <div class="zoneloc__items">${itemsFor(z.id).map((c) => `<p class="zoneloc__cat"><span class="zoneloc__k">${escapeHtml(c.title)}</span> ${c.items.map((it) => escapeHtml(it.name)).join(' · ')}</p>`).join('')}</div>
-    </div>
+    <div class="zoneloc__body">${cats.map((c) => catBlock(z, c)).join('')}</div>
   </div>
 </section>`;
       }).join('')}</div>`;
@@ -340,6 +343,51 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     <thead><tr><th scope="col">구역</th>
       <th scope="col">가장 가까운 진출입 램프</th>
       <th scope="col">한강 다리 진입부<span class="schooldist__caveat">동호대교·성수대교</span></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+</div>`;
+    },
+
+    /**
+     * 구역별 한강 접근성 표 (2장).
+     * 손으로 숫자를 옮겨 적으면 데이터가 바뀔 때 본문이 어긋납니다.
+     * 그래서 이 표는 생성합니다.
+     */
+    'zone-river': () => {
+      if (!locator) return '<p class="muted">지형 데이터가 없어 한강 접근성 표를 만들 수 없습니다.</p>';
+      // 지금 걸어서 갈 수 있는 구역 — 지하 보행통로 항목이 걸린 구역입니다.
+      const walkable = new Set();
+      for (const c of location.categories) {
+        for (const it of c.items) {
+          if (!/지하 보행통로/.test(it.name)) continue;
+          for (const z of it.zones ?? []) walkable.add(z);
+        }
+      }
+      let riverBest = Infinity;
+      let parkBest = Infinity;
+      for (const d of locator.dist.values()) {
+        if (d.river != null && d.river < riverBest) riverBest = d.river;
+        const pv = d.to.get('park-river');
+        if (pv != null && pv < parkBest) parkBest = pv;
+      }
+
+      const rows = zones.zones.map((z) => {
+        const d = locator.dist.get(z.id);
+        if (!d) return '';
+        const pv = d.to.get('park-river');
+        const cell = (v, bestv) => `<td class="${v != null && Math.abs(v - bestv) < 0.001 ? 'is-best' : ''}">${km(v)}</td>`;
+        const walk = walkable.has(z.id)
+          ? '<td class="is-yes">예 — 지하 보행통로</td>'
+          : '<td class="muted">아니오 (올림픽대로)</td>';
+        return `<tr><th scope="row">${escapeHtml(z.shortName)}</th>${cell(d.river, riverBest)}${cell(pv, parkBest)}${walk}</tr>`;
+      }).join('');
+
+      return `<div class="table-wrap">
+  <table class="datatable__table schooldist">
+    <caption>단지 중심에서 <strong>직선거리</strong>. ★은 6개 구역 중 가장 가까움.
+    직선거리가 짧은 것과 걸어갈 수 있는 것은 다릅니다.</caption>
+    <thead><tr><th scope="col">구역</th><th scope="col">한강 물가</th>
+      <th scope="col">잠원한강공원</th><th scope="col">지금 걸어서 갈 수 있는가</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
 </div>`;

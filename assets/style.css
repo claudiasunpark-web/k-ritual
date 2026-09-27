@@ -855,3 +855,29 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .locmap__tunnel {
   fill: none; stroke: var(--series-3); stroke-width: 2.4; stroke-linecap: round;
 }
+
+/* 구역별 장단점 서술 */
+.zv__cat { margin: 0 0 16px; }
+.zv__cat:last-child { margin-bottom: 0; }
+.zv__title {
+  font-size: 13px; margin: 0 0 6px; color: var(--text-primary);
+  padding-bottom: 4px; border-bottom: 1px solid var(--grid);
+}
+.zv__line { margin: 0 0 5px; font-size: 13.5px; line-height: 1.7; color: var(--text-secondary); }
+.zv__line strong { color: var(--text-primary); font-weight: 650; }
+.zv__k {
+  display: inline-block; min-width: 58px; font-size: 11px; font-weight: 700;
+  color: var(--text-muted); vertical-align: baseline;
+}
+.zv__tag {
+  display: inline-block; font-size: 10.5px; font-weight: 700; padding: 1px 6px;
+  border-radius: 999px; vertical-align: 1px; white-space: nowrap;
+}
+.zv__tag--best { background: color-mix(in oklab, var(--good) 18%, transparent); color: color-mix(in oklab, var(--good) 75%, var(--text-primary)); }
+.zv__tag--good { background: color-mix(in oklab, var(--series-1) 15%, transparent); color: color-mix(in oklab, var(--series-1) 80%, var(--text-primary)); }
+.zv__tag--weak { background: color-mix(in oklab, var(--warning) 20%, transparent); color: color-mix(in oklab, var(--warning) 55%, var(--text-primary)); }
+.zv__line--weak .zv__k { color: color-mix(in oklab, var(--warning) 60%, var(--text-primary)); }
+.zv__line--plan .zv__k { color: color-mix(in oklab, var(--series-1) 70%, var(--text-primary)); }
+.zv__line--caveat .zv__k { color: var(--critical); }
+.schooldist td.is-yes { text-align: left; font-weight: 650; color: color-mix(in oklab, var(--good) 70%, var(--text-primary)); }
+.schooldist td.muted { text-align: left; color: var(--text-muted); }
