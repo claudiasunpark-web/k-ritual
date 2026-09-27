@@ -835,3 +835,23 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .schooldist__caveat {
   display: block; font-size: 10px; font-weight: 400; color: var(--text-muted);
 }
+
+/* 확대 지도는 좁은 칸에 갇히면 안 됩니다 — 확대한 이유가 없어집니다.
+   항목 카드 안에서는 글 아래 전체 폭으로 빠집니다. */
+.locitem__body:has(.locmap--wide) { grid-template-columns: 1fr; }
+.locitem__body > .locmap--wide { grid-column: 1 / -1; max-width: none; }
+
+/* 진출입 화살표 */
+.locmap--wide { margin: 16px 0 0; }
+.locmap--wide svg { min-width: 0; }
+.locmap__arrow {
+  stroke: var(--series-2); stroke-width: 2; stroke-linecap: round;
+}
+.locmap__arrow-start { fill: var(--series-2); }
+.locmap__hot--faint { fill-opacity: 0.35; }
+.locmap__label--arrow {
+  font-weight: 700; fill: color-mix(in oklab, var(--series-2) 75%, var(--text-primary));
+}
+.locmap__tunnel {
+  fill: none; stroke: var(--series-3); stroke-width: 2.4; stroke-linecap: round;
+}

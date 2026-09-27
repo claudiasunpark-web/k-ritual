@@ -2,9 +2,10 @@
 import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
 import { zoneMap } from './zonemap.mjs';
 import { geoMap, analyzeGeography } from './geomap.mjs';
-import { locatorBase, locatorFor, zoneLocator } from './minimap.mjs';
+import { locatorBase, locatorFor, zoneLocator, accessArrows } from './minimap.mjs';
 import {
   findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm, formatKm,
+  rampPoints, bridgePoints, nearestPoint,
 } from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
@@ -73,6 +74,20 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       access.set(zoneId, { ...a, stop });
     }
 
+    // 구역별 도로 진출입. 램프는 어느 도로로 이어지는지 자료로 단정할 수
+    // 없으므로 '가장 가까운 진출입' 으로만 씁니다. 강북 방면은 다리를 건너야
+    // 하므로 다리 진입부까지의 거리를 따로 냅니다.
+    const ramps = rampPoints(osm);
+    const bridges = bridgePoints(osm, ['논현로', '언주로']); // 동호대교·성수대교
+    const roadAccess = new Map();
+    for (const [zoneId, d] of dist) {
+      roadAccess.set(zoneId, {
+        ramp: nearestPoint(d.center, ramps),
+        bridge: nearestPoint(d.center, bridges),
+        center: d.center,
+      });
+    }
+
     locator = {
       ...base,
       geojson: osm,
@@ -81,6 +96,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       transit,
       dist,
       access,
+      roadAccess,
     };
   }
 
@@ -281,6 +297,50 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     <caption>단지 중심에서 학교까지 <strong>직선거리</strong>. 도보 거리가 아닙니다. ★은 그 학교에 가장 가까운 구역.</caption>
     <thead><tr><th scope="col">구역</th>${head}</tr></thead>
     <tbody>${body}</tbody>
+  </table>
+</div>`;
+    },
+
+    /**
+     * 구역별 도로 진출입 — 화살표 지도 + 표.
+     * 화살표는 방향과 직선거리만 뜻합니다 (실제 차량 경로가 아닙니다).
+     */
+    'road-access': () => {
+      if (!locator) return '<p class="muted">지형 데이터가 없어 진출입 지도를 만들 수 없습니다.</p>';
+      const routes = [];
+      for (const z of zones.zones) {
+        const a = locator.roadAccess.get(z.id);
+        if (!a?.ramp) continue;
+        routes.push({
+          zone: z, from: a.center, to: a.ramp.at, km: a.ramp.km,
+          label: `${z.shortName} ${km(a.ramp.km)}`,
+        });
+      }
+      if (!routes.length) return '<p class="muted">진출입 램프 좌표를 찾지 못했습니다.</p>';
+
+      let rampBest = Infinity;
+      let bridgeBest = Infinity;
+      for (const a of locator.roadAccess.values()) {
+        if (a.ramp && a.ramp.km < rampBest) rampBest = a.ramp.km;
+        if (a.bridge && a.bridge.km < bridgeBest) bridgeBest = a.bridge.km;
+      }
+
+      const rows = zones.zones.map((z) => {
+        const a = locator.roadAccess.get(z.id);
+        if (!a) return '';
+        const cell = (v, bestv) => `<td class="${v != null && Math.abs(v - bestv) < 0.001 ? 'is-best' : ''}">${km(v)}</td>`;
+        return `<tr><th scope="row">${escapeHtml(z.shortName)}</th>`
+          + cell(a.ramp?.km, rampBest) + cell(a.bridge?.km, bridgeBest) + '</tr>';
+      }).join('');
+
+      return `${accessArrows({ routes, zoneIds: locator.zoneIds, base: locator })}
+<div class="table-wrap">
+  <table class="datatable__table schooldist">
+    <caption>단지 중심에서 <strong>직선거리</strong>. ★은 6개 구역 중 가장 가까움. 실제 차량 경로가 아닙니다.</caption>
+    <thead><tr><th scope="col">구역</th>
+      <th scope="col">가장 가까운 진출입 램프</th>
+      <th scope="col">한강 다리 진입부<span class="schooldist__caveat">동호대교·성수대교</span></th></tr></thead>
+    <tbody>${rows}</tbody>
   </table>
 </div>`;
     },

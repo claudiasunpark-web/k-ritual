@@ -284,3 +284,43 @@ export function formatKm(v) {
   const m = Math.round((v * 1000) / 10) * 10;
   return m < 1000 ? `${m}m` : `${(m / 1000).toFixed(1)}km`;
 }
+
+// ── 도로 진출입 ─────────────────────────────────────────────
+/**
+ * 구역별로 가장 가까운 진출입 지점.
+ *
+ * 램프(motorway_link/trunk_link 등)의 꼭짓점 중 가장 가까운 점을 찾습니다.
+ * 램프는 올림픽대로·강변북로·경부고속도로 연결로가 모두 섞여 있으므로,
+ * '어느 도로로 들어가는 램프인지' 는 이 자료로 단정할 수 없습니다.
+ * 그래서 이름을 붙이지 않고 '가장 가까운 진출입' 으로만 씁니다.
+ */
+export function rampPoints(geojson) {
+  const pts = [];
+  for (const f of geojson.features ?? []) {
+    if (!/_link$/.test(f.properties.highway ?? '')) continue;
+    for (const line of linesOf(f)) for (const c of line) pts.push(c);
+  }
+  return pts;
+}
+
+/** 강을 건너는 다리의 꼭짓점 — 강변북로·강북 방면 접근에 씁니다. */
+export function bridgePoints(geojson, names) {
+  const want = new Set(names);
+  const pts = [];
+  for (const f of geojson.features ?? []) {
+    const p = f.properties;
+    if (p.bridge !== 'yes' || !want.has(p.name)) continue;
+    for (const line of linesOf(f)) for (const c of line) pts.push(c);
+  }
+  return pts;
+}
+
+/** 여러 점 중 가장 가까운 것. */
+export function nearestPoint(from, pts) {
+  let best = null;
+  for (const p of pts) {
+    const km = distKm(from, p);
+    if (!best || km < best.km) best = { at: p, km };
+  }
+  return best;
+}
