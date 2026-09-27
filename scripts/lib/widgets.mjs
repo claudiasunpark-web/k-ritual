@@ -5,7 +5,7 @@ import { geoMap, analyzeGeography } from './geomap.mjs';
 import { locatorBase, locatorFor, zoneLocator, accessArrows } from './minimap.mjs';
 import {
   findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm, formatKm,
-  rampPoints, bridgePoints, nearestPoint, rankZones, zoneVerdict, riverCrossings, crossingsByZone,
+  rampPoints, bridgePoints, nearestPoint, rankZones, zoneVerdict,
 } from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
@@ -98,7 +98,6 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       access,
       roadAccess,
       ranks: rankZones(dist, facilities),
-      crossings: crossingsByZone(riverCrossings(osm), dist),
     };
   }
 
@@ -377,13 +376,9 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         if (!d) return '';
         const pv = d.to.get('park-river');
         const cell = (v, bestv) => `<td class="${v != null && Math.abs(v - bestv) < 0.001 ? 'is-best' : ''}">${km(v)}</td>`;
-        const cross = locator.crossings.get(z.id);
-        const bits = [];
-        if (walkable.has(z.id)) bits.push('<strong>지하 보행통로</strong>');
-        if (cross) bits.push(`${cross.kind === 'tunnel' ? '지하도' : '육교'} ${km(cross.km)}`);
-        const walk = bits.length
-          ? `<td class="is-yes">${bits.join(' · ')}</td>`
-          : '<td class="muted">표시된 시설 없음</td>';
+        const walk = walkable.has(z.id)
+          ? '<td class="is-yes">예 — 지하 보행통로</td>'
+          : '<td class="muted">아니오 (올림픽대로)</td>';
         return `<tr><th scope="row">${escapeHtml(z.shortName)}</th>${cell(d.river, riverBest)}${cell(pv, parkBest)}${walk}</tr>`;
       }).join('');
 
@@ -392,8 +387,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
     <caption>단지 중심에서 <strong>직선거리</strong>. ★은 6개 구역 중 가장 가까움.
     직선거리가 짧은 것과 걸어갈 수 있는 것은 다릅니다.</caption>
     <thead><tr><th scope="col">구역</th><th scope="col">한강 물가</th>
-      <th scope="col">잠원한강공원</th>
-      <th scope="col">올림픽대로 횡단 시설<span class="schooldist__caveat">지도에 표시된 것 · 실제 이용 여부는 현장 확인</span></th></tr></thead>
+      <th scope="col">잠원한강공원</th><th scope="col">지금 걸어서 갈 수 있는가</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>
 </div>`;

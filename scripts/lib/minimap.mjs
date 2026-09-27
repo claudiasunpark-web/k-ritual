@@ -171,10 +171,14 @@ function buildOneBase(V, { geojson, zoneBuildings, riverBandRings, transit = {} 
   const hasBusStops = dots(transit.stops ?? [], 'busstops', 1.8 * scale);
   const hasEntrances = dots(transit.entrances ?? [], 'subwayent', 1.6 * scale);
 
-  // 보행 지하통로·보행교 ('토끼굴' 등) — 확대 화면에서만 씁니다.
+  // 보행 '지하통로' 만 그립니다 (tunnel=yes). 교량 보행로(bridge=yes)를 같이
+  // 그렸더니 올림픽대로를 건너는 선 6개가 한강 연결로처럼 보였는데, 실제로는
+  // 한강으로 이어지는 통로가 아닙니다. 연결로가 아닌 것을 연결로처럼
+  // 보이게 하는 것이 이 지도에서 가장 위험한 오류입니다.
   let tunD = '';
   if (V === ZOOM) {
-    const tunnels = feats.filter((f) => /^(footway|steps|path|pedestrian)$/.test(f.properties.highway ?? ''));
+    const tunnels = feats.filter((f) => /^(footway|steps|path|pedestrian)$/.test(f.properties.highway ?? '')
+      && f.properties.tunnel === 'yes');
     tunD = toPath(tunnels.flatMap((f) => linesOf(f)), project);
     if (tunD) defs.push(`<path id="${id('tunnels')}" d="${tunD}"/>`);
   }
