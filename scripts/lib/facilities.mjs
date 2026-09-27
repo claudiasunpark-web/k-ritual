@@ -4,7 +4,7 @@
 // 실제 걷는 거리는 이보다 깁니다. 그래도 구역 사이를 견주는 데는 쓸 수
 // 있고, 무엇보다 OSM 좌표에서 그대로 나오는 검증 가능한 숫자입니다.
 
-import { ringsOf, linesOf, centroid, ringArea } from './geo.mjs';
+import { ringsOf, linesOf, centroid, ringArea, crossPoint } from './geo.mjs';
 
 /**
  * OSM 에서 찾을 시설.
@@ -410,4 +410,51 @@ export function zoneVerdict({ zoneId, dist, facilities, ranks, access, roadAcces
     items.sort((a, b) => a.km - b.km);
     return { id: cat.id, title: cat.title, items };
   }).filter((c) => c.items.length);
+}
+
+// ── 올림픽대로 횡단 보행 시설 ───────────────────────────────
+/**
+ * 올림픽대로를 건너는 보행 시설(육교·지하도)을 찾습니다.
+ *
+ * 이 책은 "압구정에서 한강까지 걸어갈 수 없다" 고 단정해 왔습니다. 그런데
+ * 지도 자료에는 올림픽대로를 건너는 보행 시설이 여러 곳 표시되어 있습니다.
+ *
+ * 다만 OSM 자료만으로는 이것이 **한강공원까지 실제로 이어지는 통로**인지,
+ * 도로 교량에 딸린 인도인지 구분할 수 없습니다. 그래서 '있다/없다' 로
+ * 단정하지 않고 '표시되어 있다 — 확인 필요' 로 씁니다.
+ */
+export function riverCrossings(geojson, roadName = '올림픽대로') {
+  const road = (geojson.features ?? [])
+    .filter((f) => f.properties.name === roadName && f.properties.highway)
+    .flatMap((f) => linesOf(f));
+  if (!road.length) return [];
+
+  const out = [];
+  const isFoot = /^(footway|steps|path|pedestrian)$/;
+  for (const f of geojson.features ?? []) {
+    const p = f.properties;
+    if (!isFoot.test(p.highway ?? '')) continue;
+    const kind = p.tunnel === 'yes' ? 'tunnel' : p.bridge === 'yes' ? 'bridge' : null;
+    if (!kind) continue;
+    for (const line of linesOf(f)) {
+      const hit = crossPoint(line, road);
+      if (!hit) continue;
+      out.push({ at: hit.at, kind, name: p.name ?? null, line });
+    }
+  }
+  return out;
+}
+
+/** 구역별로 가장 가까운 횡단 시설. */
+export function crossingsByZone(crossings, dist) {
+  const out = new Map();
+  for (const [zoneId, d] of dist) {
+    let best = null;
+    for (const c of crossings) {
+      const km = distKm(d.center, c.at);
+      if (!best || km < best.km) best = { ...c, km };
+    }
+    out.set(zoneId, best);
+  }
+  return out;
 }
