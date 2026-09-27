@@ -91,7 +91,10 @@ const LAYERS = [
     required: false,
     parts: [BBOX].map((b) => `
       way["railway"~"^(subway|rail)$"](${b});
-      node["railway"="station"](${b});`),
+      node["railway"="station"](${b});
+      node["railway"="subway_entrance"](${b});
+      node["highway"="bus_stop"](${b});
+      node["public_transport"="platform"](${b});`),
   },
   {
     id: 'plots',
@@ -174,7 +177,7 @@ const r5 = (n) => Math.round(n * 1e5) / 1e5;
 const KEEP_TAGS = [
   'name', 'name:ko', 'building', 'building:levels', 'highway', 'railway',
   'natural', 'waterway', 'landuse', 'leisure', 'amenity', 'shop', 'bridge',
-  'place', 'tunnel', 'layer', 'ref', 'bank',
+  'place', 'tunnel', 'layer', 'ref', 'bank', 'public_transport', 'bus',
 ];
 
 function slimTags(tags = {}) {
@@ -247,6 +250,10 @@ const WANTED = (t = {}) =>
   || /^(park|garden|pitch|sports_centre)$/.test(t.leisure ?? '')
   || /^(school|university|hospital|kindergarten)$/.test(t.amenity ?? '')
   || t.shop === 'department_store'
+  || t.highway === 'bus_stop'
+  || t.public_transport === 'platform'
+  || t.railway === 'subway_entrance'
+  || t.amenity === 'bus_station'
   || /^(suburb|quarter|neighbourhood)$/.test(t.place ?? '');
 
 // ── 실행 ────────────────────────────────────────────────────
@@ -392,6 +399,9 @@ show('landuse', (f) => f.properties.landuse, 10);
 show('leisure/amenity/shop', (f) => f.properties.leisure || f.properties.amenity || f.properties.shop);
 show('natural/waterway', (f) => f.properties.natural || f.properties.waterway);
 show('railway', (f) => f.properties.railway);
+show('대중교통', (f) => (f.properties.highway === 'bus_stop' ? 'bus_stop'
+  : f.properties.public_transport ? `pt:${f.properties.public_transport}`
+  : f.properties.railway === 'subway_entrance' ? 'subway_entrance' : null));
 
 // 단지 이름이 붙은 건물·구획 — 구역 매칭에 쓸 후보를 그대로 보여 줍니다.
 const uniq = [...new Set(features
