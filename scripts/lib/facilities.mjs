@@ -175,3 +175,47 @@ export function nearestByGroup(dist, facilities, group) {
   }
   return best;
 }
+
+// ── 대중교통 ────────────────────────────────────────────────
+/**
+ * 버스정류장·지하철 출입구를 모읍니다.
+ *
+ * 정류장은 같은 이름이 상·하행으로 두 개씩 올라와 있습니다. 개수를 셀 때는
+ * 둘 다 실제 정류장이므로 그대로 세고, '가장 가까운 정류장 이름' 을 고를 때만
+ * 이름으로 묶습니다 — 같은 이름이 두 번 나오면 읽는 사람이 헷갈립니다.
+ */
+export function findTransit(geojson) {
+  const stops = [];
+  const entrances = [];
+  for (const f of geojson.features ?? []) {
+    if (f.geometry?.type !== 'Point') continue;
+    const p = f.properties;
+    const at = f.geometry.coordinates;
+    if (p.highway === 'bus_stop') stops.push({ at, name: p.name ?? null });
+    else if (p.railway === 'subway_entrance') entrances.push({ at, name: p.name ?? null });
+  }
+  return { stops, entrances };
+}
+
+/**
+ * 한 지점에서 본 대중교통 접근성.
+ * @param {number} radiusM 개수를 셀 반경 (m)
+ */
+export function transitAccess(center, { stops = [], entrances = [] }, radiusM = 300) {
+  const nearest = (list) => {
+    let best = null;
+    for (const s of list) {
+      const km = distKm(center, s.at);
+      if (!best || km < best.km) best = { km, name: s.name };
+    }
+    return best;
+  };
+  const within = (list) => list.filter((s) => distKm(center, s.at) * 1000 <= radiusM).length;
+
+  return {
+    bus: nearest(stops),
+    busWithin: within(stops),
+    entrance: nearest(entrances),
+    radiusM,
+  };
+}

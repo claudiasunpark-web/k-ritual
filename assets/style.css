@@ -769,7 +769,7 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .zoneloc__head { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
 .zoneloc__title { font-size: 17px; margin: 0; }
 .zoneloc__sub { font-size: 12.5px; color: var(--text-muted); }
-.zoneloc__grid { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 22px; margin-top: 14px; align-items: start; }
+.zoneloc__grid { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 24px; margin-top: 14px; align-items: start; }
 .zoneloc__map {
   display: block; width: 100%; height: auto;
   border: 1px solid var(--border); border-radius: 8px; background: var(--map-land);
@@ -825,3 +825,9 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .schooldist td.is-best { font-weight: 750; color: var(--text-primary); }
 .schooldist td.is-best::after { content: " ★"; font-size: 10px; color: var(--series-4); }
 .schooldist th[scope="row"] { font-weight: 650; white-space: nowrap; }
+
+/* 버스정류장·지하철 출입구 — 45곳이라 이름 없이 점으로만 */
+.locmap__bus { fill: var(--text-muted); opacity: 0.55; }
+.locmap__subent { fill: var(--series-1); opacity: 0.7; }
+.locmap__bus-near { fill: var(--series-4); stroke: var(--map-land); stroke-width: 1.2; }
+.locmap__label--bus { font-weight: 600; fill: color-mix(in oklab, var(--series-4) 70%, var(--text-primary)); }

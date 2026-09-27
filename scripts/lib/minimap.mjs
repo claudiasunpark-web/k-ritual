@@ -50,8 +50,9 @@ function labelPlacer() {
   const fits = (box) => !taken.some((t) => !(box.x2 < t.x1 || box.x1 > t.x2 || box.y2 < t.y1 || box.y1 > t.y2));
 
   return (x, y, text, cls = 'locmap__label') => {
-    const w = text.length * 6.2 + 4; // 한글 기준 대략치
-    const h = 12;
+    // 한글은 폭이 넓습니다. 좁게 잡으면 겹쳐도 통과해 버립니다.
+    const w = text.length * 7.2 + 6;
+    const h = 13;
     const spots = [
       { dx: 0, dy: -9, anchor: 'middle' },
       { dx: 0, dy: 15, anchor: 'middle' },
@@ -78,7 +79,7 @@ function labelPlacer() {
 /**
  * 바탕 그림과 다시 쓰는 path 들. 페이지에 한 번만 들어갑니다.
  */
-export function locatorBase({ geojson, zoneBuildings, riverBandRings }) {
+export function locatorBase({ geojson, zoneBuildings, riverBandRings, transit = {} }) {
   const defs = [];
   const base = [`<rect width="${W}" height="${H}" fill="var(--map-land)"/>`];
   const feats = geojson.features ?? [];
@@ -112,6 +113,21 @@ export function locatorBase({ geojson, zoneBuildings, riverBandRings }) {
     }
   }
 
+  // 버스정류장·지하철 출입구. 45곳이라 이름은 달 수 없고 점으로만 둡니다.
+  // 한 벌만 담아 두고 필요한 지도에서 불러 씁니다.
+  const dots = (list, id, r) => {
+    const items = list.filter((s) => onScreen(project(s.at)));
+    if (!items.length) return false;
+    const circles = items.map((s) => {
+      const [x, y] = project(s.at);
+      return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}"/>`;
+    }).join('');
+    defs.push(`<g id="${id}">${circles}</g>`);
+    return true;
+  };
+  const hasBusStops = dots(transit.stops ?? [], 'loc-busstops', 1.8);
+  const hasEntrances = dots(transit.entrances ?? [], 'loc-subwayent', 1.6);
+
   // 구역 건물은 실제 윤곽 그대로 씁니다. 볼록 껍질로 뭉치면 대각선으로 놓인
   // 구역이 옆 구역 위로 부풀어 올라 엉뚱한 자리를 차지합니다.
   const zoneIds = [];
@@ -129,7 +145,10 @@ export function locatorBase({ geojson, zoneBuildings, riverBandRings }) {
     + `<symbol id="${BASE_ID}" viewBox="0 0 ${W} ${H}">${base.join('')}</symbol>`
     + '</defs></svg>';
 
-  return { symbol, zoneIds: new Set(zoneIds), hasCommercial: !!comD, hasRamps: !!rampD };
+  return {
+    symbol, zoneIds: new Set(zoneIds),
+    hasCommercial: !!comD, hasRamps: !!rampD, hasBusStops, hasEntrances,
+  };
 }
 
 // ── 항목별 위치도 ───────────────────────────────────────────
@@ -154,6 +173,10 @@ export function locatorFor({ item, geojson, zoneIds, zoneLabel, base = {} }) {
   }
 
   if (spec.ramps && base.hasRamps) marks.push('<use href="#loc-ramps" class="locmap__ramp"/>');
+  if (spec.transit) {
+    if (base.hasBusStops) marks.push('<use href="#loc-busstops" class="locmap__bus"/>');
+    if (base.hasEntrances) marks.push('<use href="#loc-subwayent" class="locmap__subent"/>');
+  }
 
   // 면으로 칠할 구역 (상권 등)
   for (const rule of spec.areas ?? []) {
@@ -244,11 +267,13 @@ export function locatorFor({ item, geojson, zoneIds, zoneLabel, base = {} }) {
  * 구역별 입지 분석용. 그 구역만 강조하고 주변 시설에 이름을 답니다.
  * @param {{zone:object, facilities:Array, zoneIds:Set<string>}} opts
  */
-export function zoneLocator({ zone, facilities, zoneIds }) {
+export function zoneLocator({ zone, facilities, zoneIds, base = {}, nearestStop = null }) {
   const marks = [];
   const labels = [];
   const place = labelPlacer();
 
+  // 정류장은 먼저 옅게 깔아 둡니다 — 시설 표식이 그 위에 올라와야 합니다.
+  if (base.hasBusStops) marks.push('<use href="#loc-busstops" class="locmap__bus"/>');
   if (zoneIds.has(zone.id)) marks.push(`<use href="#${zoneRef(zone.id)}" class="locmap__hot"/>`);
 
   for (const fac of facilities) {
@@ -257,6 +282,17 @@ export function zoneLocator({ zone, facilities, zoneIds }) {
     marks.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.6"`
       + ` class="locmap__dot locmap__dot--${fac.kind}"/>`);
     labels.push(place(p[0], p[1], fac.label));
+  }
+
+  // 그 구역에서 가장 가까운 정류장 하나만 이름을 답니다. 45곳에 다 달면
+  // 아무것도 읽을 수 없습니다.
+  if (nearestStop?.at && nearestStop.name) {
+    const p = project(nearestStop.at);
+    if (onScreen(p)) {
+      marks.push(`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.2"`
+        + ' class="locmap__bus-near"/>');
+      labels.push(place(p[0], p[1], nearestStop.name, 'locmap__label locmap__label--bus'));
+    }
   }
 
   return `<svg class="zoneloc__map" viewBox="0 0 ${W} ${H}" role="img"

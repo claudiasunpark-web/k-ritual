@@ -3,7 +3,9 @@ import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.m
 import { zoneMap } from './zonemap.mjs';
 import { geoMap, analyzeGeography } from './geomap.mjs';
 import { locatorBase, locatorFor, zoneLocator } from './minimap.mjs';
-import { findFacilities, zoneDistances, nearestByGroup, mapMarkers } from './facilities.mjs';
+import {
+  findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm,
+} from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
 const RISK_LABEL = { low: '낮음', medium: '중간', high: '높음' };
@@ -43,22 +45,42 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   let locator = null;
   if (osm?.features?.length) {
     const analysis = analyzeGeography({ geojson: osm, zones, complexes });
+    const transit = findTransit(osm);
     const base = locatorBase({
       geojson: osm,
       zoneBuildings: analysis.zoneBuildings,
       riverBandRings: analysis.riverBandRings,
+      transit,
     });
     const facilities = findFacilities(osm);
+    const dist = zoneDistances({
+      zoneBuildings: analysis.zoneBuildings,
+      facilities,
+      bankLines: analysis.bankLines,
+    });
+
+    // 구역별 대중교통 접근성. 같은 이름의 상·하행 정류장은 이름을 고를 때만 묶습니다.
+    const access = new Map();
+    for (const [zoneId, d] of dist) {
+      const a = transitAccess(d.center, transit);
+      // 지도에 이름을 달 정류장 — 좌표까지 같이 들고 있어야 찍을 수 있습니다.
+      let stop = null;
+      for (const s of transit.stops) {
+        if (!s.name) continue;
+        const km = distKm(d.center, s.at);
+        if (!stop || km < stop.km) stop = { ...s, km };
+      }
+      access.set(zoneId, { ...a, stop });
+    }
+
     locator = {
       ...base,
       geojson: osm,
       facilities,
       markers: mapMarkers(facilities),
-      dist: zoneDistances({
-        zoneBuildings: analysis.zoneBuildings,
-        facilities,
-        bankLines: analysis.bankLines,
-      }),
+      transit,
+      dist,
+      access,
     };
   }
 
@@ -143,6 +165,12 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       }
       let riverBest = Infinity;
       for (const d of locator.dist.values()) if (d.river != null && d.river < riverBest) riverBest = d.river;
+      let busBest = Infinity;
+      let busCountBest = 0;
+      for (const a of locator.access.values()) {
+        if (a.bus && a.bus.km < busBest) busBest = a.bus.km;
+        if (a.busWithin > busCountBest) busCountBest = a.busWithin;
+      }
 
       const groups = ['상권', '교통', '학교'];
 
@@ -162,6 +190,20 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
             const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
             rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}</th><td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
           }
+          // 교통 묶음 끝에 버스 접근성을 붙입니다.
+          if (g === '교통') {
+            const a = locator.access.get(z.id);
+            if (a?.bus) {
+              rows.push(`<tr><th scope="row">가장 가까운 버스정류장`
+                + `${a.bus.name ? `<span class="zoneloc__caveat">${escapeHtml(a.bus.name)}</span>` : ''}</th>`
+                + `<td class="${Math.abs(a.bus.km - busBest) < 0.001 ? 'is-best' : ''}">${km(a.bus.km)}</td></tr>`);
+              rows.push(`<tr><th scope="row">반경 ${a.radiusM}m 내 정류장</th>`
+                + `<td class="${a.busWithin === busCountBest ? 'is-best' : ''}">${a.busWithin}곳</td></tr>`);
+            }
+            if (a?.entrance) {
+              rows.push(`<tr><th scope="row">지하철 출입구</th><td>${km(a.entrance.km)}</td></tr>`);
+            }
+          }
         }
 
         const near = groups.map((g) => {
@@ -176,7 +218,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   </header>
   <div class="zoneloc__grid">
     <div class="zoneloc__mapwrap">
-      ${zoneLocator({ zone: z, facilities: locator.markers, zoneIds: locator.zoneIds })}
+      ${zoneLocator({ zone: z, facilities: locator.markers, zoneIds: locator.zoneIds, base: locator, nearestStop: locator.access.get(z.id)?.stop })}
       <p class="zoneloc__mapnote">색칠된 것이 ${escapeHtml(z.shortName)} 건물입니다. 점은 주요 시설.</p>
     </div>
     <div class="zoneloc__body">
