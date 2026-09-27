@@ -831,3 +831,7 @@ body { word-break: keep-all; overflow-wrap: break-word; }
 .locmap__subent { fill: var(--series-1); opacity: 0.7; }
 .locmap__bus-near { fill: var(--series-4); stroke: var(--map-land); stroke-width: 1.2; }
 .locmap__label--bus { font-weight: 600; fill: color-mix(in oklab, var(--series-4) 70%, var(--text-primary)); }
+
+.schooldist__caveat {
+  display: block; font-size: 10px; font-weight: 400; color: var(--text-muted);
+}

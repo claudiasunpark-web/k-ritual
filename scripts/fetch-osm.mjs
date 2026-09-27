@@ -94,6 +94,8 @@ const LAYERS = [
       node["railway"="station"](${b});
       node["railway"="subway_entrance"](${b});
       node["highway"="bus_stop"](${b});
+      way["highway"~"^(footway|steps|path|pedestrian)$"]["tunnel"="yes"](${b});
+      way["highway"~"^(footway|steps|path|pedestrian)$"]["bridge"="yes"](${b});
       node["public_transport"="platform"](${b});`),
   },
   {
@@ -251,6 +253,10 @@ const WANTED = (t = {}) =>
   || /^(school|university|hospital|kindergarten)$/.test(t.amenity ?? '')
   || t.shop === 'department_store'
   || t.highway === 'bus_stop'
+  // 보행 지하통로·보행교. 보행로 전체는 수가 너무 많아 뺐지만, 올림픽대로를
+  // 건너는 통로('토끼굴')는 한강 접근성의 실제 수단이라 반드시 필요합니다.
+  || (/^(footway|steps|path|pedestrian)$/.test(t.highway ?? '')
+      && (t.tunnel === 'yes' || t.bridge === 'yes' || Number(t.layer) < 0))
   || t.public_transport === 'platform'
   || t.railway === 'subway_entrance'
   || t.amenity === 'bus_station'
@@ -399,6 +405,9 @@ show('landuse', (f) => f.properties.landuse, 10);
 show('leisure/amenity/shop', (f) => f.properties.leisure || f.properties.amenity || f.properties.shop);
 show('natural/waterway', (f) => f.properties.natural || f.properties.waterway);
 show('railway', (f) => f.properties.railway);
+show('보행통로', (f) => (/^(footway|steps|path|pedestrian)$/.test(f.properties.highway ?? '')
+  ? `${f.properties.highway}${f.properties.tunnel === 'yes' ? '(지하)' : f.properties.bridge === 'yes' ? '(교량)' : ''}`
+  : null));
 show('대중교통', (f) => (f.properties.highway === 'bus_stop' ? 'bus_stop'
   : f.properties.public_transport ? `pt:${f.properties.public_transport}`
   : f.properties.railway === 'subway_entrance' ? 'subway_entrance' : null));

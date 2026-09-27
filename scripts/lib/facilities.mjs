@@ -22,39 +22,57 @@ export const FACILITY_RULES = [
   { key: 'st-rodeo', label: '압구정로데오역', kind: 'station', group: '교통', priority: 1,
     mapLabel: '로데오역', rule: { name: '압구정로데오', railway: 'station' } },
   { key: 'galleria', label: '갤러리아', kind: 'shop', group: '상권', priority: 1,
-    rule: { name: '갤러리아백화점 이스트' } },
+    rule: { name: '갤러리아백화점 이스트', shop: 'department_store' } },
+  // OSM 에는 이름이 '현대' 한 글자로만 올라와 있습니다 (압구정로 현대백화점).
+  { key: 'hyundai-dept', label: '현대백화점', kind: 'shop', group: '상권', priority: 1,
+    mapLabel: '현대百', rule: { name: '현대', shop: 'department_store' } },
 
   { key: 'rodeo', label: '로데오거리', kind: 'shop', group: '상권', priority: 2,
-    rule: { name: '압구정로데오거리' } },
+    rule: { name: '압구정로데오거리', landuse: 'retail' } },
   { key: 'park-river', label: '잠원한강공원', kind: 'park', group: '한강', priority: 2,
-    mapLabel: '한강공원', rule: { name: '잠원한강공원' } },
+    mapLabel: '한강공원', rule: { name: '잠원한강공원', leisure: 'park' } },
   { key: 'st-cheongdam', label: '청담역', kind: 'station', group: '교통', priority: 2,
     rule: { name: '청담', railway: 'station' } },
 
   { key: 'dosan', label: '도산공원', kind: 'park', group: '상권', priority: 3,
-    rule: { name: '도산공원' } },
+    rule: { name: '도산공원', leisure: 'park' } },
   { key: 'sch-hyundai', label: '현대고', kind: 'school', group: '학교', priority: 3,
-    rule: { name: '현대고등학교' } },
+    rule: { name: '현대고등학교', amenity: 'school' } },
 
   // 압구정초·중·고는 서로 100~300m 안에 붙어 있어 작은 지도에 세 이름을 다
   // 넣을 수 없습니다. 표에는 따로 두고, 지도에는 아래 merged 항목 하나로 씁니다.
   { key: 'sch-ap-el', label: '압구정초', kind: 'school', group: '학교', priority: 4,
-    onZoneMap: false, rule: { name: '서울압구정초등학교' } },
+    onZoneMap: false, rule: { name: '서울압구정초등학교', amenity: 'school' } },
   { key: 'sch-ap-mid', label: '압구정중', kind: 'school', group: '학교', priority: 4,
-    onZoneMap: false, rule: { name: '압구정중학교' } },
+    onZoneMap: false, rule: { name: '압구정중학교', amenity: 'school' } },
   { key: 'sch-ap-high', label: '압구정고', kind: 'school', group: '학교', priority: 4,
-    onZoneMap: false, rule: { name: '압구정고등학교' } },
+    onZoneMap: false, rule: { name: '압구정고등학교', amenity: 'school' } },
 
-  { key: 'sch-sinsa', label: '신사중', kind: 'school', group: '학교', priority: 5,
-    rule: { name: '신사중학교' } },
-  { key: 'sch-cheongdam', label: '청담고', kind: 'school', group: '학교', priority: 5,
-    rule: { name: '청담고등학교' } },
+  { key: 'sch-sinsa', label: '신사중', kind: 'school', group: '학교', priority: 4,
+    rule: { name: '신사중학교', amenity: 'school' } },
+  { key: 'sch-singu-el', label: '신구초', kind: 'school', group: '학교', priority: 5,
+    rule: { name: '서울신구초등학교', amenity: 'school' } },
+  { key: 'sch-singu-mid', label: '신구중', kind: 'school', group: '학교', priority: 5,
+    rule: { name: '신구중학교', amenity: 'school' } },
+
+  // 청담초·청담중은 서로 100m 안이라 지도에서는 묶습니다.
+  { key: 'sch-cd-el', label: '청담초', kind: 'school', group: '학교', priority: 5,
+    onZoneMap: false, rule: { name: '서울청담초등학교', amenity: 'school' } },
+  { key: 'sch-cd-mid', label: '청담중', kind: 'school', group: '학교', priority: 5,
+    onZoneMap: false, rule: { name: '청담중학교', amenity: 'school' } },
+  // 이전 예정이라 따로 둡니다 — 묶어 버리면 그 사실이 가려집니다.
+  { key: 'sch-cheongdam', label: '청담고', mapLabel: '청담고(이전예정)',
+    kind: 'school', group: '학교', priority: 4,
+    caveat: '이전 예정 — 시점·이전지 확인 필요',
+    rule: { name: '청담고등학교', amenity: 'school' } },
 ];
 
 /** 지도에만 쓰는 묶음 표식 — 서로 붙어 있어 따로 찍으면 이름이 겹칩니다. */
 const MERGED = [
   { key: 'sch-apgujeong', mapLabel: '압구정초·중·고', kind: 'school', priority: 3,
     of: ['sch-ap-el', 'sch-ap-mid', 'sch-ap-high'] },
+  { key: 'sch-cd', mapLabel: '청담초·중', kind: 'school', priority: 5,
+    of: ['sch-cd-el', 'sch-cd-mid'] },
 ];
 
 /** 위경도 두 점 사이 직선거리 (km). 이 축척에서는 평면 근사로 충분합니다. */
@@ -67,7 +85,18 @@ export function distKm(a, b) {
   return Math.sqrt((dLat * R) ** 2 + (dLon * R * Math.cos(midLat)) ** 2);
 }
 
-/** 피처의 대표 지점. */
+/** 한 지점에서 시설의 가장 가까운 꼭짓점까지 (km). */
+export function nearestKm(from, fac) {
+  const pts = fac.pts?.length ? fac.pts : [fac.at];
+  let best = Infinity;
+  for (const p of pts) {
+    const d = distKm(from, p);
+    if (d < best) best = d;
+  }
+  return Number.isFinite(best) ? best : null;
+}
+
+/** 피처의 대표 지점 — 지도에 점을 찍을 자리. */
 function anchorOf(f) {
   if (f.geometry?.type === 'Point') return f.geometry.coordinates;
   const ring = ringsOf(f)[0];
@@ -76,19 +105,44 @@ function anchorOf(f) {
   return line?.length ? line[Math.floor(line.length / 2)] : null;
 }
 
+/** 피처의 모든 꼭짓점 — 거리를 잴 때 씁니다. */
+function vertsOf(f) {
+  if (f.geometry?.type === 'Point') return [f.geometry.coordinates];
+  const pts = [...ringsOf(f), ...linesOf(f)].flat().filter((c) => Array.isArray(c) && c.length === 2);
+  return pts.length ? pts : [];
+}
+
 const ruleMatches = (rule, f) =>
   Object.entries(rule).every(([k, v]) => (k === 'name' ? f.properties.name === v : f.properties[k] === v));
 
-/** OSM 에서 시설 좌표를 찾습니다. 못 찾은 것은 조용히 빠집니다. */
+/**
+ * OSM 에서 시설 좌표를 찾습니다.
+ *
+ * 규칙에는 반드시 판별 태그가 있어야 합니다. 이름만으로 찾으면 같은 이름의
+ * 버스정류장을 집습니다 — '도산공원'·'신사중학교'·'신구중학교' 는 정류장
+ * 이름으로도 등록되어 있어, 실제로 좌표 세 개가 정류장 위치로 잡혀 있었습니다.
+ * 좌표가 하나 틀리면 그 시설까지의 거리가 책 전체에서 틀립니다.
+ */
 export function findFacilities(geojson) {
   const out = [];
+  const missing = [];
   for (const spec of FACILITY_RULES) {
-    const f = (geojson.features ?? []).find((x) => ruleMatches(spec.rule, x));
-    if (!f) continue;
+    const keys = Object.keys(spec.rule);
+    if (keys.length < 2 || !keys.some((k) => k !== 'name')) {
+      throw new Error(`시설 규칙 '${spec.key}' 에 판별 태그가 없습니다 — 이름만으로는 정류장과 구분되지 않습니다`);
+    }
+    const hits = (geojson.features ?? []).filter((x) => ruleMatches(spec.rule, x));
+    if (!hits.length) { missing.push(spec.key); continue; }
+    // 같은 시설이 점과 면으로 두 번 올라온 경우가 있습니다. 면을 씁니다.
+    const f = hits.find((x) => x.geometry?.type !== 'Point') ?? hits[0];
     const at = anchorOf(f);
-    if (!at) continue;
-    out.push({ ...spec, at });
+    if (!at) { missing.push(spec.key); continue; }
+    // 거리는 '가장 가까운 지점' 으로 잽니다. 무게중심으로 재면 잠원한강공원처럼
+    // 긴 띠 모양인 것이 엉뚱한 곳으로 잡힙니다 (실제로 강 남쪽 1km 로 잡혀
+    // 있었습니다). 백화점처럼 작은 건물은 두 방식이 거의 같습니다.
+    out.push({ ...spec, at, pts: vertsOf(f) });
   }
+  if (missing.length) console.warn(`  ! 좌표를 못 찾은 시설: ${missing.join(', ')}`);
   return out;
 }
 
@@ -158,7 +212,7 @@ export function zoneDistances({ zoneBuildings, facilities, bankLines = [] }) {
     const center = zoneCenter(buildings);
     if (!center) continue;
     const to = new Map();
-    for (const fac of facilities) to.set(fac.key, distKm(center, fac.at));
+    for (const fac of facilities) to.set(fac.key, nearestKm(center, fac));
     out.set(zoneId, { center, river: riverDistanceKm(center, bankLines), to });
   }
   return out;
@@ -218,4 +272,15 @@ export function transitAccess(center, { stops = [], entrances = [] }, radiusM = 
     entrance: nearest(entrances),
     radiusM,
   };
+}
+
+/**
+ * 사람이 읽는 거리 문구.
+ * 1km 미만은 10m 단위로 줄입니다 — 직선거리를 1m 단위로 쓰면 실측한 것처럼
+ * 보입니다. 반올림해서 1000m 가 되면 km 로 적습니다.
+ */
+export function formatKm(v) {
+  if (v == null) return '—';
+  const m = Math.round((v * 1000) / 10) * 10;
+  return m < 1000 ? `${m}m` : `${(m / 1000).toFixed(1)}km`;
 }

@@ -4,7 +4,7 @@ import { zoneMap } from './zonemap.mjs';
 import { geoMap, analyzeGeography } from './geomap.mjs';
 import { locatorBase, locatorFor, zoneLocator } from './minimap.mjs';
 import {
-  findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm,
+  findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm, formatKm,
 } from './facilities.mjs';
 import { comma, eok, perPyeong, billionKRW, escapeHtml } from './format.mjs';
 
@@ -86,7 +86,7 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
 
   // 직선거리를 사람이 읽는 형태로. 100m 미만은 자릿수를 더 줄이지 않습니다 —
   // 직선거리를 10m 단위로 쓰면 실측한 것처럼 보입니다.
-  const km = (v) => (v == null ? '—' : v < 1 ? `${Math.round(v * 1000 / 10) * 10}m` : `${v.toFixed(1)}km`);
+  const km = formatKm;
 
   return {
     /** 표지의 장별 카드 목차 */
@@ -181,6 +181,11 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         rows.push('<tr class="zoneloc__grouprow"><th colspan="2" scope="colgroup">한강</th></tr>');
         rows.push(`<tr><th scope="row">물가까지<span class="zoneloc__caveat">올림픽대로로 차단</span></th>`
           + `<td class="${d.river != null && Math.abs(d.river - riverBest) < 0.001 ? 'is-best' : ''}">${km(d.river)}</td></tr>`);
+        for (const fac of locator.facilities.filter((f) => f.group === '한강')) {
+          const v = d.to.get(fac.key);
+          const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
+          rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}</th><td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
+        }
         for (const g of groups) {
           const inGroup = locator.facilities.filter((f) => f.group === g);
           if (!inGroup.length) continue;
@@ -188,7 +193,9 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
           for (const fac of inGroup) {
             const v = d.to.get(fac.key);
             const isBest = v != null && Math.abs(v - best.get(fac.key)) < 0.001;
-            rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}</th><td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
+            rows.push(`<tr><th scope="row">${escapeHtml(fac.label)}`
+              + `${fac.caveat ? `<span class="zoneloc__caveat">${escapeHtml(fac.caveat)}</span>` : ''}</th>`
+              + `<td class="${isBest ? 'is-best' : ''}">${km(v)}</td></tr>`);
           }
           // 교통 묶음 끝에 버스 접근성을 붙입니다.
           if (g === '교통') {
@@ -256,7 +263,8 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
         bestPerSchool.set(sc.key, lo);
       }
 
-      const head = schools.map((sc) => `<th scope="col">${escapeHtml(sc.label)}</th>`).join('');
+      const head = schools.map((sc) => `<th scope="col">${escapeHtml(sc.label)}`
+        + `${sc.caveat ? '<span class="schooldist__caveat">이전 예정</span>' : ''}</th>`).join('');
       const body = zones.zones.map((z) => {
         const d = locator.dist.get(z.id);
         if (!d) return '';
