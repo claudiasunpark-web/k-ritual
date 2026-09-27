@@ -809,3 +809,19 @@ body { word-break: keep-all; overflow-wrap: break-word; }
   .zoneloc { break-inside: avoid; box-shadow: none; }
   .zoneloc__grid { grid-template-columns: 240px 1fr; }
 }
+
+/* 학교 지도 — 급별로 색을 나눕니다 (초/중/고). */
+.geomap__mark--el { fill: var(--series-1); }
+.geomap__mark--mid { fill: var(--series-3); }
+.geomap__mark--high { fill: var(--series-7); }
+.geomap__mark--other { fill: var(--text-muted); }
+.geomap__poi--level-el, .geomap__poi--level-mid,
+.geomap__poi--level-high, .geomap__poi--level-other {
+  font-size: 11.5px; font-weight: 650; fill: var(--text-primary);
+}
+
+/* 구역 × 학교 통학거리 표 */
+.schooldist td { text-align: right; font-variant-numeric: tabular-nums; }
+.schooldist td.is-best { font-weight: 750; color: var(--text-primary); }
+.schooldist td.is-best::after { content: " ★"; font-size: 10px; color: var(--series-4); }
+.schooldist th[scope="row"] { font-weight: 650; white-space: nowrap; }

@@ -67,10 +67,11 @@ content/          원고 (Markdown + 프런트매터). 여기만 고치면 됩�
   00-cover.md       표지·목차
   01-zones.md       1장 구역별 설명
   02-location.md    2장 입지 분석
-  03-after.md       3장 재건축 후 구역별 특징·분담금
-  04-schedule.md    4장 진행 현황과 일정
-  05-risk.md        5장 리스크 점검
-  06-method.md      부록 데이터 방법론과 면책
+  03-education.md   3장 교육 환경
+  04-after.md       4장 재건축 후 구역별 특징·분담금
+  05-schedule.md    5장 진행 현황과 일정
+  06-risk.md        6장 리스크 점검
+  07-method.md      부록 데이터 방법론과 면책
 
 data/             데이터 레이어 (모든 수치의 단일 출처)
   meta.json         제목·판본·기준일
@@ -242,4 +243,4 @@ node scripts/pdf.mjs      # dist-pdf/ 에 장별 PDF
 
 이 저장소의 콘텐츠는 공개 자료를 정리한 **정보 제공 목적**의 자료이며 투자 권유가 아닙니다.
 모든 수치는 발행일 기준이고 조합의 확정 수치가 아닙니다.
-자세한 내용은 부록의 면책 조항(`content/06-method.md`)을 확인하세요.
+자세한 내용은 부록의 면책 조항(`content/07-method.md`)을 확인하세요.

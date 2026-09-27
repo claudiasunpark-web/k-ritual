@@ -103,6 +103,17 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
       return geoMap({ geojson: osm, zones, complexes, title: args || undefined });
     },
 
+    /** 학교만 이름과 함께 보여 주는 지형도 (교육 장). */
+    'school-map': (args) => {
+      if (!osm?.features?.length) {
+        return '<p class="muted">지형 데이터가 없어 학교 지도를 만들 수 없습니다.</p>';
+      }
+      return geoMap({
+        geojson: osm, zones, complexes, poiMode: 'schools',
+        id: 'school-map', title: args || '압구정 일대 초·중·고 분포',
+      });
+    },
+
     /**
      * 구역별 입지 — 항목별로 흩어진 입지 정보를 구역 하나로 모아 봅니다.
      * 거리는 모두 직선거리이며, 도보 경로가 아닙니다.
@@ -181,6 +192,47 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
   </div>
 </section>`;
       }).join('')}</div>`;
+    },
+
+    /**
+     * 구역 × 학교 직선거리 표 (교육 장).
+     * 구역별 입지 카드와 같은 숫자를 쓰되, 학교만 뽑아 한 표로 견줍니다.
+     */
+    'zone-schools': () => {
+      if (!locator) return '<p class="muted">지형 데이터가 없어 통학거리 표를 만들 수 없습니다.</p>';
+      const schools = locator.facilities.filter((f) => f.group === '학교');
+      if (!schools.length) return '<p class="muted">학교 좌표를 찾지 못했습니다.</p>';
+
+      // 열마다 가장 가까운 구역을 찾아 표시합니다.
+      const bestPerSchool = new Map();
+      for (const sc of schools) {
+        let lo = Infinity;
+        for (const d of locator.dist.values()) {
+          const v = d.to.get(sc.key);
+          if (v != null && v < lo) lo = v;
+        }
+        bestPerSchool.set(sc.key, lo);
+      }
+
+      const head = schools.map((sc) => `<th scope="col">${escapeHtml(sc.label)}</th>`).join('');
+      const body = zones.zones.map((z) => {
+        const d = locator.dist.get(z.id);
+        if (!d) return '';
+        const cells = schools.map((sc) => {
+          const v = d.to.get(sc.key);
+          const isBest = v != null && Math.abs(v - bestPerSchool.get(sc.key)) < 0.001;
+          return `<td class="${isBest ? 'is-best' : ''}">${km(v)}</td>`;
+        }).join('');
+        return `<tr><th scope="row">${escapeHtml(z.shortName)}</th>${cells}</tr>`;
+      }).join('');
+
+      return `<div class="table-wrap">
+  <table class="datatable__table schooldist">
+    <caption>단지 중심에서 학교까지 <strong>직선거리</strong>. 도보 거리가 아닙니다. ★은 그 학교에 가장 가까운 구역.</caption>
+    <thead><tr><th scope="col">구역</th>${head}</tr></thead>
+    <tbody>${body}</tbody>
+  </table>
+</div>`;
     },
 
     /** 구역별 카드 */

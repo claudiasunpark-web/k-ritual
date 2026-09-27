@@ -60,6 +60,27 @@ const POI_RULES = [
   { match: /^현대고등학교$/, label: '현대고', kind: 'school' },
 ];
 
+// 학교 이름을 지도에 들어가는 길이로 줄입니다.
+// '서울압구정초등학교' 를 그대로 쓰면 이름표가 단지 세 개를 덮습니다.
+function shortSchool(name) {
+  return name
+    .replace(/^서울/, '')
+    .replace(/초등학교$/, '초')
+    .replace(/중학교$/, '중')
+    .replace(/고등학교$/, '고')
+    .replace(/중고등학교$/, '중고')
+    .replace(/대학교$/, '대');
+}
+
+/** 학교 급별 — 표식 색을 나누는 데 씁니다. */
+function schoolLevel(name) {
+  if (/초등학교$/.test(name)) return 'el';
+  if (/중학교$/.test(name)) return 'mid';
+  if (/고등학교$/.test(name)) return 'high';
+  if (/중고등학교$/.test(name)) return 'mid';
+  return 'other';
+}
+
 // 한강 다리는 OSM 에 '동호대교'가 아니라 그 다리가 나르는 도로 이름으로
 // 올라가 있습니다. 어느 도로가 어느 다리인지는 정해져 있으므로 표로 둡니다.
 //
@@ -248,7 +269,13 @@ export function analyzeGeography({ geojson, zones, complexes }) {
   };
 }
 
-export function geoMap({ geojson, zones, complexes, title = '압구정 실제 지형도', id = 'geo-map' }) {
+/**
+ * @param {string} poiMode 'default' — 역·백화점·주요 학교 몇 개
+ *                         'schools' — 화면 안 모든 학교에 이름을 답니다 (교육 장용)
+ */
+export function geoMap({
+  geojson, zones, complexes, title = '압구정 실제 지형도', id = 'geo-map', poiMode = 'default',
+}) {
   const { project, metersPerPx } = projector(VIEW, { width: W, height: H });
   const analysis = analyzeGeography({ geojson, zones, complexes });
   const { inView, zoneOf } = analysis;
@@ -294,18 +321,34 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
     ? bridgeCandidates.filter((f) => linesOf(f).some((l) => crossesAny(l, riverLines)))
     : [];
 
-  for (const f of inView) {
-    const name = f.properties.name;
-    if (!name) continue;
-    const rule = POI_RULES.find((r) => r.match.test(name)
-      && (!r.station || f.properties.railway === 'station'));
-    if (!rule) continue;
-    if (pois.some((x) => x.label === rule.label)) continue; // 중복 표시 방지
-    const at = f.geometry.type === 'Point'
-      ? f.geometry.coordinates
-      : centroid(ringsOf(f)[0] ?? linesOf(f)[0] ?? []);
-    if (!at?.length) continue;
-    pois.push({ ...rule, at });
+  if (poiMode === 'schools') {
+    // 교육 장에서는 화면 안 학교를 빠짐없이 이름과 함께 보여 줍니다.
+    // 유치원·어린이집은 수가 많고 배정과 무관해 뺍니다.
+    for (const f of inView) {
+      const name = f.properties.name;
+      if (!name || !/^(school|university)$/.test(f.properties.amenity ?? '')) continue;
+      const at = f.geometry.type === 'Point'
+        ? f.geometry.coordinates
+        : centroid(ringsOf(f)[0] ?? linesOf(f)[0] ?? []);
+      if (!at?.length) continue;
+      const label = shortSchool(name);
+      if (pois.some((x) => x.label === label)) continue;
+      pois.push({ label, kind: 'school', level: schoolLevel(name), at });
+    }
+  } else {
+    for (const f of inView) {
+      const name = f.properties.name;
+      if (!name) continue;
+      const rule = POI_RULES.find((r) => r.match.test(name)
+        && (!r.station || f.properties.railway === 'station'));
+      if (!rule) continue;
+      if (pois.some((x) => x.label === rule.label)) continue; // 중복 표시 방지
+      const at = f.geometry.type === 'Point'
+        ? f.geometry.coordinates
+        : centroid(ringsOf(f)[0] ?? linesOf(f)[0] ?? []);
+      if (!at?.length) continue;
+      pois.push({ ...rule, at });
+    }
   }
 
   // ── 그리기 ────────────────────────────────────────────────
@@ -499,10 +542,13 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
   for (const poi of pois) {
     const [x, y] = project(poi.at);
     if (x < 0 || x > W || y < 0 || y > H) continue;
-    const r = poi.kind === 'school' ? 2.6 : poi.kind === 'shop' ? 5.5 : 4.5;
-    push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" ${KIND_MARK[poi.kind]}`
+    const isSchoolMode = poiMode === 'schools' && poi.kind === 'school';
+    const r = isSchoolMode ? 4.5 : poi.kind === 'school' ? 2.6 : poi.kind === 'shop' ? 5.5 : 4.5;
+    const fill = isSchoolMode ? `class="geomap__mark--${poi.level}"` : KIND_MARK[poi.kind];
+    push(`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${r}" ${fill}`
       + ' stroke="var(--map-land)" stroke-width="1.4"/>');
-    push(`<text class="geomap__poi geomap__poi--${poi.kind}" x="${x.toFixed(1)}"`
+    const cls = isSchoolMode ? `geomap__poi geomap__poi--level-${poi.level}` : `geomap__poi geomap__poi--${poi.kind}`;
+    push(`<text class="${cls}" x="${x.toFixed(1)}"`
       + ` y="${(y - r - 4).toFixed(1)}" text-anchor="middle">${escapeHtml(poi.label)}</text>`);
   }
   push('</g>');
@@ -550,7 +596,7 @@ export function geoMap({ geojson, zones, complexes, title = '압구정 실제 �
       ${out.join('\n      ')}
     </svg>
   </div>
-  <p class="geomap__note">건물 윤곽·도로·한강은 OpenStreetMap 실제 지형입니다(${escapeHtml(geojson.fetchedAt ?? '')} 기준).
+  <p class="geomap__note">${poiMode === 'schools' ? '점은 화면 안 모든 초·중·고입니다(유치원 제외). ' : ''}건물 윤곽·도로·한강은 OpenStreetMap 실제 지형입니다(${escapeHtml(geojson.fetchedAt ?? '')} 기준).
   색을 입힌 건물 ${matched}동은 단지명으로 구역을 맞춘 것이고, 회색 건물은 구역 밖입니다.
   <strong>정비구역 경계선이 아닙니다</strong> — 구역 경계의 법적 기준은 서울시 정비구역 지정 고시입니다.</p>
 </figure>`;

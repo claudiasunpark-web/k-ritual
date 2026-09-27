@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /** 데이터 정합성 점검. node scripts/check-data.mjs */
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { parseLandShare } from './lib/landshare.mjs';
 
 const ROOT = new URL('..', import.meta.url);
@@ -26,11 +26,13 @@ for (const c of location.categories) for (const it of c.items) checkSources(it.s
 checkSources(policy.jaechohwan.sources, 'policy/jaechohwan');
 checkSources(policy.assumptions.constructionCostPerPyeongManKRW.sources, 'policy/assumptions');
 
-// 원고에서 쓰인 출처 키 검증
-for (const f of ['00-cover', '01-zones', '02-location', '03-after', '04-schedule', '05-risk', '06-method']) {
-  const md = readFileSync(new URL(`content/${f}.md`, ROOT), 'utf8');
+// 원고에서 쓰인 출처 키 검증.
+// 파일 목록을 손으로 적어 두면 장을 넣거나 이름을 바꿀 때마다 깨집니다.
+// content/ 를 읽어서 있는 것을 다 봅니다.
+for (const name of readdirSync(new URL('content/', ROOT)).filter((f) => f.endsWith('.md')).sort()) {
+  const md = readFileSync(new URL(`content/${name}`, ROOT), 'utf8');
   for (const m of md.matchAll(/\[\^src:([A-Za-z0-9_.-]+)\]/g)) {
-    if (!sourceKeys.has(m[1])) problems.push(`content/${f}.md: 없는 출처 키 '${m[1]}'`);
+    if (!sourceKeys.has(m[1])) problems.push(`content/${name}: 없는 출처 키 '${m[1]}'`);
   }
 }
 
