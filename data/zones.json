@@ -154,14 +154,19 @@
         "hdec-press-apgujeong2",
         "hankyung-2025-09-29",
         "arunews-50819",
-        "marketin-apgujeong2"
+        "marketin-apgujeong2",
+        "sedaily-20037267",
+        "nate-20260507-brand"
       ],
       "constructionCostPerPyeongManKRW": 1150,
       "contractDate": "2026-03-30",
       "brand": "압구정 현대 (명칭 유지 전제)",
       "brandVerified": false,
       "planNote": "도급계약 시점(2026-03-30) 계획은 지상 65층·14개 동·2,571세대였고, 2026-07-02 서울시 통합심의 조건부 의결 내용은 최고 66층·2,381가구입니다. 세대수 190가구 차이는 심의 과정의 조정으로 보이며, 최종 수치는 사업시행계획인가 고시로 확정됩니다.",
-      "brandNote": "일부 보도가 '힐스테이트' 로 적었으나 사실과 다릅니다. 압구정 현대는 단지명 자체가 브랜드 가치를 가지므로 '압구정 현대' 명칭 유지를 전제로 논의됩니다. 최종 명칭은 확정 고시 전까지 바뀔 수 있습니다."
+      "brandNote": "일부 보도가 '힐스테이트' 로 적었으나 사실과 다릅니다. 압구정 현대는 단지명 자체가 브랜드 가치를 가지므로 '압구정 현대' 명칭 유지를 전제로 논의됩니다. 최종 명칭은 확정 고시 전까지 바뀔 수 있습니다.",
+      "ceilingHeightM": 2.9,
+      "ceilingNote": "실내 천장고 2.9m — 조합 의견을 수용해 적용. 기존 창호 대비 3배가는 알루미늄 섀시 채택",
+      "ceilingVerified": false
     },
     {
       "id": "z3",
@@ -270,8 +275,13 @@
         "fnnews-2026-05-25",
         "housingherald-61883",
         "mt-2026-09-03",
-        "tf-2234907"
-      ]
+        "tf-2234907",
+        "sedaily-20037267",
+        "nate-20260507-brand"
+      ],
+      "ceilingHeightM": 3.0,
+      "ceilingNote": "우물천장 3m 적용. 고급 석재·알루미늄 패널, 건물일체형 태양광(BIPV)",
+      "ceilingVerified": false
     },
     {
       "id": "z4",
@@ -342,8 +352,17 @@
         "sedaily-20047641",
         "arunews-63016",
         "mt-2026-09-03",
-        "nate-2026-02-19"
-      ]
+        "nate-2026-02-19",
+        "sedaily-20037267",
+        "nate-20260507-brand",
+        "housingherald-61884",
+        "samsungcnt-z4",
+        "bizhankook-32141"
+      ],
+      "ceilingHeightM": null,
+      "ceilingNote": "천장고 수치는 공개되지 않음. 최대 4.5m 캔틸레버, 필로티 최고 15m, 조합원 1,341세대 전 세대 테라스",
+      "brand": "컬리넌 압구정 (삼성물산 제안)",
+      "ceilingVerified": false
     },
     {
       "id": "z5",
@@ -397,8 +416,15 @@
         "news1-6182439",
         "asiatoday-2026-05-28",
         "tf-2234907",
-        "pinpoint-369861"
-      ]
+        "pinpoint-369861",
+        "sedaily-20037267",
+        "nate-20260507-brand",
+        "nate-20260423-z5name"
+      ],
+      "ceilingHeightM": 3.0,
+      "ceilingNote": "우물천장 3m 적용",
+      "brand": "압구정 현대 갤러리아 (현대건설 제안)",
+      "ceilingVerified": false
     },
     {
       "id": "z6",
