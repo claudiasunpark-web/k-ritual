@@ -1,0 +1,454 @@
+<title>시크릿 북클럽</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* 레이아웃: 위는 "우리 아이" 사다리(K-레벨 0~10), 아래는 묶음 탭 → 책 카드 그리드. 레벨은 연분홍→자두색 사다리 색으로 일관되게 표시 */
+:root {
+  --bg: #fbf5f5;
+  --surface: #ffffff;
+  --ink: #3b2830;
+  --muted: #8a6f78;
+  --line: #efdfe3;
+  --accent: #b0526b;
+  --accent-ink: #ffffff;
+  --mark: #f3d9a4;
+  --mark-ink: #5a3d0c;
+  --good: #3f8a6a;
+  --warn: #b8692a;
+  --hard: #b23a4f;
+  --listen: #8a5a9e;
+  --soft: #f8e9ec;
+  --level-l: 93%;
+  --level-step: 5%;
+  --font-display: "Cormorant Garamond", "Gowun Batang", serif;
+  --font-ko-display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1c1418; --surface: #271c22; --ink: #f4e6ea; --muted: #b8a0a8; --line: #3a2a32;
+    --accent: #e8a0b4; --accent-ink: #2a1019; --mark: #e9c98a; --mark-ink: #2e1f05;
+    --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c;
+    --level-l: 34%; --level-step: 3%;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1c1418; --surface: #271c22; --ink: #f4e6ea; --muted: #b8a0a8; --line: #3a2a32;
+  --accent: #e8a0b4; --accent-ink: #2a1019; --mark: #e9c98a; --mark-ink: #2e1f05;
+  --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c;
+  --level-l: 34%; --level-step: 3%;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--font-ko-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.3; }
+h1 { font-size: 2rem; letter-spacing: -0.01em; }
+h2 { font-size: 1.35rem; }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.muted { color: var(--muted); }
+.small { font-size: 0.85rem; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+header.top { display: grid; gap: 6px; }
+header.top { justify-items: start; }
+header.top .brand { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; letter-spacing: 0.04em; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+header.top .brand::before, header.top .brand::after { content: ""; width: 28px; height: 1px; background: var(--accent); opacity: 0.5; }
+
+/* ── 우리 아이 ───────────────────── */
+.child { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; display: grid; gap: 18px; }
+.child-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.field { display: grid; gap: 4px; min-width: 0; }
+.field label { font-size: 0.8rem; color: var(--muted); letter-spacing: 0.02em; }
+select { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; max-width: 100%; }
+.ladder { display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 4px; align-items: end; }
+.rung { border: 0; border-radius: 6px 6px 2px 2px; padding: 6px 0 4px; cursor: pointer; display: grid; justify-items: center; gap: 2px; color: var(--ink); font-family: var(--font-mono); font-size: 0.8rem; }
+.rung.is-child { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rung.is-open { box-shadow: inset 0 -3px 0 var(--ink); }
+.level-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px 24px; }
+.level-card .facts { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; }
+.level-card .facts b { font-weight: 500; color: var(--muted); margin-right: 4px; }
+.level-card ul { margin: 6px 0 0; padding-left: 1.1em; }
+.level-card .role { background: var(--soft); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
+@media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
+
+/* ── 묶음 ───────────────────────── */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab { background: none; border: 0; padding: 10px 14px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-btn { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-size: 0.9rem; }
+.chip-btn[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.chip-btn .count { font-family: var(--font-mono); font-size: 0.75rem; opacity: 0.7; margin-left: 4px; }
+
+.collection-head { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: end; justify-content: space-between; }
+.collection-head > div { min-width: 0; display: grid; gap: 4px; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 8px 14px; cursor: pointer; text-decoration: none; color: var(--ink); font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.small { padding: 5px 10px; font-size: 0.85rem; }
+.toggle { display: inline-flex; gap: 6px; align-items: center; font-size: 0.88rem; color: var(--muted); cursor: pointer; }
+
+/* ── 묶음 전체 사기 ───────────────── */
+.buyall { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; display: grid; gap: 14px; }
+.progress { height: 8px; background: var(--soft); border-radius: 99px; overflow: hidden; }
+.progress > i { display: block; height: 100%; background: var(--good); transition: width 0.3s; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.step { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 8px; }
+.step.is-next { background: var(--soft); }
+.step.is-done .step-title { text-decoration: line-through; color: var(--muted); }
+.step .n { font-family: var(--font-mono); color: var(--muted); text-align: right; }
+.step .step-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: end; }
+
+/* ── 책 카드 ─────────────────────── */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
+.book { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 14px; }
+.book.is-owned { opacity: 0.6; }
+.cover { border-radius: 3px 8px 8px 3px; aspect-ratio: 2 / 3; padding: 8px 6px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 4px 0 0 rgba(0,0,0,0.12); color: var(--ink); max-width: 100%; }
+.cover .k { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; }
+.cover .big { font-family: var(--font-display); font-variant-numeric: lining-nums; font-size: 1.9rem; font-weight: 700; line-height: 1; }
+.book-body { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.book-title { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
+.tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--soft); color: var(--ink); white-space: nowrap; }
+.tag.num { font-size: 0.72rem; }
+.fit { font-weight: 700; }
+.fit-술술 { background: color-mix(in srgb, var(--good) 18%, transparent); color: var(--good); }
+.fit-딱맞음 { background: var(--mark); color: var(--mark-ink); }
+.fit-도전 { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
+.fit-어려움 { background: color-mix(in srgb, var(--hard) 16%, transparent); color: var(--hard); }
+.fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
+.note { font-size: 0.8rem; color: var(--muted); }
+.note.warn { color: var(--warn); }
+.book .actions { margin-top: 2px; }
+.empty { padding: 28px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); }
+
+/* ── 지수 읽는 법 ─────────────────── */
+.guide { display: grid; gap: 12px; }
+.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: 0.8rem; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td code { font-family: var(--font-mono); background: var(--soft); padding: 1px 6px; border-radius: 4px; }
+
+footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 4px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="brand">Secret Book Club</span>
+    <h1>시크릿 북클럽</h1>
+    <p class="muted">엄마들끼리만 아는 영어원서 고르는 법. AR, 렉사일, 글밥을 '파닉스 뗀 지 몇 개월이면 읽는 책'으로 바꿔 드려요.</p>
+  </header>
+
+  <section class="child" aria-labelledby="child-h">
+    <div class="child-form">
+      <h2 id="child-h" style="flex: 1 1 100%">우리 아이 지금</h2>
+      <div class="field">
+        <label for="age">만 나이</label>
+        <select id="age"></select>
+      </div>
+      <div class="field" style="flex: 1 1 220px">
+        <label for="reading">영어 읽기</label>
+        <select id="reading"></select>
+      </div>
+    </div>
+    <div class="ladder" id="ladder" role="group" aria-label="K-레벨 사다리"></div>
+    <div class="level-card" id="level-card"></div>
+  </section>
+
+  <section aria-labelledby="books-h" style="display: grid; gap: 16px">
+    <h2 id="books-h">추천 책장</h2>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="chips" id="collections"></div>
+    <div class="collection-head" id="collection-head"></div>
+    <div id="buyall" hidden></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="guide" aria-labelledby="guide-h">
+    <h2 id="guide-h">지수 읽는 법</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>책에 적힌 것</th><th>뜻</th></tr></thead>
+        <tbody>
+          <tr><td><code>AR 2.5</code></td><td>미국 원어민 2학년 5개월째 아이가 혼자 읽는 수준. 한국 아이 학년과는 상관없어요.</td></tr>
+          <tr><td><code>520L</code></td><td>렉사일. 문장 길이와 단어 난이도로 잰 값이라 AR과 어긋날 때가 있어요. 두 값이 다르면 아이 반응을 먼저 보세요.</td></tr>
+          <tr><td><code>AD</code>520L</td><td>엄마가 읽어주는 그림책. 숫자가 높아도 혼자 읽기용이 아니에요.</td></tr>
+          <tr><td><code>GN</code>390L</td><td>그래픽노블(만화). 그림이 도와줘서 숫자보다 쉽게 느껴져요.</td></tr>
+          <tr><td><code>BR</code>100L</td><td>막 읽기 시작한 아이용. 0L보다 쉬워요.</td></tr>
+          <tr><td><code>HL</code>500L</td><td>글은 쉽지만 내용은 큰 아이용이에요.</td></tr>
+          <tr><td>IL <code>LG</code> <code>MG</code> <code>MG+</code> <code>UG</code></td><td>내용 적정 나이. 유치원~초3 / 초4~중2 / 초6 이상 / 중3 이상. 영어 실력과 별개로 꼭 확인하세요.</td></tr>
+          <tr><td>글밥</td><td>한 페이지에 글이 얼마나 있는지. 레벨이 같아도 글밥이 많으면 아이가 더 힘들어해요.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p id="disclosure"></p>
+    <p>레벨은 매일 20~30분 꾸준히 영어책을 읽은 아이를 기준으로 했어요. 아이마다 속도가 달라요.</p>
+  </footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+// 이 기기에만 저장(아이 정보, 집에 있는 책, 담기 진행). 저장이 막혀도 페이지는 동작한다
+const store = {
+  get(key, fallback) { try { const v = localStorage.getItem("secret-book-club:" + key); return v == null ? fallback : JSON.parse(v); } catch { return fallback; } },
+  set(key, value) { try { localStorage.setItem("secret-book-club:" + key, JSON.stringify(value)); } catch {} },
+};
+
+const state = {
+  age: store.get("age", 7),
+  reading: store.get("reading", "m6"),
+  openLevel: null,
+  kind: store.get("kind", "situation"),
+  collectionId: store.get("collection", null),
+  onlyFit: store.get("onlyFit", false),
+  owned: new Set(store.get("owned", [])),
+  buyOpen: false,
+};
+
+function childLevel() {
+  return (DATA.readingOptions.find((o) => o.id === state.reading) ?? DATA.readingOptions[0]).level;
+}
+
+// 판정 규칙은 src/levels/estimate.ts의 fitForChild와 같다
+function fit(book) {
+  const warnings = [...book.warnings];
+  if (book.ilMinAge != null && state.age < book.ilMinAge) {
+    warnings.push(`내용 적정 나이 주의: ${book.ilLabel}이에요. 영어로는 읽을 수 있어도 내용이 아이 나이보다 성숙할 수 있어요.`);
+  }
+  if (book.listen) return { fit: "읽어주기", message: "엄마가 읽어주기 좋은 책", warnings };
+  const diff = book.level - childLevel();
+  if (diff <= -1) return { fit: "술술", message: "쉽게 읽혀요. 다독·자신감용", warnings };
+  if (diff === 0) return { fit: "딱 맞음", message: "지금 혼자 읽기 딱 좋아요", warnings };
+  if (diff === 1) return { fit: "도전", message: "엄마와 함께 읽거나 오디오북과 같이", warnings };
+  return { fit: "어려움", message: "지금은 읽어주거나 아껴두세요", warnings };
+}
+
+function levelColor(level) {
+  return `hsl(${350 - level * 5} 52% calc(var(--level-l) - ${level} * var(--level-step) / 2))`;
+}
+
+// ── 우리 아이 ───────────────────────
+function renderChild() {
+  $("age").innerHTML = Array.from({ length: 11 }, (_, i) => i + 3)
+    .map((a) => `<option value="${a}" ${a === state.age ? "selected" : ""}>${a}세</option>`).join("");
+  $("reading").innerHTML = DATA.readingOptions
+    .map((o) => `<option value="${o.id}" ${o.id === state.reading ? "selected" : ""}>${esc(o.label)}</option>`).join("");
+
+  const mine = childLevel();
+  const shown = state.openLevel ?? mine;
+  $("ladder").innerHTML = DATA.levels.map((l) => `
+    <button class="rung ${l.level === mine ? "is-child" : ""} ${l.level === shown ? "is-open" : ""}"
+      style="height: ${34 + l.level * 6}px; background: ${levelColor(l.level)}"
+      data-level="${l.level}" aria-pressed="${l.level === shown}" title="K-레벨 ${l.level} ${esc(l.name)}">
+      <span>${l.level}</span>
+    </button>`).join("");
+
+  const l = DATA.levels[shown];
+  const who = shown === mine ? "우리 아이는 지금" : "다른 단계 보기";
+  $("level-card").innerHTML = `
+    <div style="display: grid; gap: 10px">
+      <p class="small muted">${who}</p>
+      <h3>K-레벨 ${l.level} · ${esc(l.name)}</h3>
+      <p>${esc(l.headline)}</p>
+      <div class="facts">
+        <span><b>AR</b><span class="num">${esc(l.ar)}</span></span>
+        <span><b>렉사일</b><span class="num">${esc(l.lexile)}</span></span>
+        <span><b>책</b>${esc(l.formats)}</span>
+      </div>
+      <div class="facts"><span><b>글밥</b>${esc(l.textDensity)}</span></div>
+    </div>
+    <div style="display: grid; gap: 10px; align-content: start">
+      <div><p class="small muted">이 단계 아이는</p>
+        <ul>${l.childCanDo.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
+      <p class="role"><b>엄마는</b> ${esc(l.parentRole)}</p>
+    </div>`;
+}
+
+// ── 묶음 ───────────────────────────
+function collectionsOfKind(kind) { return DATA.collections.filter((c) => c.kind === kind); }
+
+function currentCollection() {
+  const list = collectionsOfKind(state.kind);
+  let c = list.find((x) => x.id === state.collectionId);
+  if (!c && state.kind === "level") c = list.find((x) => x.id === `level-${childLevel()}`);
+  return c ?? list[0];
+}
+
+function renderTabs() {
+  $("tabs").innerHTML = Object.entries(DATA.kindLabels).map(([k, label]) =>
+    `<button class="tab" role="tab" data-kind="${k}" aria-selected="${k === state.kind}">${esc(label)}</button>`).join("");
+  const current = currentCollection();
+  $("collections").innerHTML = collectionsOfKind(state.kind).map((c) =>
+    `<button class="chip-btn" data-collection="${c.id}" aria-pressed="${c.id === current.id}">${esc(c.title)}<span class="count">${c.bookIds.length}</span></button>`).join("");
+}
+
+function purchaseList(c) {
+  return c.bookIds.filter((id) => !state.owned.has(id));
+}
+
+function renderCollection() {
+  const c = currentCollection();
+  const toBuy = purchaseList(c);
+  const ownedCount = c.bookIds.length - toBuy.length;
+  $("collection-head").innerHTML = `
+    <div>
+      <h3>${esc(c.title)}</h3>
+      <p class="muted small">${esc(c.description)} · <span class="num">${c.bookIds.length}</span>권${ownedCount ? ` (집에 있는 책 ${ownedCount}권)` : ""}</p>
+    </div>
+    <div class="actions">
+      <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만</label>
+      <button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
+        ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}권` : "모두 집에 있어요"}
+      </button>
+    </div>`;
+
+  const books = c.bookIds.map((id) => DATA.books[id]).filter((b) => {
+    if (!state.onlyFit) return true;
+    const f = fit(b).fit;
+    return f === "딱 맞음" || f === "술술" || f === "읽어주기";
+  });
+  $("grid").innerHTML = books.length ? books.map(bookCard).join("") :
+    `<p class="empty" style="grid-column: 1 / -1">이 묶음에는 지금 아이 레벨에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요.</p>`;
+  renderBuyAll();
+}
+
+function bookCard(b) {
+  const f = fit(b);
+  const owned = state.owned.has(b.id);
+  const lv = DATA.levels[b.level];
+  const tags = [
+    `<span class="tag fit fit-${f.fit.replace(" ", "")}">${f.fit}</span>`,
+    b.ar != null ? `<span class="tag num" title="${esc(b.arText)}">AR ${b.ar}</span>` : "",
+    b.lexile ? `<span class="tag num">${esc(b.lexile)}</span>` : "",
+    b.il ? `<span class="tag" title="${esc(b.ilLabel)}">IL ${esc(b.il)}</span>` : "",
+    ...b.awards.map((a) => `<span class="tag">${esc(a)}</span>`),
+  ].join("");
+  return `
+  <article class="book ${owned ? "is-owned" : ""}">
+    <div class="cover" style="background: ${levelColor(b.level)}" aria-hidden="true">
+      <span class="k">LEVEL</span>
+      <span class="big">${b.level}</span>
+      <span class="k">${esc(lv.name)}</span>
+    </div>
+    <div class="book-body">
+      <div>
+        <p class="book-title">${esc(b.title)}</p>
+        <p class="small muted">${esc(b.author)}${b.series ? ` · ${esc(b.series)} 시리즈` : ""}</p>
+      </div>
+      <div class="tags">${tags}</div>
+      <p class="note">${esc(f.message)}${b.ar != null && !b.listen ? ` · ${esc(b.arText.split(".")[0])}` : ""}</p>
+      ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
+      <div class="actions">
+        <a class="btn small primary" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 보기</a>
+        <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
+      </div>
+    </div>
+  </article>`;
+}
+
+// ── 묶음 모두 사기: 한 권씩 쿠팡에서 담고 체크 ─────────
+function doneSet(c) { return new Set(store.get("done:" + c.id, [])); }
+
+function renderBuyAll() {
+  const el = $("buyall");
+  el.hidden = !state.buyOpen;
+  if (!state.buyOpen) return;
+  const c = currentCollection();
+  const ids = purchaseList(c);
+  const done = doneSet(c);
+  const finished = ids.filter((id) => done.has(id)).length;
+  const nextId = ids.find((id) => !done.has(id));
+  const pct = ids.length ? Math.round((finished / ids.length) * 100) : 100;
+  el.className = "buyall";
+  el.innerHTML = `
+    <div style="display: grid; gap: 6px">
+      <h3>${finished === ids.length ? "모두 담았어요. 쿠팡 장바구니에서 결제하세요" : "한 권씩 쿠팡 장바구니에 담아주세요"}</h3>
+      <p class="small muted">쿠팡은 여러 책을 한 번에 담는 기능을 열어두지 않아서, 순서대로 열어 담고 체크하면 돼요. 집에 있는 책은 뺐어요.</p>
+    </div>
+    <div class="progress" aria-label="담은 책 ${finished}권 / ${ids.length}권"><i style="width: ${pct}%"></i></div>
+    <p class="small"><span class="num">${finished} / ${ids.length}</span>권 담음</p>
+    <ol class="steps">
+      ${ids.map((id, i) => {
+        const b = DATA.books[id];
+        const isDone = done.has(id);
+        return `<li class="step ${isDone ? "is-done" : ""} ${id === nextId ? "is-next" : ""}">
+          <span class="n">${i + 1}</span>
+          <span class="step-title">${esc(b.title)}</span>
+          <span class="step-actions">
+            <a class="btn small ${id === nextId ? "primary" : ""}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
+            <label class="toggle"><input type="checkbox" data-done="${id}" ${isDone ? "checked" : ""}> 담았어요</label>
+          </span>
+        </li>`;
+      }).join("")}
+    </ol>
+    <div class="actions"><button class="btn small" id="reset-done">처음부터 다시</button></div>`;
+}
+
+function renderAll() { renderChild(); renderTabs(); renderCollection(); }
+
+// ── 이벤트 ──────────────────────────
+$("age").addEventListener("change", (e) => { state.age = Number(e.target.value); store.set("age", state.age); renderAll(); });
+$("reading").addEventListener("change", (e) => { state.reading = e.target.value; state.openLevel = null; store.set("reading", state.reading); renderAll(); });
+$("ladder").addEventListener("click", (e) => {
+  const r = e.target.closest("[data-level]"); if (!r) return;
+  const lv = Number(r.dataset.level);
+  state.openLevel = lv === childLevel() ? null : lv;
+  renderChild();
+});
+$("tabs").addEventListener("click", (e) => {
+  const t = e.target.closest("[data-kind]"); if (!t) return;
+  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false;
+  store.set("kind", state.kind); store.set("collection", null);
+  renderTabs(); renderCollection();
+});
+$("collections").addEventListener("click", (e) => {
+  const t = e.target.closest("[data-collection]"); if (!t) return;
+  state.collectionId = t.dataset.collection; state.buyOpen = false;
+  store.set("collection", state.collectionId);
+  renderTabs(); renderCollection();
+});
+$("collection-head").addEventListener("click", (e) => {
+  if (e.target.closest("#buy-all")) { state.buyOpen = !state.buyOpen; renderCollection(); }
+});
+$("collection-head").addEventListener("change", (e) => {
+  if (e.target.id === "only-fit") { state.onlyFit = e.target.checked; store.set("onlyFit", state.onlyFit); renderCollection(); }
+});
+$("grid").addEventListener("change", (e) => {
+  const id = e.target.dataset.owned; if (!id) return;
+  e.target.checked ? state.owned.add(id) : state.owned.delete(id);
+  store.set("owned", [...state.owned]);
+  renderCollection();
+});
+$("buyall").addEventListener("change", (e) => {
+  const id = e.target.dataset.done; if (!id) return;
+  const c = currentCollection(); const done = doneSet(c);
+  e.target.checked ? done.add(id) : done.delete(id);
+  store.set("done:" + c.id, [...done]);
+  renderBuyAll();
+});
+$("buyall").addEventListener("click", (e) => {
+  if (e.target.id === "reset-done") { store.set("done:" + currentCollection().id, []); renderBuyAll(); }
+});
+
+$("disclosure").textContent = DATA.disclosure;
+renderAll();
+</script>

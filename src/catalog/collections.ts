@@ -21,19 +21,14 @@ export const COLLECTION_KIND_LABEL: Record<CollectionKind, string> = {
   award: "문학상별",
 };
 
-/** 읽어주기 그림책은 지수와 상관없이 K-레벨 0(듣기)로 본다 */
+/**
+ * 읽어주기 그림책은 지수와 상관없이 K-레벨 0(듣기)로 본다.
+ * 혼자 읽기 기준의 경고(지수 없음, AD 등)는 읽어주는 책에는 해당하지 않으니 뺀다.
+ */
 export function bookLevel(book: Book): LevelResult {
   const result = estimateLevel(book);
   if (!book.readAloud) return result;
-  return {
-    ...result,
-    level: K_LEVELS[0],
-    mode: "listen",
-    warnings: result.mode === "listen" ? result.warnings : [
-      ...result.warnings,
-      "엄마가 읽어주는 그림책이에요. 아이 혼자 읽기 레벨과는 따로 봐주세요.",
-    ],
-  };
+  return { ...result, level: K_LEVELS[0], mode: "listen", warnings: [] };
 }
 
 const SITUATIONS: Collection[] = [

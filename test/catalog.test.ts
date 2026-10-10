@@ -31,6 +31,7 @@ test("읽어주기 그림책은 레벨 0(듣기)", () => {
   const book = BOOKS.find((b) => b.id === "where-the-wild-things-are")!;
   assert.equal(bookLevel(book).level.level, 0);
   assert.equal(bookLevel(book).mode, "listen");
+  assert.deepEqual(bookLevel(book).warnings, []);
   assert.ok(getCollection("level-0").bookIds.includes(book.id));
 });
 
