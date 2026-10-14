@@ -93,7 +93,7 @@ const RULES: Record<string, Rule> = {
 };
 
 // 상자 세트·합본·부록·번역본처럼 시리즈 낱권이 아닌 것
-const JUNK = /box(ed)? set|boxset|collection|collector|omnibus|books? \d|#\s?\d|volumes?\s\d|complete|\/|\d+-book|\bset\b|bind-?up|treasury|activity|sticker|colou?ring|journal|cookbook|calendar 20|guide|handbook|poster|postcard|audio|cd\b|[À-ɏ]{2,}|spanish|edición|español|display|cut ?out|sparknotes|board book|graphic novel|movie|party pack|do-it-yourself|diary$|book and doll|\(series\)|series$|big book|library|one-act|novel by|play script|summary|study|workbook|3-d|pop-up|lift-the-flap|puzzle|craft|game|ultimate|official|annual|deluxe|illustrated edition|special edition|anniversary|\bvol\b|vol\.|part \d|painting|pos pack|transforming|funfax|box of|backlst|stckp|cutting up|and friends$|wimpy kid$|notebook|scrapbook|quiz|trivia|joke|fact file|cards?$|paper dolls?|mini |little golden|graphic|pack\b|clip strip|books in a|edition|magical year|walls of|true stories|bestest|[;\[\]]|\.\.\.|calendar|\bbox\b|package|cassette|keepsake|mysteries$|\bvols?\b|\bx \d|s\'wrap|\btbp\b|header|badges?|plush|\bdoll\b|calandar|puppet|magnet|event kit|friendship kit|\bkit$|flash ?cards?|\bdvd\b|video|\bluch\b|\bagus\b|se viste/i;
+const JUNK = /box(ed)? set|boxset|collection|collector|omnibus|books? \d|#\s?\d|volumes?\s\d|complete|\/|\d+-book|\bset\b|bind-?up|treasury|activity|sticker|colou?ring|journal|cookbook|calendar 20|guide|handbook|poster|postcard|audio|cd\b|[À-ɏ]{2,}|spanish|edición|español|display|cut ?out|sparknotes|board book|graphic novel|movie|party pack|do-it-yourself|diary$|book and doll|\(series\)|series$|big book|library|one-act|novel by|play script|summary|study|workbook|3-d|pop-up|lift-the-flap|puzzle|craft|game|ultimate|official|annual|deluxe|illustrated edition|special edition|anniversary|\bvol\b|vol\.|part \d|painting|pos pack|transforming|funfax|box of|backlst|stckp|cutting up|and friends$|wimpy kid$|notebook|scrapbook|quiz|trivia|joke|fact file|cards?$|paper dolls?|mini |little golden|graphic|pack\b|clip strip|books in a|edition|magical year|walls of|true stories|bestest|[;\[\]]|\.\.\.|calendar|\bbox\b|package|cassette|keepsake|mysteries$|\bvols?\b|\bx \d|s\'wrap|\btbp\b|header|badges?|plush|\bdoll\b|calandar|puppet|magnet|event kit|friendship kit|\bkit$|flash ?cards?|\bdvd\b|video|\bluch\b|\bagus\b|se viste|standee|display|prepack|bookmark/i;
 // 영어가 아닌 판 (아프리칸스어·스페인어·프랑스어·독일어 등에서 자주 나오는 말)
 const FOREIGN = /\b(en die|die|van|het|de la|del|el|los|las|le|les|du|des|der|und|och|och|och)\b/i;
 // 로마자로 쓴 중국어 판 같은 것
@@ -102,7 +102,7 @@ const PINYIN = /\b(de|zhi|yu|jie|qing|bian|diao|xiao|shi|wo|ni)\b.*\b(de|zhi|yu|
 /** 비교용 키: 괄호·앞쪽 시리즈 이름·문장부호를 떼고 */
 function titleKey(title: string, series: string): string {
   // 괄호, 끝에 붙은 연도("…, 1912", "AD 79")는 같은 책의 다른 표기로 본다
-  let t = title.replace(/\(.*?\)/g, " ").replace(/,?\s*(\d{4}|ad \d+)\s*$/i, "");
+  let t = title.replace(/\(.*$/g, " ").replace(/,?\s*(\d{4}|ad \d+)\s*$/i, "");
   const sk = series.toLowerCase().replace(/ i can read$/, "");
   if (t.toLowerCase().startsWith(sk)) t = t.slice(sk.length);
   return norm(t) || norm(title.replace(/\(.*?\)/g, " "));
