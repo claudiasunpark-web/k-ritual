@@ -130,7 +130,8 @@ async function search(author: string): Promise<Doc[]> {
     const res = await fetch(url, { headers: { "User-Agent": "secret-book-club-catalog/1.0" } });
     if (!res.ok) throw new Error(`Open Library ${res.status}`);
     const body = (await res.json()) as { docs: Doc[] };
-    out.push(...body.docs);
+    // 줄바꿈·여러 칸 띄어쓰기가 섞인 제목이 있어 정리
+    out.push(...body.docs.map((d) => ({ ...d, title: d.title.replace(/\s+/g, " ").trim() })));
     if (body.docs.length < 200) break;
     await new Promise((r) => setTimeout(r, 500));
   }
