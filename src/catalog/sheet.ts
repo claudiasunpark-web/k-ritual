@@ -140,6 +140,10 @@ function parseRows(kind: SheetKind, text: string, problems: string[]): Book[] {
     set("priceKrw", num("가격", 0, 10_000_000));
     set("coupang", link ? { partnersUrl: link } : undefined);
     set("memo", r["메모"]);
+    // '표지'는 선택 칸이라 시트에 없어도 된다
+    const cover = r["표지"];
+    if (cover && !/^https:\/\//.test(cover)) bad("표지", "https:// 로 시작하는 이미지 주소여야 해요");
+    else set("coverUrl", cover);
     return book;
   });
 }

@@ -54,6 +54,8 @@ export interface Book extends BookIndices {
   /** 낱권: 속한 시리즈 항목 id와 시리즈 총 권수 */
   seriesId?: string;
   seriesCount?: number;
+  /** 표지 이미지 주소. 시트의 '표지' 칸(선택) */
+  coverUrl?: string;
   /** 낱권 레벨을 시리즈 AR로 추정했는지 */
   levelFromSeries?: boolean;
   /** AR이 없을 때 사람이 정한 K-레벨 */

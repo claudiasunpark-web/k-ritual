@@ -17,6 +17,7 @@ import {
 import {
   BOOKS,
   COLLECTION_KIND_LABEL,
+  WORKBOOKS,
   COUPANG_PARTNERS_DISCLOSURE,
   allCollections,
   bookCoupangUrl,
@@ -65,6 +66,7 @@ const books = Object.fromEntries(
         arMax: b.arMax ?? null,
         bookCount: b.bookCount ?? null,
         seriesCount: b.seriesCount ?? null,
+        cover: b.coverUrl ?? null,
         levelFromSeries: b.levelFromSeries ?? false,
         ar: b.ar ?? null,
         arText: b.ar != null ? describeAr(b.ar) : null,
@@ -107,6 +109,7 @@ const data = {
   collections: allCollections(),
   kindLabels: COLLECTION_KIND_LABEL,
   readingOptions,
+  workbooks: WORKBOOKS,
   disclosure: COUPANG_PARTNERS_DISCLOSURE,
 };
 

@@ -81,6 +81,13 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .level-card .role { background: var(--soft); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
 @media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
 
+/* ── 함께 풀 문제집 ─────────────────── */
+.workbooks { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
+.wb-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; }
+.wb { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.wb-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.25; }
+.wb .actions { margin-top: 4px; }
+
 /* ── 묶음 ───────────────────────── */
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); overflow-x: auto; }
 .tab { background: none; border: 0; padding: 10px 14px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
@@ -114,11 +121,13 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .book { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 14px; padding: 14px; }
 .book.is-owned { opacity: 0.6; }
 .cover { border-radius: 3px 8px 8px 3px; aspect-ratio: 2 / 3; padding: 8px 6px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 4px 0 0 rgba(0,0,0,0.12); color: var(--ink); max-width: 100%; }
+.cover { position: relative; overflow: hidden; }
+.cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cover .k { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; }
 .cover .big { font-family: var(--font-display); font-variant-numeric: lining-nums; font-size: 1.9rem; font-weight: 700; line-height: 1; }
 .book-body { display: grid; gap: 8px; align-content: start; min-width: 0; }
 .series-line { font-size: 0.75rem; letter-spacing: 0.02em; color: var(--accent); font-weight: 500; margin-bottom: 2px; }
-.book-title { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
+.book-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--soft); color: var(--ink); white-space: nowrap; }
 .tag.num { font-size: 0.72rem; }
@@ -170,6 +179,7 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
     </div>
     <div class="ladder" id="ladder" role="group" aria-label="K-레벨 사다리"></div>
     <div class="level-card" id="level-card"></div>
+    <div class="workbooks" id="workbooks"></div>
   </section>
 
   <section aria-labelledby="books-h" style="display: grid; gap: 16px">
@@ -288,6 +298,28 @@ function renderChild() {
         <ul>${l.childCanDo.map((c) => `<li>${esc(c)}</li>`).join("")}</ul></div>
       <p class="role"><b>엄마는</b> ${esc(l.parentRole)}</p>
     </div>`;
+  renderWorkbooks(shown);
+}
+
+// 이 레벨에서 책 읽기 사이사이에 풀면 좋은 문제집
+function renderWorkbooks(level) {
+  const list = DATA.workbooks.filter((w) => level >= w.levelMin && level <= w.levelMax);
+  const range = (w) => (w.levelMin === w.levelMax ? `레벨 ${w.levelMin}` : `레벨 ${w.levelMin}–${w.levelMax}`);
+  $("workbooks").innerHTML = level === 0
+    ? `<h3>함께 풀 문제집</h3><p class="small muted">레벨 0은 듣기 단계라 문제집보다 읽어주기가 먼저예요. 알파벳을 배우기 시작하면 파닉스 문제집을 시작해요.</p>
+       <div class="wb-list">${DATA.workbooks.filter((w) => w.kind === "파닉스").map(wbCard).join("")}</div>`
+    : `<h3>함께 풀 문제집</h3>
+       <p class="small muted">책 읽기 사이사이에 하루 10~15분. 문제집은 읽기 레벨보다 살짝 쉬운 걸로 골랐어요.</p>
+       <div class="wb-list">${list.map(wbCard).join("")}</div>`;
+  function wbCard(w) {
+    return `<div class="wb">
+      <div class="tags"><span class="tag">${esc(w.kind)}</span><span class="tag">${range(w)}<span class="approx">근사</span></span></div>
+      <p class="wb-title">${esc(w.title)}</p>
+      <p class="small muted">${esc(w.publisher)}</p>
+      <p class="note">${esc(w.description)}</p>
+      <div class="actions"><a class="btn small" href="${esc(w.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 보기</a></div>
+    </div>`;
+  }
 }
 
 // ── 묶음 ───────────────────────────
@@ -383,6 +415,7 @@ function bookCard(b) {
       <span class="k">${b.isSeries ? "SERIES" : "LEVEL"}</span>
       <span class="big">${lv ? b.level : "?"}</span>
       <span class="k">${lv ? esc(lv.name) : "확인 중"}</span>
+      ${b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" onerror="this.remove()">` : ""}
     </div>
     <div class="book-body">
       <div>

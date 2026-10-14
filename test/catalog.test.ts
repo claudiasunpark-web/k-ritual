@@ -163,3 +163,20 @@ test("시트 id가 겹치면 오류", () => {
   const { problems } = validateCatalog(books, sheet(SERIES_COLUMNS, []));
   assert.ok(problems.some((p) => p.includes("id가 겹쳐요")));
 });
+
+import { WORKBOOKS, parseWorkbooks, workbooksForLevel } from "../src/catalog/index.ts";
+
+test("문제집: 모든 레벨(1~10)에 하나 이상 있고, 파닉스는 초반 레벨에만", () => {
+  assert.ok(WORKBOOKS.length >= 15);
+  for (let l = 1; l <= 10; l++) assert.ok(workbooksForLevel(l).length > 0, `레벨 ${l}`);
+  assert.ok(workbooksForLevel(1).some((w) => w.kind === "파닉스"));
+  assert.ok(!workbooksForLevel(6).some((w) => w.kind === "파닉스"));
+  assert.match(WORKBOOKS[0].url, /^https:\/\/www\.coupang\.com\/np\/search/);
+});
+
+test("문제집 시트 오류", () => {
+  const { problems } = parseWorkbooks("id,제목,출판사,종류,레벨최소,레벨최대,설명,쿠팡링크,메모\nx,,P,수학,5,2,,,\n");
+  assert.ok(problems.some((p) => p.includes("'제목'")));
+  assert.ok(problems.some((p) => p.includes("'종류'")));
+  assert.ok(problems.some((p) => p.includes("'레벨최대'")));
+});
