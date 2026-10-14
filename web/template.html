@@ -146,7 +146,13 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .fit-확인중 { background: var(--soft); color: var(--muted); }
 .approx { font-weight: 400; opacity: 0.75; margin-left: 3px; font-family: var(--font-body); }
 .more { justify-self: center; }
-.back { justify-self: start; margin-bottom: 6px; }
+.series-expand { grid-column: 1 / -1; display: grid; gap: 12px; padding: 14px; border-radius: var(--radius);
+  background: color-mix(in srgb, var(--series) 9%, var(--bg)); border: 1px solid color-mix(in srgb, var(--series) 40%, transparent); }
+.series-expand-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.series-expand-head .series-badge { margin-bottom: 0; }
+.series-expand-head .btn { margin-left: auto; }
+.book.child { background: color-mix(in srgb, var(--series) 6%, var(--surface)); border-color: color-mix(in srgb, var(--series) 30%, var(--line)); }
+.book.is-expanded { border-color: var(--series); box-shadow: 0 0 0 1px var(--series); }
 .book-title.link { cursor: pointer; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
 .note { font-size: 0.8rem; color: var(--muted); }
@@ -251,8 +257,8 @@ const state = {
   owned: new Set(store.get("owned", [])),
   buyOpen: false,
   limit: 24,
-  // 시리즈 카드를 눌러 들어간 경우 그 시리즈 id
-  seriesView: null,
+  // 펼쳐 놓은 시리즈 카드 id들. 같은 화면에서 낱권이 카드 아래로 펼쳐진다
+  expanded: new Set(),
   query: "",
 };
 
@@ -352,17 +358,6 @@ function renderWorkbooks(level) {
 function collectionsOfKind(kind) { return DATA.collections.filter((c) => c.kind === kind); }
 
 function currentCollection() {
-  if (state.seriesView) {
-    const s = DATA.books[state.seriesView];
-    return {
-      id: "series-view-" + s.id,
-      kind: "series",
-      title: s.title,
-      description: `${s.author} · 총 ${s.bookCount ?? "?"}권 중 ${DATA.seriesBooks[s.id].length}권을 소개해요`,
-      bookIds: DATA.seriesBooks[s.id],
-      series: s,
-    };
-  }
   if (state.query) return searchCollection(state.query);
   const list = collectionsOfKind(state.kind);
   let c = list.find((x) => x.id === state.collectionId);
@@ -411,9 +406,8 @@ function renderCollection() {
   const ownedCount = c.bookIds.length - toBuy.length;
   $("collection-head").innerHTML = `
     <div>
-      ${c.series ? `<button class="btn small back" id="series-back">← 목록으로</button><p><span class="series-badge">시리즈${c.series.bookCount ? ` (총 ${c.series.bookCount}권)` : ""}</span></p>` : ""}
       <h3>${esc(c.title)}</h3>
-      <p class="muted small">${c.series ? esc(c.description) : (c.description ? esc(c.description) + " · " : "") + countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
+      <p class="muted small">${(c.description ? esc(c.description) + " · " : "") + countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
     </div>
     <div class="actions">
       <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만${state.onlyFit ? ` <span class="num">(${books.length})</span>` : ""}</label>
@@ -425,7 +419,7 @@ function renderCollection() {
   const shown = books.slice(0, state.limit);
   const rest = books.length - shown.length;
   $("grid").innerHTML = books.length
-    ? shown.map(bookCard).join("") +
+    ? shown.map((b) => bookCard(b) + (state.expanded.has(b.id) ? seriesPanel(b) : "")).join("") +
       (rest > 0 ? `<button class="btn more" id="more" style="grid-column: 1 / -1">더 보기 · ${rest}개 남음</button>` : "")
     : `<p class="empty" style="grid-column: 1 / -1">${c.kind === "search" && !c.bookIds.length
         ? "검색 결과가 없어요. 영어 제목이나 작가 이름 일부로 찾아보세요."
@@ -434,15 +428,28 @@ function renderCollection() {
 }
 
 // 제목 위 한 줄: 시리즈 카드는 "시리즈 (총 n권)", 낱권은 "Magic Tree House 시리즈 (총 n권)"
-function seriesLine(b) {
-  if (state.seriesView) return "";
+// 펼친 시리즈: 카드 바로 아래 한 줄 전체에 낱권을 주황빛 카드로
+function seriesPanel(s) {
+  const kids = DATA.seriesBooks[s.id].map((id) => DATA.books[id]);
+  return `<section class="series-expand" aria-label="${esc(s.title)} 낱권">
+    <div class="series-expand-head">
+      <span class="series-badge">시리즈${s.bookCount ? ` (총 ${s.bookCount}권)` : ""}</span>
+      <b>${esc(s.title)}</b><span class="small muted">${kids.length}권 소개</span>
+      <button class="btn small" data-series="${s.id}">접기 ▴</button>
+    </div>
+    <div class="grid">${kids.map((k) => bookCard(k, true)).join("")}</div>
+  </section>`;
+}
+
+function seriesLine(b, child) {
+  if (child) return "";
   const total = (n) => (n ? ` (총 ${n}권)` : "");
   if (b.isSeries) return `<p><span class="series-badge">시리즈${total(b.bookCount)}</span></p>`;
   if (b.series) return `<p class="series-line">${esc(b.series)} 시리즈${total(b.seriesCount)}</p>`;
   return "";
 }
 
-function bookCard(b) {
+function bookCard(b, child = false) {
   const f = fit(b);
   const owned = state.owned.has(b.id);
   const lv = b.level == null ? null : DATA.levels[b.level];
@@ -461,7 +468,7 @@ function bookCard(b) {
     : b.levelFromSeries ? `${f.message} · 레벨은 시리즈 기준이에요`
     : `${f.message}${b.ar != null && !b.listen ? ` · ${b.arText.split(".")[0]}` : ""}`;
   return `
-  <article class="book ${owned ? "is-owned" : ""}">
+  <article class="book ${owned ? "is-owned" : ""} ${child ? "child" : ""} ${state.expanded.has(b.id) ? "is-expanded" : ""}">
     <div class="cover" style="background: ${lv ? levelColor(b.level) : "var(--soft)"}" aria-hidden="true">
       <span class="k">${b.isSeries ? "SERIES" : "LEVEL"}</span>
       <span class="big">${lv ? b.level : "?"}</span>
@@ -470,7 +477,7 @@ function bookCard(b) {
     </div>
     <div class="book-body">
       <div>
-        ${seriesLine(b)}
+        ${seriesLine(b, child)}
         <p class="book-title ${DATA.seriesBooks[b.id] ? "link" : ""}" ${DATA.seriesBooks[b.id] ? `data-series="${b.id}"` : ""}>${esc(b.title)}</p>
         <p class="small muted">${esc(b.author)}</p>
       </div>
@@ -478,7 +485,7 @@ function bookCard(b) {
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
-        ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}">책 ${DATA.seriesBooks[b.id].length}권 보기</button>` : ""}
+        ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `책 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
         <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
@@ -537,22 +544,17 @@ $("ladder").addEventListener("click", (e) => {
 });
 $("tabs").addEventListener("click", (e) => {
   const t = e.target.closest("[data-kind]"); if (!t) return;
-  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24; state.seriesView = null; state.query = ""; $("search").value = "";
+  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24; state.expanded.clear(); state.query = ""; $("search").value = "";
   store.set("kind", state.kind); store.set("collection", null);
   renderTabs(); renderCollection();
 });
 $("collections").addEventListener("click", (e) => {
   const t = e.target.closest("[data-collection]"); if (!t) return;
-  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24; state.seriesView = null; state.query = ""; $("search").value = "";
+  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24; state.expanded.clear(); state.query = ""; $("search").value = "";
   store.set("collection", state.collectionId);
   renderTabs(); renderCollection();
 });
 $("collection-head").addEventListener("click", (e) => {
-  if (e.target.id === "series-back") {
-    state.seriesView = null; state.buyOpen = false; state.limit = 24;
-    renderCollection();
-    return;
-  }
   if (e.target.closest("#buy-all")) { state.buyOpen = !state.buyOpen; renderCollection(); }
 });
 $("collection-head").addEventListener("change", (e) => {
@@ -561,19 +563,20 @@ $("collection-head").addEventListener("change", (e) => {
 $("grid").addEventListener("click", (e) => {
   if (e.target.id === "more") { state.limit += 48; renderCollection(); return; }
   const s = e.target.closest("[data-series]");
-  if (s) openSeries(s.dataset.series);
+  if (!s) return;
+  const id = s.dataset.series;
+  state.expanded.has(id) ? state.expanded.delete(id) : state.expanded.add(id);
+  renderCollection();
+  // 펼치면 펼쳐진 목록이 보이게, 접으면 시리즈 카드로 돌아오게
+  const target = state.expanded.has(id) ? document.querySelector(`.series-expand [data-series="${id}"]`) : document.querySelector(`.book [data-series="${id}"]`);
+  target?.closest(state.expanded.has(id) ? ".series-expand" : ".book")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
 });
 
 $("search").addEventListener("input", (e) => {
-  state.query = e.target.value.trim(); state.seriesView = null; state.buyOpen = false; state.limit = 24;
+  state.query = e.target.value.trim(); state.buyOpen = false; state.limit = 24;
   renderTabs(); renderCollection();
 });
 
-function openSeries(id) {
-  state.seriesView = id; state.buyOpen = false; state.limit = 48;
-  renderCollection();
-  $("collection-head").scrollIntoView({ block: "start" });
-}
 $("grid").addEventListener("change", (e) => {
   const id = e.target.dataset.owned; if (!id) return;
   e.target.checked ? state.owned.add(id) : state.owned.delete(id);
