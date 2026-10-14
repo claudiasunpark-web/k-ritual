@@ -1,7 +1,7 @@
 // 구글 시트(CSV) 한 줄 → 카탈로그 항목.
 // 시트를 고치는 사람이 실수해도 어디가 틀렸는지 알 수 있게, 틀린 칸을 모두 모아 한국어로 알려준다.
 
-import { parseLexile, type InterestLevel } from "../levels/index.ts";
+import { estimateLevel, parseLexile, type InterestLevel } from "../levels/index.ts";
 import type { Award, AwardInfo, Book } from "./books.ts";
 import { parseCsvRecords } from "./csv.ts";
 
@@ -154,7 +154,32 @@ export function validateCatalog(booksCsv: string, seriesCsv: string): { books: B
     if (prev) problems.push(`id가 겹쳐요: "${b.id}" (${prev} / ${b.title})`);
     seen.set(b.id, b.title);
   }
+  inheritFromSeries(books);
   return { books, problems };
+}
+
+/**
+ * 낱권의 '시리즈' 칸이 시리즈 시트의 시리즈명과 같으면, 낱권에서 비어 있는 칸을 시리즈에서 채운다.
+ * 레벨은 시리즈 AR최소로 정하고 근사로 표시한다(levelFromSeries).
+ */
+function inheritFromSeries(books: Book[]): void {
+  const byName = new Map(books.filter((b) => b.isSeries).map((s) => [s.title, s]));
+  for (const b of books) {
+    if (b.isSeries || !b.series) continue;
+    const s = byName.get(b.series);
+    if (!s) continue;
+    s.hasChildren = true;
+    b.seriesId = s.id;
+    b.seriesCount = s.bookCount;
+    b.format ??= s.format;
+    b.interestLevel ??= s.interestLevel;
+    b.readAloud ??= s.readAloud;
+    if (!b.themes?.length && s.themes?.length) b.themes = [...s.themes];
+    if (b.ar == null && b.lexile == null && b.manualLevel == null && s.ar != null && !b.readAloud) {
+      b.manualLevel = estimateLevel({ ar: s.ar }).level.level;
+      b.levelFromSeries = true;
+    }
+  }
 }
 
 export function loadCatalog(booksCsv: string, seriesCsv: string): Book[] {

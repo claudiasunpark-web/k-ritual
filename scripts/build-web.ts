@@ -64,6 +64,8 @@ const books = Object.fromEntries(
         isSeries: b.isSeries ?? false,
         arMax: b.arMax ?? null,
         bookCount: b.bookCount ?? null,
+        seriesCount: b.seriesCount ?? null,
+        levelFromSeries: b.levelFromSeries ?? false,
         ar: b.ar ?? null,
         arText: b.ar != null ? describeAr(b.ar) : null,
         lexile: b.lexile != null ? String(b.lexile) : null,

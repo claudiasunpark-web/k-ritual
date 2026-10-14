@@ -108,7 +108,8 @@ function situationCollections(): Collection[] {
 }
 
 function themeCollections(): Collection[] {
-  return [...groupBy((b) => b.themes, Object.keys(THEME_DESCRIPTIONS))].map(([theme, books]) => ({
+  // 낱권이 따로 있는 시리즈는 묶음 카드 대신 낱권이 보인다
+  return [...groupBy((b) => (b.hasChildren ? undefined : b.themes), Object.keys(THEME_DESCRIPTIONS))].map(([theme, books]) => ({
     id: `theme-${theme}`,
     kind: "theme" as const,
     title: theme,
@@ -130,7 +131,7 @@ function levelCollections(): Collection[] {
     title: `K-레벨 ${l.level} · ${l.name}`,
     description: l.headline,
     // 시리즈는 시작 레벨에 넣는다. 레벨 확인 중인 책은 빠진다
-    bookIds: BOOKS.filter((b) => isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
+    bookIds: BOOKS.filter((b) => !b.hasChildren && isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
   }));
 }
 

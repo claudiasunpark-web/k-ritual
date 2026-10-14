@@ -119,7 +119,17 @@ test("시리즈는 AR최소로 시작 레벨이 정해진다", () => {
   const mth = BOOKS.find((b) => b.id === "series-magic-tree-house")!;
   assert.equal(mth.isSeries, true);
   assert.equal(bookLevel(mth).level.level, 5);
-  assert.ok(getCollection("level-5").bookIds.includes(mth.id));
+});
+
+test("낱권은 시리즈 정보를 이어받고, 낱권이 있으면 시리즈 카드는 레벨·테마 묶음에서 빠진다", () => {
+  const mth = BOOKS.find((b) => b.id === "series-magic-tree-house")!;
+  const first = BOOKS.find((b) => b.id === "dinosaurs-before-dark")!;
+  assert.equal(mth.hasChildren, true);
+  assert.equal(first.seriesId, mth.id);
+  assert.equal(first.seriesCount, mth.bookCount);
+  assert.ok(getCollection("level-5").bookIds.includes(first.id));
+  assert.ok(!getCollection("level-5").bookIds.includes(mth.id));
+  assert.ok(!getCollection("theme-모험").bookIds.includes(mth.id));
 });
 
 test("AR이 없으면 시트의 레벨, 그것도 없으면 레벨 확인 중", () => {

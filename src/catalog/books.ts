@@ -49,6 +49,13 @@ export interface Book extends BookIndices {
   isSeries?: boolean;
   arMax?: number;
   bookCount?: number;
+  /** 시리즈 항목: 낱권이 카탈로그에 따로 있는지 */
+  hasChildren?: boolean;
+  /** 낱권: 속한 시리즈 항목 id와 시리즈 총 권수 */
+  seriesId?: string;
+  seriesCount?: number;
+  /** 낱권 레벨을 시리즈 AR로 추정했는지 */
+  levelFromSeries?: boolean;
   /** AR이 없을 때 사람이 정한 K-레벨 */
   manualLevel?: number;
   /** 상황별 묶음 이름들 (잠자리, 새 학기 …) */

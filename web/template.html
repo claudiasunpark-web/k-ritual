@@ -117,6 +117,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .cover .k { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; }
 .cover .big { font-family: var(--font-display); font-variant-numeric: lining-nums; font-size: 1.9rem; font-weight: 700; line-height: 1; }
 .book-body { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.series-line { font-size: 0.75rem; letter-spacing: 0.02em; color: var(--accent); font-weight: 500; margin-bottom: 2px; }
 .book-title { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--soft); color: var(--ink); white-space: nowrap; }
@@ -350,6 +351,14 @@ function renderCollection() {
   renderBuyAll();
 }
 
+// 제목 위 한 줄: 시리즈 카드는 "시리즈 (총 n권)", 낱권은 "Magic Tree House 시리즈 (총 n권)"
+function seriesLine(b) {
+  const total = (n) => (n ? ` (총 ${n}권)` : "");
+  if (b.isSeries) return `<p class="series-line">시리즈${total(b.bookCount)}</p>`;
+  if (b.series) return `<p class="series-line">${esc(b.series)} 시리즈${total(b.seriesCount)}</p>`;
+  return "";
+}
+
 function bookCard(b) {
   const f = fit(b);
   const owned = state.owned.has(b.id);
@@ -359,7 +368,6 @@ function bookCard(b) {
   const tags = [
     `<span class="tag fit fit-${f.fit.replace(" ", "")}">${f.fit}</span>`,
     b.format ? `<span class="tag">${esc(b.format)}</span>` : "",
-    b.isSeries && b.bookCount ? `<span class="tag">약 ${b.bookCount}권</span>` : "",
     arLabel ? `<span class="tag num" title="${esc(b.arText)}">${arLabel}${approx}</span>` : "",
     b.levelApprox ? `<span class="tag">레벨 ${b.level}${approx}</span>` : "",
     b.lexile ? `<span class="tag num">${esc(b.lexile)}${approx}</span>` : "",
@@ -367,6 +375,7 @@ function bookCard(b) {
     ...b.awards.map((a) => `<span class="tag">${esc(a)}</span>`),
   ].join("");
   const note = b.isSeries ? `${f.message} · 시리즈는 첫 권 레벨 기준이에요`
+    : b.levelFromSeries ? `${f.message} · 레벨은 시리즈 기준이에요`
     : `${f.message}${b.ar != null && !b.listen ? ` · ${b.arText.split(".")[0]}` : ""}`;
   return `
   <article class="book ${owned ? "is-owned" : ""}">
@@ -377,8 +386,9 @@ function bookCard(b) {
     </div>
     <div class="book-body">
       <div>
+        ${seriesLine(b)}
         <p class="book-title">${esc(b.title)}</p>
-        <p class="small muted">${esc(b.author)}${b.series ? ` · ${esc(b.series)} 시리즈` : ""}</p>
+        <p class="small muted">${esc(b.author)}</p>
       </div>
       <div class="tags">${tags}</div>
       <p class="note">${esc(note)}</p>
