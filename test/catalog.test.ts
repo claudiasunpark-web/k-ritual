@@ -184,3 +184,13 @@ test("문제집 시트 오류", () => {
   assert.ok(problems.some((p) => p.includes("'종류'")));
   assert.ok(problems.some((p) => p.includes("'레벨최대'")));
 });
+
+test("Open Library 주제에서 테마를 뽑는다", async () => {
+  const { themesFromSubjects, usableSummary } = await import("../src/catalog/book-info.ts");
+  assert.deepEqual(themesFromSubjects(["Dinosaurs", "Time travel", "Brothers and sisters", "Juvenile fiction", "Spanish language materials"]), ["공룡", "가족", "판타지"]);
+  assert.deepEqual(themesFromSubjects(["Fiction", "Juvenile fiction"]), []);
+  assert.equal(usableSummary('"A delight," says Kirkus.'), undefined);
+  assert.deepEqual(themesFromSubjects(["Science fiction", "Comic books, strips", "English (ie as school subject)"]), []);
+  assert.equal(usableSummary("**\"Hilarious.\" --Dav Pilkey** Junie B. is back with more fun at school."), undefined);
+  assert.equal(usableSummary("Eight-year-old Jack and his sister Annie find a magic tree house.[2]"), "Eight-year-old Jack and his sister Annie find a magic tree house.");
+});

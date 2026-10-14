@@ -169,6 +169,11 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .book-title.link { cursor: pointer; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
 .note { font-size: 0.8rem; color: var(--muted); }
+.tag.theme { background: transparent; border: 1px dashed var(--line); color: var(--muted); }
+.summary { font-size: 0.8rem; line-height: 1.45; color: var(--ink); opacity: 0.85; margin: 0;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+.summary.open { -webkit-line-clamp: unset; display: block; }
+.book.child .summary { -webkit-line-clamp: 2; }
 .note.warn { color: var(--warn); }
 .book .actions { margin-top: 2px; }
 .empty { padding: 28px; text-align: center; color: var(--muted); background: var(--surface); border: 1px dashed var(--line); border-radius: var(--radius); }
@@ -380,7 +385,7 @@ function currentCollection() {
 
 const norm = (t) => String(t ?? "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").normalize("NFC").replace(/[^a-z0-9가-힣]/g, "");
 const SEARCH_TEXT = Object.fromEntries(Object.values(DATA.books).map((b) =>
-  [b.id, norm([b.title, b.author, b.series, ...(b.themes ?? []), b.format].join(" "))]));
+  [b.id, norm([b.title, b.author, b.series, ...(b.themes ?? []), b.format, b.summary].join(" "))]));
 
 // 제목·작가·시리즈·테마로 찾기. 시리즈 카드 먼저, 그다음 쉬운 책부터
 function searchCollection(q) {
@@ -486,6 +491,7 @@ function bookCard(b, child = false) {
     b.lexile ? `<span class="tag num">${esc(b.lexile)}${approx}</span>` : "",
     b.il ? `<span class="tag" title="${esc(b.ilLabel)}">IL ${esc(b.il)}${approx}</span>` : "",
     ...b.awards.map((a) => `<span class="tag">${esc(a)}</span>`),
+    ...b.themes.slice(0, 4).map((t) => `<span class="tag theme">#${esc(t)}</span>`),
   ].join("");
   const note = b.isSeries ? `${f.message} · 시리즈는 첫 권 레벨 기준이에요`
     : b.levelFromSeries ? `${f.message} · 레벨은 시리즈 기준이에요`
@@ -505,6 +511,7 @@ function bookCard(b, child = false) {
         <p class="small muted">${esc(b.author)}</p>
       </div>
       <div class="tags">${tags}</div>
+      ${b.summary ? `<p class="summary" lang="en" title="눌러서 펼치기">${esc(b.summary)}</p>` : ""}
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
@@ -585,6 +592,7 @@ $("collection-head").addEventListener("change", (e) => {
 });
 $("grid").addEventListener("click", (e) => {
   if (e.target.id === "more") { state.limit += 48; renderCollection(); return; }
+  if (e.target.classList.contains("summary")) { e.target.classList.toggle("open"); return; }
   const s = e.target.closest("[data-series]");
   if (!s) return;
   const id = s.dataset.series;

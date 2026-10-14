@@ -24,6 +24,7 @@ import {
   bookLevel,
   bookLinkKind,
   seriesBooks,
+  allThemes,
 } from "../src/catalog/index.ts";
 
 const AWARD_KIND = { medal: "대상", honor: "아너" } as const;
@@ -88,7 +89,8 @@ const books = Object.fromEntries(
         ilLabel: il?.label ?? null,
         ilMinAge: il?.minKoreanAge ?? null,
         awards: (b.awards ?? []).map((a) => `${a.award}상 ${a.year} ${AWARD_KIND[a.kind]}`),
-        themes: b.themes ?? [],
+        themes: allThemes(b),
+        summary: b.summary ?? null,
         price: b.priceKrw ?? null,
         url: bookCoupangUrl(b),
         // 지수가 없다는 경고는 화면에서 '레벨 확인 중'으로 대신한다

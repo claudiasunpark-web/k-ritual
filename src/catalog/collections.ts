@@ -124,10 +124,15 @@ export function seriesBooks(): Map<string, Book[]> {
  */
 function themesForCard(b: Book, children: Map<string, Book[]>): string[] | undefined {
   if (b.seriesId) return undefined;
-  if (!b.isSeries) return b.themes;
-  const all = new Set(b.themes ?? []);
-  for (const c of children.get(b.id) ?? []) for (const t of c.themes ?? []) all.add(t);
+  if (!b.isSeries) return allThemes(b);
+  const all = new Set(allThemes(b));
+  for (const c of children.get(b.id) ?? []) for (const t of allThemes(c)) all.add(t);
   return [...all];
+}
+
+/** 시트 테마 + Open Library에서 뽑은 테마 */
+export function allThemes(b: Book): string[] {
+  return [...(b.themes ?? []), ...(b.autoThemes ?? [])];
 }
 
 function themeCollections(): Collection[] {

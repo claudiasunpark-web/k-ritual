@@ -8,6 +8,7 @@
 import { readFileSync } from "node:fs";
 import type { BookIndices } from "../levels/index.ts";
 import coupangLinks from "./coupang-links.json" with { type: "json" };
+import { BOOK_INFO, themesFromSubjects, usableSummary } from "./book-info.ts";
 import { loadCatalog } from "./sheet.ts";
 
 export type Award = "칼데콧" | "뉴베리" | "가이젤";
@@ -65,6 +66,10 @@ export interface Book extends BookIndices {
   memo?: string;
   awards?: AwardInfo[];
   themes?: string[];
+  /** Open Library 주제에서 자동으로 뽑은 테마 (시트 테마에 없는 것만) */
+  autoThemes?: string[];
+  /** Open Library 영문 짧은 줄거리 */
+  summary?: string;
   /** 원. 모르면 비워두고 쿠팡에서 확인 */
   priceKrw?: number;
   coupang?: CoupangRef;
@@ -84,12 +89,23 @@ const CATALOG = loadCatalog(
 type LinkEntry = CoupangRef & { priceKrw?: number };
 const LINKS = coupangLinks as Record<string, LinkEntry>;
 
-export const BOOKS: readonly Book[] = CATALOG.map((book) => {
+export const BOOKS: readonly Book[] = CATALOG.map((book) => withInfo(withLinks(book)));
+
+function withLinks(book: Book): Book {
   const entry = LINKS[book.id];
   if (!entry) return book;
   const { priceKrw, ...ref } = entry;
   return { ...book, priceKrw: priceKrw ?? book.priceKrw, coupang: { ...book.coupang, ...ref } };
-});
+}
+
+/** book-info.json(Open Library 줄거리·주제)을 합친다 */
+function withInfo(book: Book): Book {
+  const info = BOOK_INFO[book.id];
+  if (!info?.found) return book;
+  const own = new Set(book.themes ?? []);
+  const autoThemes = themesFromSubjects(info.subjects ?? []).filter((t) => !own.has(t));
+  return { ...book, summary: usableSummary(info.summary), autoThemes: autoThemes.length ? autoThemes : undefined };
+}
 
 export function getBook(id: string): Book {
   const book = BOOKS.find((b) => b.id === id);
