@@ -151,7 +151,20 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .series-expand-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
 .series-expand-head .series-badge { margin-bottom: 0; }
 .series-expand-head .btn { margin-left: auto; }
-.book.child { background: color-mix(in srgb, var(--series) 6%, var(--surface)); border-color: color-mix(in srgb, var(--series) 30%, var(--line)); }
+.series-expand { margin-left: clamp(8px, 4vw, 40px); border-left: 4px solid var(--series); }
+.series-expand > .grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+/* 펼친 낱권은 작게: 하위 항목이라는 게 보이도록 */
+.book.child { background: color-mix(in srgb, var(--series) 6%, var(--surface)); border-color: color-mix(in srgb, var(--series) 30%, var(--line));
+  grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 9px 10px; font-size: 0.85rem; }
+.book.child .cover { padding: 4px 3px; border-radius: 2px 5px 5px 2px; }
+.book.child .cover .k { display: none; }
+.book.child .cover .big { font-size: 1.15rem; }
+.book.child .book-title { font-size: 0.98rem; }
+.book.child .book-body { gap: 5px; }
+.book.child .tag { font-size: 0.68rem; padding: 1px 6px; }
+.book.child .note { display: none; }
+.tag.warn-tag { background: color-mix(in srgb, var(--warn) 16%, transparent); color: var(--warn); }
+.book.child .btn.small { padding: 3px 8px; font-size: 0.78rem; }
 .book.is-expanded { border-color: var(--series); box-shadow: 0 0 0 1px var(--series); }
 .book-title.link { cursor: pointer; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
@@ -428,13 +441,22 @@ function renderCollection() {
 }
 
 // 제목 위 한 줄: 시리즈 카드는 "시리즈 (총 n권)", 낱권은 "Magic Tree House 시리즈 (총 n권)"
+// "시리즈 · 총 22권 중 5권 소개": 총 권수(실제 출간)와 카탈로그에 등록된 권수를 함께
+function seriesCountLabel(s) {
+  const listed = DATA.seriesBooks[s.id]?.length ?? 0;
+  if (!s.bookCount) return listed ? `시리즈 · ${listed}권 소개` : "시리즈";
+  if (!listed) return `시리즈 · 총 ${s.bookCount}권`;
+  if (listed >= s.bookCount) return `시리즈 · 총 ${s.bookCount}권`;
+  return `시리즈 · 총 ${s.bookCount}권 중 ${listed}권 소개`;
+}
+
 // 펼친 시리즈: 카드 바로 아래 한 줄 전체에 낱권을 주황빛 카드로
 function seriesPanel(s) {
   const kids = DATA.seriesBooks[s.id].map((id) => DATA.books[id]);
   return `<section class="series-expand" aria-label="${esc(s.title)} 낱권">
     <div class="series-expand-head">
-      <span class="series-badge">시리즈${s.bookCount ? ` (총 ${s.bookCount}권)` : ""}</span>
-      <b>${esc(s.title)}</b><span class="small muted">${kids.length}권 소개</span>
+      <span class="series-badge">${seriesCountLabel(s)}</span>
+      <b>${esc(s.title)}</b>
       <button class="btn small" data-series="${s.id}">접기 ▴</button>
     </div>
     <div class="grid">${kids.map((k) => bookCard(k, true)).join("")}</div>
@@ -444,7 +466,7 @@ function seriesPanel(s) {
 function seriesLine(b, child) {
   if (child) return "";
   const total = (n) => (n ? ` (총 ${n}권)` : "");
-  if (b.isSeries) return `<p><span class="series-badge">시리즈${total(b.bookCount)}</span></p>`;
+  if (b.isSeries) return `<p><span class="series-badge">${seriesCountLabel(b)}</span></p>`;
   if (b.series) return `<p class="series-line">${esc(b.series)} 시리즈${total(b.seriesCount)}</p>`;
   return "";
 }
@@ -457,6 +479,7 @@ function bookCard(b, child = false) {
   const arLabel = b.ar == null ? "" : b.isSeries && b.arMax != null && b.arMax !== b.ar ? `AR ${b.ar}–${b.arMax}` : `AR ${b.ar}`;
   const tags = [
     `<span class="tag fit fit-${f.fit.replace(" ", "")}">${f.fit}</span>`,
+    child && f.warnings.length ? `<span class="tag warn-tag" title="${esc(f.warnings.join(" "))}">주의</span>` : "",
     b.format ? `<span class="tag">${esc(b.format)}</span>` : "",
     arLabel ? `<span class="tag num" title="${esc(b.arText)}">${arLabel}${approx}</span>` : "",
     b.levelApprox ? `<span class="tag">레벨 ${b.level}${approx}</span>` : "",
@@ -485,7 +508,7 @@ function bookCard(b, child = false) {
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
-        ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `책 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
+        ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
         <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
