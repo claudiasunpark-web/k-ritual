@@ -446,7 +446,7 @@ function seriesCountLabel(s) {
   const listed = DATA.seriesBooks[s.id]?.length ?? 0;
   if (!s.bookCount) return listed ? `시리즈 · ${listed}권 소개` : "시리즈";
   if (!listed) return `시리즈 · 총 ${s.bookCount}권`;
-  if (listed >= s.bookCount) return `시리즈 · 총 ${s.bookCount}권`;
+  if (listed >= s.bookCount) return `시리즈 · ${listed}권 소개`;
   return `시리즈 · 총 ${s.bookCount}권 중 ${listed}권 소개`;
 }
 

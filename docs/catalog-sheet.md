@@ -67,3 +67,14 @@ npm run build
 | 레벨최소 / 레벨최대 | 0~10. 읽기 레벨보다 살짝 쉽게 잡는다 |
 | 설명 | 엄마에게 보여줄 한 줄 |
 | 쿠팡링크 | 내 파트너스 링크 (비어 있으면 쿠팡 검색) |
+
+## 시리즈 낱권 자동 수집 (Open Library)
+
+```sh
+NODE_USE_ENV_PROXY=1 node scripts/fetch-series-openlibrary.ts            # 미리보기
+NODE_USE_ENV_PROXY=1 node scripts/fetch-series-openlibrary.ts --write    # 저장
+```
+
+Open Library(무료 공개 도서 DB)에서 시리즈별로 "저자 + 제목 키워드" 규칙으로 찾아, 상자 세트·합본·번역본·부록을 걸러 낱권만 넣는다.
+표지 이미지 주소도 같이 채운다. 자동 수집한 줄은 메모에 `Open Library 자동 수집·확인 필요`가 붙는다.
+제목에 시리즈 이름이 없고 작가가 다른 책도 많이 쓴 시리즈(Magic Tree House, A to Z Mysteries, Goosebumps, Warriors, Wings of Fire)는 섞임이 심해 규칙에서 뺐다.

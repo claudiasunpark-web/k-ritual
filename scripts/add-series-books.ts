@@ -49,5 +49,7 @@ for (const line of lines) {
   added++;
 }
 
-writeFileSync(new URL("books.csv", dir), stringifyCsv([...BOOK_COLUMNS], books));
+// 시트에 있는 추가 열(표지 등)도 그대로 둔다
+const header = [...new Set([...BOOK_COLUMNS, ...Object.keys(books[0] ?? {})])];
+writeFileSync(new URL("books.csv", dir), stringifyCsv(header, books));
 console.log(`${seriesName}: ${added}권 추가, 기존 ${linked}권 연결`);
