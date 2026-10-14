@@ -19,6 +19,8 @@
   --hard: #b23a4f;
   --listen: #8a5a9e;
   --soft: #f8e9ec;
+  --series: #d9731f;
+  --series-ink: #ffffff;
   --level-l: 93%;
   --level-step: 5%;
   --font-display: "Cormorant Garamond", "Gowun Batang", serif;
@@ -31,7 +33,7 @@
   :root:not([data-theme="light"]) {
     --bg: #1c1418; --surface: #271c22; --ink: #f4e6ea; --muted: #b8a0a8; --line: #3a2a32;
     --accent: #e8a0b4; --accent-ink: #2a1019; --mark: #e9c98a; --mark-ink: #2e1f05;
-    --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c;
+    --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c; --series: #f0a05a; --series-ink: #2a1505;
     --level-l: 34%; --level-step: 3%;
     color-scheme: dark;
   }
@@ -39,7 +41,7 @@
 :root[data-theme="dark"] {
   --bg: #1c1418; --surface: #271c22; --ink: #f4e6ea; --muted: #b8a0a8; --line: #3a2a32;
   --accent: #e8a0b4; --accent-ink: #2a1019; --mark: #e9c98a; --mark-ink: #2e1f05;
-  --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c;
+  --good: #7cc7a2; --warn: #eba46a; --hard: #f08a9c; --listen: #c9a4dc; --soft: #33242c; --series: #f0a05a; --series-ink: #2a1505;
   --level-l: 34%; --level-step: 3%;
   color-scheme: dark;
 }
@@ -80,6 +82,10 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .level-card ul { margin: 6px 0 0; padding-left: 1.1em; }
 .level-card .role { background: var(--soft); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
 @media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
+
+.search { display: grid; gap: 4px; }
+.search input { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; width: 100%; }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
 
 /* ── 함께 풀 문제집 ─────────────────── */
 .workbooks { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
@@ -126,6 +132,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .cover .k { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.05em; }
 .cover .big { font-family: var(--font-display); font-variant-numeric: lining-nums; font-size: 1.9rem; font-weight: 700; line-height: 1; }
 .book-body { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.series-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--series); color: var(--series-ink); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.02em; border-radius: 6px; padding: 3px 9px; margin-bottom: 6px; }
 .series-line { font-size: 0.75rem; letter-spacing: 0.02em; color: var(--accent); font-weight: 500; margin-bottom: 2px; }
 .book-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; }
@@ -186,6 +193,10 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
 
   <section aria-labelledby="books-h" style="display: grid; gap: 16px">
     <h2 id="books-h">추천 책장</h2>
+    <div class="search">
+      <label for="search" class="small muted">책 찾기</label>
+      <input type="search" id="search" placeholder="책 제목, 작가, 시리즈 (예: Magic Tree House, Mo Willems)" autocomplete="off">
+    </div>
     <div class="tabs" role="tablist" id="tabs"></div>
     <div class="chips" id="collections"></div>
     <div class="collection-head" id="collection-head"></div>
@@ -242,6 +253,7 @@ const state = {
   limit: 24,
   // 시리즈 카드를 눌러 들어간 경우 그 시리즈 id
   seriesView: null,
+  query: "",
 };
 
 function childLevel() {
@@ -251,16 +263,26 @@ function childLevel() {
 // 판정 규칙은 src/levels/estimate.ts의 fitForChild와 같다
 function fit(book) {
   const warnings = [...book.warnings];
-  if (book.ilMinAge != null && state.age < book.ilMinAge) {
+  const mature = book.ilMinAge != null && state.age < book.ilMinAge;
+  if (mature) {
     warnings.push(`내용 적정 나이 주의: ${book.ilLabel}이에요. 영어로는 읽을 수 있어도 내용이 아이 나이보다 성숙할 수 있어요.`);
   }
   if (book.listen) return { fit: "읽어주기", message: "엄마가 읽어주기 좋은 책", warnings };
   if (book.level == null) return { fit: "확인 중", message: "아직 레벨을 확인하고 있는 책이에요", warnings };
   const diff = book.level - childLevel();
-  if (diff <= -1) return { fit: "술술", message: "쉽게 읽혀요. 다독·자신감용", warnings };
-  if (diff === 0) return { fit: "딱 맞음", message: "지금 혼자 읽기 딱 좋아요", warnings };
-  if (diff === 1) return { fit: "도전", message: "엄마와 함께 읽거나 오디오북과 같이", warnings };
-  return { fit: "어려움", message: "지금은 읽어주거나 아껴두세요", warnings };
+  if (diff <= -1) return { fit: "술술", message: "쉽게 읽혀요. 다독·자신감용", warnings, diff, mature };
+  if (diff === 0) return { fit: "딱 맞음", message: "지금 혼자 읽기 딱 좋아요", warnings, diff, mature };
+  if (diff === 1) return { fit: "도전", message: "엄마와 함께 읽거나 오디오북과 같이", warnings, diff, mature };
+  return { fit: "어려움", message: "지금은 읽어주거나 아껴두세요", warnings, diff, mature };
+}
+
+// '우리 아이에게 맞는 책만': 아이 레벨 한 단계 아래~한 단계 위.
+// 읽어주기 그림책은 아직 혼자 읽기 초반(레벨 3 이하)일 때만, 내용이 아이 나이보다 성숙한 책은 뺀다.
+function isGoodFit(book) {
+  const f = fit(book);
+  if (book.listen) return childLevel() <= 3;
+  if (f.diff == null || f.mature) return false;
+  return f.diff >= -1 && f.diff <= 1;
 }
 
 function levelColor(level) {
@@ -341,16 +363,30 @@ function currentCollection() {
       series: s,
     };
   }
+  if (state.query) return searchCollection(state.query);
   const list = collectionsOfKind(state.kind);
   let c = list.find((x) => x.id === state.collectionId);
   if (!c && state.kind === "level") c = list.find((x) => x.id === `level-${childLevel()}`);
   return c ?? list[0];
 }
 
+const norm = (t) => String(t ?? "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").normalize("NFC").replace(/[^a-z0-9가-힣]/g, "");
+const SEARCH_TEXT = Object.fromEntries(Object.values(DATA.books).map((b) =>
+  [b.id, norm([b.title, b.author, b.series, ...(b.themes ?? []), b.format].join(" "))]));
+
+// 제목·작가·시리즈·테마로 찾기. 시리즈 카드 먼저, 그다음 쉬운 책부터
+function searchCollection(q) {
+  const key = norm(q);
+  const hits = key.length < 2 ? [] : Object.values(DATA.books).filter((b) => SEARCH_TEXT[b.id].includes(key));
+  hits.sort((a, b) => (b.isSeries - a.isSeries) || ((a.level ?? 99) - (b.level ?? 99)));
+  return { id: "search", kind: "search", title: `'${q}' 검색 결과`, description: "", bookIds: hits.map((b) => b.id) };
+}
+
 function renderTabs() {
   $("tabs").innerHTML = Object.entries(DATA.kindLabels).map(([k, label]) =>
-    `<button class="tab" role="tab" data-kind="${k}" aria-selected="${k === state.kind}">${esc(label)}</button>`).join("");
+    `<button class="tab" role="tab" data-kind="${k}" aria-selected="${!state.query && k === state.kind}">${esc(label)}</button>`).join("");
   const current = currentCollection();
+  $("collections").hidden = !!state.query;
   $("collections").innerHTML = collectionsOfKind(state.kind).map((c) =>
     `<button class="chip-btn" data-collection="${c.id}" aria-pressed="${c.id === current.id}">${esc(c.title)}<span class="count">${c.bookIds.length}</span></button>`).join("");
 }
@@ -370,32 +406,30 @@ function purchaseList(c) {
 
 function renderCollection() {
   const c = currentCollection();
+  const books = c.bookIds.map((id) => DATA.books[id]).filter((b) => !state.onlyFit || isGoodFit(b));
   const toBuy = purchaseList(c);
   const ownedCount = c.bookIds.length - toBuy.length;
   $("collection-head").innerHTML = `
     <div>
-      ${c.series ? `<button class="btn small back" id="series-back">← 목록으로</button><p class="series-line">시리즈</p>` : ""}
+      ${c.series ? `<button class="btn small back" id="series-back">← 목록으로</button><p><span class="series-badge">시리즈${c.series.bookCount ? ` (총 ${c.series.bookCount}권)` : ""}</span></p>` : ""}
       <h3>${esc(c.title)}</h3>
       <p class="muted small">${c.series ? esc(c.description) : (c.description ? esc(c.description) + " · " : "") + countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
     </div>
     <div class="actions">
-      <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만</label>
+      <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만${state.onlyFit ? ` <span class="num">(${books.length})</span>` : ""}</label>
       ${c.bookIds.length > BUY_ALL_MAX ? "" : `<button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
         ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}개` : "모두 집에 있어요"}
       </button>`}
     </div>`;
 
-  const books = c.bookIds.map((id) => DATA.books[id]).filter((b) => {
-    if (!state.onlyFit) return true;
-    const f = fit(b).fit;
-    return f === "딱 맞음" || f === "술술" || f === "읽어주기";
-  });
   const shown = books.slice(0, state.limit);
   const rest = books.length - shown.length;
   $("grid").innerHTML = books.length
     ? shown.map(bookCard).join("") +
       (rest > 0 ? `<button class="btn more" id="more" style="grid-column: 1 / -1">더 보기 · ${rest}개 남음</button>` : "")
-    : `<p class="empty" style="grid-column: 1 / -1">이 묶음에는 지금 아이 레벨에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요.</p>`;
+    : `<p class="empty" style="grid-column: 1 / -1">${c.kind === "search" && !c.bookIds.length
+        ? "검색 결과가 없어요. 영어 제목이나 작가 이름 일부로 찾아보세요."
+        : "여기에는 지금 아이 레벨(한 단계 아래~위)에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요."}</p>`;
   renderBuyAll();
 }
 
@@ -403,7 +437,7 @@ function renderCollection() {
 function seriesLine(b) {
   if (state.seriesView) return "";
   const total = (n) => (n ? ` (총 ${n}권)` : "");
-  if (b.isSeries) return `<p class="series-line">시리즈${total(b.bookCount)}</p>`;
+  if (b.isSeries) return `<p><span class="series-badge">시리즈${total(b.bookCount)}</span></p>`;
   if (b.series) return `<p class="series-line">${esc(b.series)} 시리즈${total(b.seriesCount)}</p>`;
   return "";
 }
@@ -503,13 +537,13 @@ $("ladder").addEventListener("click", (e) => {
 });
 $("tabs").addEventListener("click", (e) => {
   const t = e.target.closest("[data-kind]"); if (!t) return;
-  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24; state.seriesView = null;
+  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24; state.seriesView = null; state.query = ""; $("search").value = "";
   store.set("kind", state.kind); store.set("collection", null);
   renderTabs(); renderCollection();
 });
 $("collections").addEventListener("click", (e) => {
   const t = e.target.closest("[data-collection]"); if (!t) return;
-  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24; state.seriesView = null;
+  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24; state.seriesView = null; state.query = ""; $("search").value = "";
   store.set("collection", state.collectionId);
   renderTabs(); renderCollection();
 });
@@ -528,6 +562,11 @@ $("grid").addEventListener("click", (e) => {
   if (e.target.id === "more") { state.limit += 48; renderCollection(); return; }
   const s = e.target.closest("[data-series]");
   if (s) openSeries(s.dataset.series);
+});
+
+$("search").addEventListener("input", (e) => {
+  state.query = e.target.value.trim(); state.seriesView = null; state.buyOpen = false; state.limit = 24;
+  renderTabs(); renderCollection();
 });
 
 function openSeries(id) {
