@@ -10,7 +10,8 @@
 // 틀린 칸이 하나라도 있으면 아무것도 바꾸지 않고 고칠 곳을 알려준다.
 
 import { readFileSync, writeFileSync } from "node:fs";
-import { validateCatalog } from "../src/catalog/sheet.ts";
+import { parseCsvRecords, stringifyCsv } from "../src/catalog/csv.ts";
+import { BOOK_COLUMNS, validateCatalog } from "../src/catalog/sheet.ts";
 
 /** 구글 시트 편집 링크 → CSV 내보내기 링크 */
 export function sheetCsvUrl(input: string): string {
@@ -44,7 +45,22 @@ function mergeCsv(parts: string[]): string {
 }
 
 const [seriesCsv, ...bookParts] = await Promise.all([read(seriesSrc), ...sources.map(read)]);
-const booksCsv = mergeCsv(bookParts);
+const dir = new URL("../data/", import.meta.url);
+const booksCsv = keepCovers(mergeCsv(bookParts), readFileSync(new URL("books.csv", dir), "utf8"));
+
+/**
+ * 표지 주소는 자동 수집(fetch-series-openlibrary)이 채우는 값이라 시트에 없어도 된다.
+ * 시트의 '표지' 칸이 비어 있으면 지금 data/books.csv에 있던 표지를 id로 찾아 그대로 둔다.
+ */
+function keepCovers(sheetCsv: string, currentCsv: string): string {
+  const covers = new Map(parseCsvRecords(currentCsv).map((r) => [r["id"], r["표지"] ?? ""]));
+  const rows = parseCsvRecords(sheetCsv);
+  for (const r of rows) {
+    if (!r["표지"] && covers.get(r["id"])) r["표지"] = covers.get(r["id"])!;
+  }
+  const header = [...new Set([...BOOK_COLUMNS, ...Object.keys(rows[0] ?? {}), "표지"])];
+  return stringifyCsv(header, rows);
+}
 const { books, problems } = validateCatalog(booksCsv, seriesCsv);
 if (problems.length) {
   console.error(`시트에 고칠 곳이 ${problems.length}개 있어요. 아무것도 바꾸지 않았어요.`);
@@ -52,7 +68,6 @@ if (problems.length) {
   process.exit(1);
 }
 
-const dir = new URL("../data/", import.meta.url);
 writeFileSync(new URL("books.csv", dir), booksCsv);
 writeFileSync(new URL("series.csv", dir), seriesCsv);
 const series = books.filter((b) => b.isSeries).length;
