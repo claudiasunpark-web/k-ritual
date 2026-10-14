@@ -139,6 +139,8 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .fit-확인중 { background: var(--soft); color: var(--muted); }
 .approx { font-weight: 400; opacity: 0.75; margin-left: 3px; font-family: var(--font-body); }
 .more { justify-self: center; }
+.back { justify-self: start; margin-bottom: 6px; }
+.book-title.link { cursor: pointer; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
 .note { font-size: 0.8rem; color: var(--muted); }
 .note.warn { color: var(--warn); }
@@ -238,6 +240,8 @@ const state = {
   owned: new Set(store.get("owned", [])),
   buyOpen: false,
   limit: 24,
+  // 시리즈 카드를 눌러 들어간 경우 그 시리즈 id
+  seriesView: null,
 };
 
 function childLevel() {
@@ -326,6 +330,17 @@ function renderWorkbooks(level) {
 function collectionsOfKind(kind) { return DATA.collections.filter((c) => c.kind === kind); }
 
 function currentCollection() {
+  if (state.seriesView) {
+    const s = DATA.books[state.seriesView];
+    return {
+      id: "series-view-" + s.id,
+      kind: "series",
+      title: s.title,
+      description: `${s.author} · 총 ${s.bookCount ?? "?"}권 중 ${DATA.seriesBooks[s.id].length}권을 소개해요`,
+      bookIds: DATA.seriesBooks[s.id],
+      series: s,
+    };
+  }
   const list = collectionsOfKind(state.kind);
   let c = list.find((x) => x.id === state.collectionId);
   if (!c && state.kind === "level") c = list.find((x) => x.id === `level-${childLevel()}`);
@@ -359,8 +374,9 @@ function renderCollection() {
   const ownedCount = c.bookIds.length - toBuy.length;
   $("collection-head").innerHTML = `
     <div>
+      ${c.series ? `<button class="btn small back" id="series-back">← 목록으로</button><p class="series-line">시리즈</p>` : ""}
       <h3>${esc(c.title)}</h3>
-      <p class="muted small">${c.description ? esc(c.description) + " · " : ""}${countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
+      <p class="muted small">${c.series ? esc(c.description) : (c.description ? esc(c.description) + " · " : "") + countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
     </div>
     <div class="actions">
       <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만</label>
@@ -385,6 +401,7 @@ function renderCollection() {
 
 // 제목 위 한 줄: 시리즈 카드는 "시리즈 (총 n권)", 낱권은 "Magic Tree House 시리즈 (총 n권)"
 function seriesLine(b) {
+  if (state.seriesView) return "";
   const total = (n) => (n ? ` (총 ${n}권)` : "");
   if (b.isSeries) return `<p class="series-line">시리즈${total(b.bookCount)}</p>`;
   if (b.series) return `<p class="series-line">${esc(b.series)} 시리즈${total(b.seriesCount)}</p>`;
@@ -420,14 +437,15 @@ function bookCard(b) {
     <div class="book-body">
       <div>
         ${seriesLine(b)}
-        <p class="book-title">${esc(b.title)}</p>
+        <p class="book-title ${DATA.seriesBooks[b.id] ? "link" : ""}" ${DATA.seriesBooks[b.id] ? `data-series="${b.id}"` : ""}>${esc(b.title)}</p>
         <p class="small muted">${esc(b.author)}</p>
       </div>
       <div class="tags">${tags}</div>
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
-        <a class="btn small primary" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
+        ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}">책 ${DATA.seriesBooks[b.id].length}권 보기</button>` : ""}
+        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
     </div>
@@ -485,25 +503,38 @@ $("ladder").addEventListener("click", (e) => {
 });
 $("tabs").addEventListener("click", (e) => {
   const t = e.target.closest("[data-kind]"); if (!t) return;
-  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24;
+  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24; state.seriesView = null;
   store.set("kind", state.kind); store.set("collection", null);
   renderTabs(); renderCollection();
 });
 $("collections").addEventListener("click", (e) => {
   const t = e.target.closest("[data-collection]"); if (!t) return;
-  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24;
+  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24; state.seriesView = null;
   store.set("collection", state.collectionId);
   renderTabs(); renderCollection();
 });
 $("collection-head").addEventListener("click", (e) => {
+  if (e.target.id === "series-back") {
+    state.seriesView = null; state.buyOpen = false; state.limit = 24;
+    renderCollection();
+    return;
+  }
   if (e.target.closest("#buy-all")) { state.buyOpen = !state.buyOpen; renderCollection(); }
 });
 $("collection-head").addEventListener("change", (e) => {
   if (e.target.id === "only-fit") { state.onlyFit = e.target.checked; store.set("onlyFit", state.onlyFit); renderCollection(); }
 });
 $("grid").addEventListener("click", (e) => {
-  if (e.target.id === "more") { state.limit += 48; renderCollection(); }
+  if (e.target.id === "more") { state.limit += 48; renderCollection(); return; }
+  const s = e.target.closest("[data-series]");
+  if (s) openSeries(s.dataset.series);
 });
+
+function openSeries(id) {
+  state.seriesView = id; state.buyOpen = false; state.limit = 48;
+  renderCollection();
+  $("collection-head").scrollIntoView({ block: "start" });
+}
 $("grid").addEventListener("change", (e) => {
   const id = e.target.dataset.owned; if (!id) return;
   e.target.checked ? state.owned.add(id) : state.owned.delete(id);

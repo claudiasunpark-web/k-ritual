@@ -23,6 +23,7 @@ import {
   bookCoupangUrl,
   bookLevel,
   bookLinkKind,
+  seriesBooks,
 } from "../src/catalog/index.ts";
 
 const AWARD_KIND = { medal: "대상", honor: "아너" } as const;
@@ -110,6 +111,8 @@ const data = {
   kindLabels: COLLECTION_KIND_LABEL,
   readingOptions,
   workbooks: WORKBOOKS,
+  // 시리즈 카드를 눌렀을 때 보여줄 낱권 목록
+  seriesBooks: Object.fromEntries([...seriesBooks()].map(([id, list]) => [id, list.map((b) => b.id)])),
   disclosure: COUPANG_PARTNERS_DISCLOSURE,
 };
 

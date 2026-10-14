@@ -107,9 +107,32 @@ function situationCollections(): Collection[] {
   }));
 }
 
+/** 시리즈 id → 그 시리즈의 낱권들 (시트 순서) */
+export function seriesBooks(): Map<string, Book[]> {
+  const map = new Map<string, Book[]>();
+  for (const b of BOOKS) {
+    if (!b.seriesId) continue;
+    if (!map.has(b.seriesId)) map.set(b.seriesId, []);
+    map.get(b.seriesId)!.push(b);
+  }
+  return map;
+}
+
+/**
+ * 테마별 묶음에서 시리즈는 대표 카드 하나로 보인다(낱권은 시리즈를 눌러서 본다).
+ * 시리즈 카드의 테마는 시리즈 테마 + 낱권 테마를 합친 것.
+ */
+function themesForCard(b: Book, children: Map<string, Book[]>): string[] | undefined {
+  if (b.seriesId) return undefined;
+  if (!b.isSeries) return b.themes;
+  const all = new Set(b.themes ?? []);
+  for (const c of children.get(b.id) ?? []) for (const t of c.themes ?? []) all.add(t);
+  return [...all];
+}
+
 function themeCollections(): Collection[] {
-  // 낱권이 따로 있는 시리즈는 묶음 카드 대신 낱권이 보인다
-  return [...groupBy((b) => (b.hasChildren ? undefined : b.themes), Object.keys(THEME_DESCRIPTIONS))].map(([theme, books]) => ({
+  const children = seriesBooks();
+  return [...groupBy((b) => themesForCard(b, children), Object.keys(THEME_DESCRIPTIONS))].map(([theme, books]) => ({
     id: `theme-${theme}`,
     kind: "theme" as const,
     title: theme,
@@ -130,8 +153,8 @@ function levelCollections(): Collection[] {
     kind: "level" as const,
     title: `K-레벨 ${l.level} · ${l.name}`,
     description: l.headline,
-    // 시리즈는 시작 레벨에 넣는다. 레벨 확인 중인 책은 빠진다
-    bookIds: BOOKS.filter((b) => !b.hasChildren && isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
+    // 시리즈 낱권은 시리즈 카드(시작 레벨) 안에서 본다
+    bookIds: BOOKS.filter((b) => !b.seriesId && isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
   }));
 }
 
