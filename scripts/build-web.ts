@@ -55,8 +55,15 @@ const books = Object.fromEntries(
         title: b.title,
         author: b.author,
         series: b.series ?? null,
-        level: r.level.level,
+        // null이면 '레벨 확인 중'
+        level: r.basis === "none" ? null : r.level.level,
+        levelApprox: r.basis === "manual" && !b.indicesVerified,
         listen: r.mode === "listen",
+        approx: !b.indicesVerified,
+        format: b.format ?? null,
+        isSeries: b.isSeries ?? false,
+        arMax: b.arMax ?? null,
+        bookCount: b.bookCount ?? null,
         ar: b.ar ?? null,
         arText: b.ar != null ? describeAr(b.ar) : null,
         lexile: b.lexile != null ? String(b.lexile) : null,
@@ -68,7 +75,8 @@ const books = Object.fromEntries(
         themes: b.themes ?? [],
         price: b.priceKrw ?? null,
         url: bookCoupangUrl(b),
-        warnings: r.warnings,
+        // 지수가 없다는 경고는 화면에서 '레벨 확인 중'으로 대신한다
+        warnings: r.basis === "none" ? [] : r.warnings,
       },
     ];
   }),
@@ -114,7 +122,8 @@ writeFileSync(
 );
 
 const notPartners = BOOKS.filter((b) => bookLinkKind(b) !== "partners").length;
-console.log(`web/dist 빌드 완료: 책 ${BOOKS.length}권, 묶음 ${data.collections.length}개`);
+const seriesCount = BOOKS.filter((b) => b.isSeries).length;
+console.log(`web/dist 빌드 완료: 낱권 ${BOOKS.length - seriesCount}권, 시리즈 ${seriesCount}개, 묶음 ${data.collections.length}개`);
 if (notPartners > 0) {
   console.log(`주의: ${notPartners}권은 아직 내 파트너스 링크가 없어 실적이 잡히지 않아요 (src/catalog/coupang-links.json)`);
 }

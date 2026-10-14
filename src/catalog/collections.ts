@@ -1,7 +1,7 @@
 // 추천 묶음: 상황별 · 테마별 · 레벨별 · 문학상별.
-// 상황별은 편집자가 직접 고르고, 나머지는 카탈로그 데이터에서 자동으로 만든다.
+// 모두 카탈로그 시트의 '상황', '테마', AR/레벨, '문학상' 칸에서 자동으로 만든다.
 
-import { K_LEVELS, estimateLevel, type LevelResult } from "../levels/index.ts";
+import { K_LEVELS, STAGE_LABEL, estimateLevel, getLevel, type LevelResult } from "../levels/index.ts";
 import { BOOKS, getBook, type Award, type Book } from "./books.ts";
 
 export type CollectionKind = "situation" | "theme" | "level" | "award";
@@ -22,52 +22,42 @@ export const COLLECTION_KIND_LABEL: Record<CollectionKind, string> = {
 };
 
 /**
- * 읽어주기 그림책은 지수와 상관없이 K-레벨 0(듣기)로 본다.
- * 혼자 읽기 기준의 경고(지수 없음, AD 등)는 읽어주는 책에는 해당하지 않으니 뺀다.
+ * 책 한 권(또는 시리즈)의 K-레벨.
+ * - 읽어주기 그림책은 지수와 상관없이 레벨 0(듣기). 혼자 읽기 기준 경고는 빼준다.
+ * - AR이 없고 시트에 레벨을 직접 적었으면 그 레벨.
+ * - 시리즈는 AR최소(시작 레벨) 기준.
+ * - 아무 지수도 없으면 basis가 "none": 화면에서는 '레벨 확인 중'으로 보인다.
  */
 export function bookLevel(book: Book): LevelResult {
-  const result = estimateLevel(book);
-  if (!book.readAloud) return result;
-  return { ...result, level: K_LEVELS[0], mode: "listen", warnings: [] };
+  if (book.readAloud) {
+    return { ...estimateLevel(book), level: K_LEVELS[0], mode: "listen", warnings: [] };
+  }
+  if (book.ar == null && book.lexile == null && book.manualLevel != null) {
+    const level = getLevel(book.manualLevel);
+    return {
+      level,
+      mode: "read",
+      basis: "manual",
+      explanations: [`K-레벨 ${level.level} '${level.name}': ${level.headline}`, `아이 모습: ${STAGE_LABEL[level.stage]}`],
+      warnings: [],
+    };
+  }
+  return estimateLevel(book);
 }
 
-const SITUATIONS: Collection[] = [
-  {
-    id: "situation-bedtime",
-    kind: "situation",
-    title: "잠들기 전 10분",
-    description: "목소리를 낮추고 천천히 읽어주기 좋은 잔잔한 책",
-    bookIds: ["goodnight-moon", "llama-red-pajama", "owl-moon"],
-  },
-  {
-    id: "situation-new-school",
-    kind: "situation",
-    title: "새 학기·첫 등원 앞두고",
-    description: "엄마와 떨어지는 불안, 새 친구를 만나는 설렘을 다룬 책",
-    bookIds: ["kissing-hand", "officer-buckle", "junie-b-jones", "new-kid", "wonder"],
-  },
-  {
-    id: "situation-big-feelings",
-    kind: "situation",
-    title: "화나고 속상한 날",
-    description: "감정을 이름 붙이고 스스로 가라앉히는 과정을 보여주는 책",
-    bookIds: ["sophie-angry", "where-the-wild-things-are", "wonder"],
-  },
-  {
-    id: "situation-refuses-english",
-    kind: "situation",
-    title: "영어책 싫다고 할 때",
-    description: "웃음이 먼저 터지는 책으로 '영어책 = 재미'를 다시 만들기",
-    bookIds: ["pigeon-bus", "we-are-in-a-book", "hi-fly-guy", "dog-man", "horrid-henry", "wimpy-kid"],
-  },
-  {
-    id: "situation-series-binge",
-    kind: "situation",
-    title: "방학·긴 여행에 몰입할 시리즈",
-    description: "첫 권이 재미있으면 다음 권을 스스로 찾게 되는 시리즈 첫 권",
-    bookIds: ["dinosaurs-before-dark", "nate-the-great", "absent-author", "harry-potter-1"],
-  },
-];
+/** 레벨을 정할 근거가 있는지 */
+export function isRated(book: Book): boolean {
+  return bookLevel(book).basis !== "none";
+}
+
+/** 시트의 '상황' 칸 값 → 화면 제목과 설명. 여기 없는 값은 그대로 제목이 된다 */
+const SITUATION_INFO: Record<string, { title: string; description: string }> = {
+  잠자리: { title: "잠들기 전 10분", description: "목소리를 낮추고 천천히 읽어주기 좋은 잔잔한 책" },
+  "새 학기": { title: "새 학기·첫 등원 앞두고", description: "엄마와 떨어지는 불안, 새 친구를 만나는 설렘을 다룬 책" },
+  "화난 날": { title: "화나고 속상한 날", description: "감정을 이름 붙이고 스스로 가라앉히는 과정을 보여주는 책" },
+  "영어 거부": { title: "영어책 싫다고 할 때", description: "웃음이 먼저 터지는 책으로 '영어책 = 재미'를 다시 만들기" },
+  "시리즈 몰입": { title: "방학·긴 여행에 몰입할 시리즈", description: "첫 권이 재미있으면 다음 권을 스스로 찾게 되는 시리즈" },
+};
 
 const THEME_DESCRIPTIONS: Record<string, string> = {
   동물: "동물 친구가 주인공인 책",
@@ -79,7 +69,53 @@ const THEME_DESCRIPTIONS: Record<string, string> = {
   미스터리: "단서를 따라가는 탐정 이야기",
   자연: "계절과 자연을 느끼는 책",
   판타지: "마법과 다른 세계 이야기",
+  "새 학기": "학교와 유치원 이야기",
+  역사: "옛날 이야기와 실제 역사",
+  과학: "궁금한 걸 알아가는 책",
+  지식: "논픽션·지식 책",
+  감정: "마음을 들여다보는 책",
 };
+
+/** 레벨 낮은 책부터. 레벨 확인 중인 책은 맨 뒤 */
+function byLevel(a: Book, b: Book): number {
+  const la = bookLevel(a);
+  const lb = bookLevel(b);
+  const ka = la.basis === "none" ? 99 : la.level.level;
+  const kb = lb.basis === "none" ? 99 : lb.level.level;
+  return ka - kb || (a.ar ?? 0) - (b.ar ?? 0);
+}
+
+/** 값별로 묶기. 처음 나온 순서를 지키되 known 순서를 앞에 둔다 */
+function groupBy(pick: (b: Book) => string[] | undefined, known: string[]): Map<string, Book[]> {
+  const groups = new Map<string, Book[]>(known.map((k) => [k, []]));
+  for (const b of BOOKS) {
+    for (const v of pick(b) ?? []) {
+      if (!groups.has(v)) groups.set(v, []);
+      groups.get(v)!.push(b);
+    }
+  }
+  return groups;
+}
+
+function situationCollections(): Collection[] {
+  return [...groupBy((b) => b.situations, Object.keys(SITUATION_INFO))].map(([name, books]) => ({
+    id: `situation-${name}`,
+    kind: "situation" as const,
+    title: SITUATION_INFO[name]?.title ?? name,
+    description: SITUATION_INFO[name]?.description ?? "",
+    bookIds: books.sort(byLevel).map((b) => b.id),
+  }));
+}
+
+function themeCollections(): Collection[] {
+  return [...groupBy((b) => b.themes, Object.keys(THEME_DESCRIPTIONS))].map(([theme, books]) => ({
+    id: `theme-${theme}`,
+    kind: "theme" as const,
+    title: theme,
+    description: THEME_DESCRIPTIONS[theme] ?? "",
+    bookIds: books.sort(byLevel).map((b) => b.id),
+  }));
+}
 
 const AWARD_DESCRIPTIONS: Record<Award, string> = {
   칼데콧: "미국에서 그해 가장 뛰어난 그림책 그림에 주는 상",
@@ -87,23 +123,14 @@ const AWARD_DESCRIPTIONS: Record<Award, string> = {
   가이젤: "막 읽기 시작한 아이를 위한 최고의 리더스북에 주는 상",
 };
 
-function themeCollections(): Collection[] {
-  return Object.entries(THEME_DESCRIPTIONS).map(([theme, description]) => ({
-    id: `theme-${theme}`,
-    kind: "theme" as const,
-    title: theme,
-    description,
-    bookIds: BOOKS.filter((b) => b.themes?.includes(theme)).map((b) => b.id),
-  }));
-}
-
 function levelCollections(): Collection[] {
   return K_LEVELS.map((l) => ({
     id: `level-${l.level}`,
     kind: "level" as const,
     title: `K-레벨 ${l.level} · ${l.name}`,
     description: l.headline,
-    bookIds: BOOKS.filter((b) => bookLevel(b).level.level === l.level).map((b) => b.id),
+    // 시리즈는 시작 레벨에 넣는다. 레벨 확인 중인 책은 빠진다
+    bookIds: BOOKS.filter((b) => isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
   }));
 }
 
@@ -126,7 +153,7 @@ function latestYear(book: Book, award: Award): number {
 
 /** 책이 한 권도 없는 묶음은 보여주지 않는다 */
 export function allCollections(): Collection[] {
-  return [...SITUATIONS, ...themeCollections(), ...levelCollections(), ...awardCollections()].filter(
+  return [...situationCollections(), ...themeCollections(), ...levelCollections(), ...awardCollections()].filter(
     (c) => c.bookIds.length > 0,
   );
 }

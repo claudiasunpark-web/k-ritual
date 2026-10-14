@@ -22,7 +22,7 @@ export interface LevelResult {
   /** listen: 엄마가 읽어주는 책, read: 아이가 읽는 책 */
   mode: "listen" | "read";
   /** 어떤 지수로 판정했는지 */
-  basis: "ar" | "lexile" | "wordCount" | "none";
+  basis: "ar" | "lexile" | "wordCount" | "manual" | "none";
   /** 엄마에게 보여줄 설명 */
   explanations: string[];
   warnings: string[];

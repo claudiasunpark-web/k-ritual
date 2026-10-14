@@ -40,7 +40,8 @@ export function bookCoupangUrl(book: Book): string {
   const ref = book.coupang;
   if (ref?.partnersUrl) return ref.partnersUrl;
   if (ref?.productId) return coupangProductUrl(ref.productId, ref.vendorItemId);
-  return coupangSearchUrl(ref?.query ?? `${book.title} ${book.author} 원서`);
+  const fallback = book.isSeries ? `${book.title} 원서 세트` : `${book.title} ${book.author} 원서`;
+  return coupangSearchUrl(ref?.query ?? fallback);
 }
 
 // ── 쿠팡 파트너스 Open API ────────────────────────────────

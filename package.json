@@ -9,7 +9,8 @@
   "scripts": {
     "test": "node --test \"test/**/*.test.ts\"",
     "typecheck": "tsc -p .",
-    "build": "node scripts/build-web.ts"
+    "build": "node scripts/build-web.ts",
+    "import-sheet": "node scripts/import-sheet.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

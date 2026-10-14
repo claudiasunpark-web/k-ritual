@@ -2,7 +2,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   BOOKS,
+  CatalogError,
   allCollections,
+  isRated,
+  loadCatalog,
+  stringifyCsv,
+  validateCatalog,
+  BOOK_COLUMNS,
+  SERIES_COLUMNS,
   bookCoupangUrl,
   bookLevel,
   buildPurchasePlan,
@@ -37,8 +44,8 @@ test("읽어주기 그림책은 레벨 0(듣기)", () => {
 
 test("문학상 묶음은 최근 수상작부터", () => {
   const ids = getCollection("award-뉴베리").bookIds;
-  assert.equal(ids[0], "new-kid");
-  assert.equal(ids.at(-1), "charlottes-web");
+  assert.equal(ids[0], "all-the-blues-in-the-sky");
+  assert.equal(ids.at(-1), "the-story-of-mankind");
 });
 
 const base: Book = { id: "x", title: "Charlotte's Web", author: "E. B. White", indicesVerified: false };
@@ -101,4 +108,48 @@ test("파트너스 상품 검색 응답 해석", async () => {
   const products = await searchProducts("charlotte", { accessKey: "a", secretKey: "b" }, 5, fakeFetch);
   assert.equal(products[0].productUrl, "https://link.coupang.com/re/x");
   assert.ok(calledUrl.endsWith("/products/search?keyword=charlotte&limit=5"));
+});
+
+test("시트 데이터: 낱권·시리즈가 충분히 들어 있다", () => {
+  assert.ok(BOOKS.filter((b) => !b.isSeries).length >= 200);
+  assert.ok(BOOKS.filter((b) => b.isSeries).length >= 100);
+});
+
+test("시리즈는 AR최소로 시작 레벨이 정해진다", () => {
+  const mth = BOOKS.find((b) => b.id === "series-magic-tree-house")!;
+  assert.equal(mth.isSeries, true);
+  assert.equal(bookLevel(mth).level.level, 5);
+  assert.ok(getCollection("level-5").bookIds.includes(mth.id));
+});
+
+test("AR이 없으면 시트의 레벨, 그것도 없으면 레벨 확인 중", () => {
+  const geisel = BOOKS.find((b) => b.id === "fox-at-night")!;
+  assert.equal(bookLevel(geisel).basis, "manual");
+  assert.equal(bookLevel(geisel).level.level, 1);
+  const unrated = BOOKS.find((b) => b.id === "the-story-of-mankind")!;
+  assert.equal(isRated(unrated), false);
+  assert.ok(!allCollections().some((c) => c.kind === "level" && c.bookIds.includes(unrated.id)));
+});
+
+const sheet = (header: readonly string[], rows: Record<string, string>[]) => stringifyCsv([...header], rows);
+
+test("시트 오류를 행 번호와 함께 모두 알려준다", () => {
+  const books = sheet(BOOK_COLUMNS, [
+    { 제목: "Good Book", 저자: "A", AR: "2.5", 문학상: "뉴베리 2020 대상", 쿠팡링크: "https://link.coupang.com/a/x" },
+    { 제목: "", 저자: "", AR: "abc", 렉사일: "12Q", IL: "XX", 읽어주기: "네", 문학상: "노벨상 2020", 쿠팡링크: "https://evil.example" },
+  ]);
+  const { books: parsed, problems } = validateCatalog(books, sheet(SERIES_COLUMNS, []));
+  assert.equal(parsed[0].id, "good-book");
+  assert.equal(parsed[0].coupang?.partnersUrl, "https://link.coupang.com/a/x");
+  assert.deepEqual(parsed[0].awards, [{ award: "뉴베리", year: 2020, kind: "medal" }]);
+  for (const col of ["제목", "저자", "AR", "렉사일", "IL", "읽어주기", "문학상", "쿠팡링크"]) {
+    assert.ok(problems.some((p) => p.startsWith("낱권 3행") && p.includes(`'${col}'`)), col);
+  }
+  assert.throws(() => loadCatalog(books, sheet(SERIES_COLUMNS, [])), CatalogError);
+});
+
+test("시트 id가 겹치면 오류", () => {
+  const books = sheet(BOOK_COLUMNS, [{ 제목: "Same", 저자: "A" }, { 제목: "Same", 저자: "B" }]);
+  const { problems } = validateCatalog(books, sheet(SERIES_COLUMNS, []));
+  assert.ok(problems.some((p) => p.includes("id가 겹쳐요")));
 });

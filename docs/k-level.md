@@ -56,7 +56,7 @@ AR → 렉사일(근사 환산) → 권당 단어 수. AR을 먼저 보는 이�
 
 ## 출시 전 할 일
 
-- [ ] 카탈로그 지수 검증: `src/catalog/books.ts`의 AR·렉사일·IL은 근사값이다. ARBookFind와 Lexile Find a Book으로 한 권씩 확인 후 `indicesVerified: true`.
+- [ ] 카탈로그 지수 검증: 시트에서 `지수확인`이 N인 값은 근사값이다. ARBookFind와 Lexile Find a Book으로 확인 후 Y로 바꾼다 ([시트 사용법](catalog-sheet.md)).
 - [ ] "파닉스 후 개월 수" 보정: 실제 사용자 데이터로 검증.
 
 # 추천 묶음과 쿠팡 구매

@@ -126,6 +126,9 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .fit-딱맞음 { background: var(--mark); color: var(--mark-ink); }
 .fit-도전 { background: color-mix(in srgb, var(--warn) 18%, transparent); color: var(--warn); }
 .fit-어려움 { background: color-mix(in srgb, var(--hard) 16%, transparent); color: var(--hard); }
+.fit-확인중 { background: var(--soft); color: var(--muted); }
+.approx { font-weight: 400; opacity: 0.75; margin-left: 3px; font-family: var(--font-body); }
+.more { justify-self: center; }
 .fit-읽어주기 { background: color-mix(in srgb, var(--listen) 18%, transparent); color: var(--listen); }
 .note { font-size: 0.8rem; color: var(--muted); }
 .note.warn { color: var(--warn); }
@@ -199,6 +202,7 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
   <footer>
     <p id="disclosure"></p>
     <p>레벨은 매일 20~30분 꾸준히 영어책을 읽은 아이를 기준으로 했어요. 아이마다 속도가 달라요.</p>
+    <p>'근사'가 붙은 AR·렉사일·레벨은 아직 확인 전인 대략적인 값이에요. 정확한 값은 확인되는 대로 바꿔 드려요.</p>
   </footer>
 </div>
 
@@ -222,6 +226,7 @@ const state = {
   onlyFit: store.get("onlyFit", false),
   owned: new Set(store.get("owned", [])),
   buyOpen: false,
+  limit: 24,
 };
 
 function childLevel() {
@@ -235,6 +240,7 @@ function fit(book) {
     warnings.push(`내용 적정 나이 주의: ${book.ilLabel}이에요. 영어로는 읽을 수 있어도 내용이 아이 나이보다 성숙할 수 있어요.`);
   }
   if (book.listen) return { fit: "읽어주기", message: "엄마가 읽어주기 좋은 책", warnings };
+  if (book.level == null) return { fit: "확인 중", message: "아직 레벨을 확인하고 있는 책이에요", warnings };
   const diff = book.level - childLevel();
   if (diff <= -1) return { fit: "술술", message: "쉽게 읽혀요. 다독·자신감용", warnings };
   if (diff === 0) return { fit: "딱 맞음", message: "지금 혼자 읽기 딱 좋아요", warnings };
@@ -301,6 +307,15 @@ function renderTabs() {
     `<button class="chip-btn" data-collection="${c.id}" aria-pressed="${c.id === current.id}">${esc(c.title)}<span class="count">${c.bookIds.length}</span></button>`).join("");
 }
 
+// 문학상 전체 목록처럼 큰 묶음은 '모두 사기'가 의미 없어서 숨긴다
+const BUY_ALL_MAX = 40;
+
+function countLabel(ids) {
+  const series = ids.filter((id) => DATA.books[id].isSeries).length;
+  const singles = ids.length - series;
+  return [singles ? `책 <span class="num">${singles}</span>권` : "", series ? `시리즈 <span class="num">${series}</span>개` : ""].filter(Boolean).join(" · ");
+}
+
 function purchaseList(c) {
   return c.bookIds.filter((id) => !state.owned.has(id));
 }
@@ -312,13 +327,13 @@ function renderCollection() {
   $("collection-head").innerHTML = `
     <div>
       <h3>${esc(c.title)}</h3>
-      <p class="muted small">${esc(c.description)} · <span class="num">${c.bookIds.length}</span>권${ownedCount ? ` (집에 있는 책 ${ownedCount}권)` : ""}</p>
+      <p class="muted small">${c.description ? esc(c.description) + " · " : ""}${countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
     </div>
     <div class="actions">
       <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만</label>
-      <button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
-        ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}권` : "모두 집에 있어요"}
-      </button>
+      ${c.bookIds.length > BUY_ALL_MAX ? "" : `<button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
+        ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}개` : "모두 집에 있어요"}
+      </button>`}
     </div>`;
 
   const books = c.bookIds.map((id) => DATA.books[id]).filter((b) => {
@@ -326,28 +341,39 @@ function renderCollection() {
     const f = fit(b).fit;
     return f === "딱 맞음" || f === "술술" || f === "읽어주기";
   });
-  $("grid").innerHTML = books.length ? books.map(bookCard).join("") :
-    `<p class="empty" style="grid-column: 1 / -1">이 묶음에는 지금 아이 레벨에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요.</p>`;
+  const shown = books.slice(0, state.limit);
+  const rest = books.length - shown.length;
+  $("grid").innerHTML = books.length
+    ? shown.map(bookCard).join("") +
+      (rest > 0 ? `<button class="btn more" id="more" style="grid-column: 1 / -1">더 보기 · ${rest}개 남음</button>` : "")
+    : `<p class="empty" style="grid-column: 1 / -1">이 묶음에는 지금 아이 레벨에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요.</p>`;
   renderBuyAll();
 }
 
 function bookCard(b) {
   const f = fit(b);
   const owned = state.owned.has(b.id);
-  const lv = DATA.levels[b.level];
+  const lv = b.level == null ? null : DATA.levels[b.level];
+  const approx = b.approx ? `<span class="approx" title="아직 확인 전인 근사값이에요">근사</span>` : "";
+  const arLabel = b.ar == null ? "" : b.isSeries && b.arMax != null && b.arMax !== b.ar ? `AR ${b.ar}–${b.arMax}` : `AR ${b.ar}`;
   const tags = [
     `<span class="tag fit fit-${f.fit.replace(" ", "")}">${f.fit}</span>`,
-    b.ar != null ? `<span class="tag num" title="${esc(b.arText)}">AR ${b.ar}</span>` : "",
-    b.lexile ? `<span class="tag num">${esc(b.lexile)}</span>` : "",
-    b.il ? `<span class="tag" title="${esc(b.ilLabel)}">IL ${esc(b.il)}</span>` : "",
+    b.format ? `<span class="tag">${esc(b.format)}</span>` : "",
+    b.isSeries && b.bookCount ? `<span class="tag">약 ${b.bookCount}권</span>` : "",
+    arLabel ? `<span class="tag num" title="${esc(b.arText)}">${arLabel}${approx}</span>` : "",
+    b.levelApprox ? `<span class="tag">레벨 ${b.level}${approx}</span>` : "",
+    b.lexile ? `<span class="tag num">${esc(b.lexile)}${approx}</span>` : "",
+    b.il ? `<span class="tag" title="${esc(b.ilLabel)}">IL ${esc(b.il)}${approx}</span>` : "",
     ...b.awards.map((a) => `<span class="tag">${esc(a)}</span>`),
   ].join("");
+  const note = b.isSeries ? `${f.message} · 시리즈는 첫 권 레벨 기준이에요`
+    : `${f.message}${b.ar != null && !b.listen ? ` · ${b.arText.split(".")[0]}` : ""}`;
   return `
   <article class="book ${owned ? "is-owned" : ""}">
-    <div class="cover" style="background: ${levelColor(b.level)}" aria-hidden="true">
-      <span class="k">LEVEL</span>
-      <span class="big">${b.level}</span>
-      <span class="k">${esc(lv.name)}</span>
+    <div class="cover" style="background: ${lv ? levelColor(b.level) : "var(--soft)"}" aria-hidden="true">
+      <span class="k">${b.isSeries ? "SERIES" : "LEVEL"}</span>
+      <span class="big">${lv ? b.level : "?"}</span>
+      <span class="k">${lv ? esc(lv.name) : "확인 중"}</span>
     </div>
     <div class="book-body">
       <div>
@@ -355,10 +381,10 @@ function bookCard(b) {
         <p class="small muted">${esc(b.author)}${b.series ? ` · ${esc(b.series)} 시리즈` : ""}</p>
       </div>
       <div class="tags">${tags}</div>
-      <p class="note">${esc(f.message)}${b.ar != null && !b.listen ? ` · ${esc(b.arText.split(".")[0])}` : ""}</p>
+      <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
-        <a class="btn small primary" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 보기</a>
+        <a class="btn small primary" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
     </div>
@@ -416,13 +442,13 @@ $("ladder").addEventListener("click", (e) => {
 });
 $("tabs").addEventListener("click", (e) => {
   const t = e.target.closest("[data-kind]"); if (!t) return;
-  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false;
+  state.kind = t.dataset.kind; state.collectionId = null; state.buyOpen = false; state.limit = 24;
   store.set("kind", state.kind); store.set("collection", null);
   renderTabs(); renderCollection();
 });
 $("collections").addEventListener("click", (e) => {
   const t = e.target.closest("[data-collection]"); if (!t) return;
-  state.collectionId = t.dataset.collection; state.buyOpen = false;
+  state.collectionId = t.dataset.collection; state.buyOpen = false; state.limit = 24;
   store.set("collection", state.collectionId);
   renderTabs(); renderCollection();
 });
@@ -431,6 +457,9 @@ $("collection-head").addEventListener("click", (e) => {
 });
 $("collection-head").addEventListener("change", (e) => {
   if (e.target.id === "only-fit") { state.onlyFit = e.target.checked; store.set("onlyFit", state.onlyFit); renderCollection(); }
+});
+$("grid").addEventListener("click", (e) => {
+  if (e.target.id === "more") { state.limit += 48; renderCollection(); }
 });
 $("grid").addEventListener("change", (e) => {
   const id = e.target.dataset.owned; if (!id) return;
