@@ -460,7 +460,7 @@ function renderWorkbooks(level) {
       <p class="wb-title">${esc(w.title)}</p>
       <p class="small muted">${esc(w.publisher)}</p>
       <p class="note">${esc(w.description)}</p>
-      <div class="actions"><a class="btn small" href="${esc(w.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 사러 가기</a></div>
+      <div class="actions"><a class="btn small" href="${esc(w.url)}" target="_blank" rel="noopener sponsored">사러 가기</a></div>
     </div>`;
   }
 }
@@ -478,7 +478,7 @@ function currentCollection() {
 
 const norm = (t) => String(t ?? "").toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").normalize("NFC").replace(/[^a-z0-9가-힣]/g, "");
 const SEARCH_TEXT = Object.fromEntries(Object.values(DATA.books).map((b) =>
-  [b.id, norm([b.title, b.author, b.series, ...(b.themes ?? []), b.format, b.summary].join(" "))]));
+  [b.id, norm([b.title, b.author, b.series, ...(b.themes ?? []), b.format, b.summary, b.summaryKo].join(" "))]));
 
 // 제목·작가·시리즈·테마로 찾기. 시리즈 카드 먼저, 그다음 쉬운 책부터
 function searchCollection(q) {
@@ -616,12 +616,12 @@ function bookCard(b, child = false) {
         <p class="small muted">${esc(b.author)}</p>
       </div>
       <div class="tags">${tags}</div>
-      ${b.summary ? `<p class="summary" lang="en" title="눌러서 펼치기">${esc(b.summary)}</p>` : ""}
+      ${b.summaryKo || b.summary ? `<p class="summary" lang="${b.summaryKo ? "ko" : "en"}" title="눌러서 펼치기">${esc(b.summaryKo ?? b.summary)}</p>` : ""}
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
-        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 사러 가기" : "쿠팡에서 사러 가기"}</a>
+        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "세트 사러 가기" : "사러 가기"}</a>
         <button class="btn small cart-btn" data-cart="${b.id}" aria-pressed="${state.cart.includes(b.id)}">${state.cart.includes(b.id) ? "담음 ✓" : "🛒 담기"}</button>
         ${b.isSeries ? "" : `<button class="btn small read-btn" data-read="${b.id}" aria-pressed="${readCount(b.id) > 0}">${readCount(b.id) ? `읽음 ✓${readCount(b.id) > 1 ? ` ${readCount(b.id)}번` : ""}` : "📖 읽었어요"}</button>`}
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>

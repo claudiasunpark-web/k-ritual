@@ -29,6 +29,9 @@ import {
 
 const AWARD_KIND = { medal: "대상", honor: "아너" } as const;
 
+// 카드에 보여줄 한국어 줄거리 (영어 소개글을 1~2문장으로 줄여 옮긴 것). 없으면 영어 원문
+const SUMMARY_KO = JSON.parse(readFileSync(new URL("../data/book-summary-ko.json", import.meta.url), "utf8")) as Record<string, string>;
+
 // EMBED_COVERS=1: 미리보기는 외부 이미지를 못 불러와서, scripts/cache-covers.py가 만든 썸네일을 페이지에 넣는다
 const EMBED = process.env.EMBED_COVERS === "1";
 const coverDir = new URL("../web/.covers/", import.meta.url);
@@ -91,6 +94,7 @@ const books = Object.fromEntries(
         awards: (b.awards ?? []).map((a) => `${a.award}상 ${a.year} ${AWARD_KIND[a.kind]}`),
         themes: allThemes(b),
         summary: b.summary ?? null,
+        summaryKo: SUMMARY_KO[b.id] ?? null,
         price: b.priceKrw ?? null,
         url: bookCoupangUrl(b),
         // 지수가 없다는 경고는 화면에서 '레벨 확인 중'으로 대신한다
