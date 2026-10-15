@@ -141,6 +141,24 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .mine-item .step-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mine-item.is-done .step-title { text-decoration: line-through; color: var(--muted); }
 .mine-item.is-next { border-color: var(--accent); }
+.read-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--good) 14%, var(--surface)); border-color: var(--good); color: var(--good); }
+/* 내 책장 */
+.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--soft); border-radius: 10px; padding: 4px; gap: 4px; }
+.seg button { border: 0; background: none; border-radius: 8px; padding: 8px; cursor: pointer; font-weight: 500; color: var(--muted); }
+.seg button[aria-selected="true"] { background: var(--surface); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.stats > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 6px; display: grid; justify-items: center; gap: 2px; }
+.stats b { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--accent); }
+.stats span { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
+@media (max-width: 480px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.cols { display: flex; align-items: end; gap: 4px; min-height: 160px; padding-top: 8px; }
+.col { flex: 1 1 0; min-width: 0; display: grid; justify-items: center; align-content: end; gap: 3px; }
+.col-bar { width: 100%; max-width: 34px; border-radius: 5px 5px 2px 2px; }
+.col-n { font-size: 0.75rem; min-height: 1em; }
+.col-l { font-size: 0.72rem; color: var(--muted); }
+.col.is-child .col-l { color: var(--accent); font-weight: 700; }
+.col.is-child .col-bar { outline: 2px solid var(--accent); outline-offset: 1px; }
+.text-in { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; width: 100%; }
 .cart-sum { display: grid; gap: 2px; font-size: 1.05rem; font-weight: 500; }
 .cart-btn[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); color: var(--accent); }
 .tab-icon { position: relative; display: inline-flex; }
@@ -300,12 +318,20 @@ body { margin: 0; }
     </div>
   </section>
 
-  <section class="screen" id="screen-cart" data-screen="cart" aria-labelledby="cart-h" hidden>
+  <section class="screen" id="screen-mine" data-screen="mine" aria-labelledby="mine-h" hidden>
     <div class="screen-head">
-      <h2 id="cart-h">장바구니</h2>
-      <p class="small muted">책장에서 '담기'를 누른 책이 모여요. 이 기기에만 저장돼요.</p>
+      <h2 id="mine-h">내 책장</h2>
+      <p class="small muted">이 기기에만 저장돼요.</p>
     </div>
-    <div id="cart" style="display: grid; gap: 12px"></div>
+    <div class="seg" role="tablist" id="shelf-tabs">
+      <button role="tab" data-shelf="log">독서 기록</button>
+      <button role="tab" data-shelf="cart">장바구니 <span class="num" id="cart-count-seg"></span></button>
+    </div>
+    <div id="log" style="display: grid; gap: 16px"></div>
+    <div id="cart-panel" style="display: grid; gap: 12px">
+      <p class="small muted">책장에서 '담기'를 누른 책이 모여요.</p>
+      <div id="cart" style="display: grid; gap: 12px"></div>
+    </div>
   </section>
 
   <footer>
@@ -321,7 +347,7 @@ body { margin: 0; }
     <button data-go="books"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.5l3.6 1 -3.9 14.5-3.6-1z"/></svg>책장</button>
     <button data-go="workbooks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h5"/></svg>실력 다지기</button>
     <button data-go="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14 M12 17.5v.01"/></svg>읽는 법</button>
-    <button data-go="cart"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="badge num" id="cart-count" hidden></span></span>장바구니</button>
+    <button data-go="mine"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h5v16H4zM10 4h5v16h-5zM16 6l4 1-3 14-4-1"/></svg><span class="badge num" id="cart-count" hidden></span></span>내 책장</button>
   </div>
 </nav>
 
@@ -352,6 +378,9 @@ const state = {
   query: "",
   // 장바구니에 담은 책 id (담은 순서)
   cart: store.get("cart", []).filter((id) => DATA.books[id]),
+  // 독서 기록: 읽을 때마다 한 줄 { id | title+level, at }. 같은 책을 다시 읽으면 줄이 하나 더 생긴다
+  reads: store.get("reads", []).filter((r) => r.id ? DATA.books[r.id] : r.title),
+  shelf: store.get("shelf", "log"),
 };
 
 function childLevel() {
@@ -609,6 +638,7 @@ function bookCard(b, child = false) {
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
         <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <button class="btn small cart-btn" data-cart="${b.id}" aria-pressed="${state.cart.includes(b.id)}">${state.cart.includes(b.id) ? "담음 ✓" : "🛒 담기"}</button>
+        ${b.isSeries ? "" : `<button class="btn small read-btn" data-read="${b.id}" aria-pressed="${readCount(b.id) > 0}">${readCount(b.id) ? `읽음 ✓${readCount(b.id) > 1 ? ` ${readCount(b.id)}번` : ""}` : "📖 읽었어요"}</button>`}
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
     </div>
@@ -660,6 +690,7 @@ function renderCart() {
   const n = state.cart.length;
   $("cart-count").textContent = n || "";
   $("cart-count").hidden = !n;
+  $("cart-count-seg").textContent = n ? `(${n})` : "";
   if (!n) {
     $("cart").innerHTML = `<p class="empty">장바구니가 비어 있어요. 책장에서 마음에 드는 책의 '담기'를 눌러 주세요.</p>`;
     return;
@@ -697,7 +728,140 @@ function renderCart() {
     </div>`;
 }
 
-function renderAll() { renderChild(); renderTabs(); renderCollection(); renderCart(); }
+// ── 독서 기록 ─────────────────────────────
+function readCount(id) { return state.reads.filter((r) => r.id === id).length; }
+function readLevel(r) {
+  if (!r.id) return r.level ?? null;
+  const b = DATA.books[r.id];
+  return b.listen ? 0 : b.level ?? null;
+}
+function readTitle(r) { return r.id ? DATA.books[r.id].title : r.title; }
+function saveReads() { store.set("reads", state.reads); renderLog(); }
+const dayKey = (t) => { const d = new Date(t); return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`; };
+
+function renderLog() {
+  const reads = state.reads;
+  const me = childLevel();
+  if (!reads.length) {
+    $("log").innerHTML = `<p class="empty">아직 기록이 없어요. 책장에서 다 읽은 책의 '📖 읽었어요'를 누르거나, 아래에서 직접 적어 주세요.</p>${addForm()}`;
+    return;
+  }
+  const now = new Date();
+  const weekStart = new Date(now); weekStart.setHours(0, 0, 0, 0); weekStart.setDate(weekStart.getDate() - ((weekStart.getDay() + 6) % 7));
+  const thisWeek = reads.filter((r) => r.at >= weekStart.getTime()).length;
+  const thisMonth = reads.filter((r) => { const d = new Date(r.at); return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth(); }).length;
+  const unique = new Set(reads.map((r) => r.id ?? "t:" + r.title)).size;
+  // 연속 기록: 오늘(또는 어제)부터 거꾸로 하루도 안 빠진 날 수
+  const days = new Set(reads.map((r) => dayKey(r.at)));
+  let streak = 0; const d = new Date(now);
+  if (!days.has(dayKey(d))) d.setDate(d.getDate() - 1);
+  while (days.has(dayKey(d))) { streak++; d.setDate(d.getDate() - 1); }
+
+  // 레벨별 칼럼
+  const byLevel = Array.from({ length: DATA.levels.length }, () => 0);
+  let unknown = 0;
+  for (const r of reads) { const lv = readLevel(r); lv == null ? unknown++ : byLevel[lv]++; }
+  const max = Math.max(1, ...byLevel, unknown);
+  const col = (label, n, color, isMe) => `
+    <div class="col ${isMe ? "is-child" : ""}" title="${label} · ${n}권">
+      <span class="col-n num">${n || ""}</span>
+      <span class="col-bar" style="height: ${n ? Math.max(6, Math.round((n / max) * 120)) : 2}px; background: ${color}"></span>
+      <span class="col-l num">${label}</span>
+    </div>`;
+  const atMe = byLevel[me];
+  const next = DATA.levels[me + 1];
+
+  const recent = reads.map((r, i) => ({ r, i })).sort((a, b) => b.r.at - a.r.at).slice(0, state.logLimit ?? 30);
+  const date = (t) => new Date(t).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
+  $("log").innerHTML = `
+    <div class="stats">
+      <div><b class="num">${reads.length}</b><span>누적 권수</span></div>
+      <div><b class="num">${unique}</b><span>다른 책</span></div>
+      <div><b class="num">${thisWeek}</b><span>이번 주</span></div>
+      <div><b class="num">${thisMonth}</b><span>이번 달</span></div>
+      <div><b class="num">${streak}</b><span>연속 기록일</span></div>
+    </div>
+    <div class="buyall">
+      <h3>레벨별로 읽은 책</h3>
+      <div class="cols" role="img" aria-label="레벨별 읽은 책 수: ${byLevel.map((n, lv) => `레벨 ${lv} ${n}권`).join(", ")}${unknown ? `, 레벨 모름 ${unknown}권` : ""}">
+        ${byLevel.map((n, lv) => col(lv, n, levelColor(lv), lv === me)).join("")}
+        ${unknown ? col("?", unknown, "var(--soft)", false) : ""}
+      </div>
+      <p class="small">우리 아이 레벨(시크릿 북레벨 <span class="num">${me}</span>) 책을 <b class="num">${atMe}</b>권 읽었어요.
+        ${next ? `술술 읽히는 책이 많아지면 레벨 ${me + 1} '도전' 책을 섞어 보세요.` : ""}</p>
+      ${next ? `<div class="actions"><button class="btn small primary" id="log-next">레벨 ${me + 1} 책 보러 가기 →</button></div>` : ""}
+    </div>
+    <div style="display: grid; gap: 8px">
+      <h3>최근 읽은 책</h3>
+      <ol class="mine-list">${recent.map(({ r, i }) => {
+        const lv = readLevel(r);
+        return `<li class="mine-item">
+          <div><p class="step-title">${esc(readTitle(r))}</p>
+            <p class="small muted">${date(r.at)} · ${lv == null ? "레벨 모름" : `레벨 ${lv}`}${r.id && readCount(r.id) > 1 ? ` · ${readCount(r.id)}번 읽음` : ""}</p></div>
+          <span class="step-actions">
+            <button class="btn small" data-reread="${i}">한 번 더 읽었어요</button>
+            <button class="btn small" data-unread="${i}">지우기</button>
+          </span>
+        </li>`;
+      }).join("")}</ol>
+      ${reads.length > recent.length ? `<button class="btn small more" id="log-more">더 보기 · ${reads.length - recent.length}개</button>` : ""}
+    </div>
+    ${addForm()}`;
+}
+
+// 목록에 없는 책(도서관에서 빌린 책 등)도 적을 수 있게
+function addForm() {
+  return `<form class="buyall" id="log-add">
+    <h3>목록에 없는 책 적기</h3>
+    <div class="child-form">
+      <div class="field" style="flex: 1 1 200px"><label for="log-title">책 제목</label>
+        <input id="log-title" class="text-in" required maxlength="120" placeholder="예: The Day the Crayons Quit"></div>
+      <div class="field"><label for="log-level">레벨</label>
+        <select id="log-level"><option value="">모름</option>${DATA.levels.map((l) => `<option value="${l.level}" ${l.level === childLevel() ? "selected" : ""}>레벨 ${l.level}</option>`).join("")}</select></div>
+      <button class="btn primary" type="submit">기록</button>
+    </div>
+  </form>`;
+}
+
+function renderShelf() {
+  document.querySelectorAll("#shelf-tabs [data-shelf]").forEach((b) => b.setAttribute("aria-selected", b.dataset.shelf === state.shelf));
+  $("log").hidden = state.shelf !== "log";
+  $("cart-panel").hidden = state.shelf !== "cart";
+}
+
+function renderAll() { renderChild(); renderTabs(); renderCollection(); renderCart(); renderLog(); renderShelf(); }
+
+$("shelf-tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-shelf]"); if (!b) return;
+  state.shelf = b.dataset.shelf; store.set("shelf", state.shelf); renderShelf();
+});
+// 책 카드의 '읽었어요': 처음 누르면 기록, 이미 읽은 책이면 한 번 더 읽은 걸로
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-read]"); if (!b) return;
+  state.reads = [...state.reads, { id: b.dataset.read, at: Date.now() }];
+  saveReads();
+  if (b.closest("#grid")) renderCollection();
+});
+$("log").addEventListener("click", (e) => {
+  const re = e.target.dataset.reread, un = e.target.dataset.unread;
+  if (re != null) { const r = state.reads[Number(re)]; state.reads = [...state.reads, { ...r, at: Date.now() }]; saveReads(); renderCollection(); }
+  if (un != null) { state.reads = state.reads.filter((_, i) => i !== Number(un)); saveReads(); renderCollection(); }
+  if (e.target.id === "log-more") { state.logLimit = (state.logLimit ?? 30) + 50; renderLog(); }
+  if (e.target.id === "log-next") {
+    const lv = childLevel() + 1;
+    state.kind = "level"; state.collectionId = `level-${lv}`; state.query = ""; $("search").value = "";
+    state.buyOpen = false; state.limit = 24; state.expanded.clear();
+    store.set("kind", state.kind); store.set("collection", state.collectionId);
+    renderTabs(); renderCollection(); go("books");
+  }
+});
+$("log").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const title = $("log-title").value.trim(); if (!title) return;
+  const lv = $("log-level").value;
+  state.reads = [...state.reads, { title, level: lv === "" ? null : Number(lv), at: Date.now() }];
+  saveReads();
+});
 
 function saveCart() { store.set("cart", state.cart); renderCart(); }
 
@@ -793,8 +957,9 @@ $("buyall").addEventListener("click", (e) => {
 });
 
 // ── 화면 전환: 아래 메뉴 → #home / #books / #workbooks / #guide (뒤로 가기도 동작) ──
-const SCREENS = ["home", "books", "workbooks", "guide", "cart"];
+const SCREENS = ["home", "books", "workbooks", "guide", "mine"];
 function showScreen() {
+  if (location.hash === "#cart") { state.shelf = "cart"; renderShelf(); history.replaceState(null, "", "#mine"); }
   const name = SCREENS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
   document.querySelectorAll("[data-screen]").forEach((el) => { el.hidden = el.dataset.screen !== name; });
   document.querySelectorAll("#tabbar [data-go]").forEach((b) => {
