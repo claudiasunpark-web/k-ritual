@@ -501,7 +501,13 @@ function purchaseList(c) {
 function renderCollection() {
   const c = currentCollection();
   const ids = visibleIds(c);
+  // 테마·상황은 우리 아이 레벨에 가까운 책부터 (필터를 꺼도 쉬운 그림책이 맨 위에 오지 않게)
+  const near = (bk) => (bk.listen ? 0 : bk.level ?? 99);
   const books = ids.map((id) => DATA.books[id]);
+  if (c.kind === "theme" || c.kind === "situation") {
+    const me = childLevel();
+    books.sort((x, y) => Math.abs(near(x) - me) - Math.abs(near(y) - me) || near(x) - near(y));
+  }
   const toBuy = purchaseList(c);
   const ownedCount = ids.length - toBuy.length;
   const filtered = fitApplies(c);
