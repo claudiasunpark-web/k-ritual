@@ -81,6 +81,17 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .level-card .facts b { font-weight: 500; color: var(--muted); margin-right: 4px; }
 .level-card ul { margin: 6px 0 0; padding-left: 1.1em; }
 .level-card .role { background: var(--soft); border-radius: 8px; padding: 10px 12px; font-size: 0.9rem; }
+/* 결과 배너: 사다리에서 고른 레벨 색으로 "우리 아이는 지금 시크릿 북레벨 4" */
+.level-banner { grid-column: 1 / -1; position: relative; overflow: hidden; border-radius: var(--radius); padding: 18px 20px 20px;
+  background: linear-gradient(120deg, var(--lv), color-mix(in srgb, var(--lv) 55%, var(--accent))); color: var(--ink);
+  display: grid; gap: 2px; box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--accent) 60%, transparent); }
+.level-banner.is-other { background: linear-gradient(120deg, var(--soft), var(--lv)); }
+.lb-who { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em; opacity: 0.8; position: relative; }
+.lb-title { position: relative; font-size: 1.7rem; line-height: 1.2; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.lb-num { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.lb-name { position: relative; font-family: var(--font-ko-display); font-size: 1.1rem; font-weight: 700; }
+.lb-big { position: absolute; right: 8px; bottom: -28px; font-family: var(--font-display); font-weight: 700; font-size: 9rem; line-height: 1;
+  color: var(--surface); opacity: 0.35; pointer-events: none; }
 @media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
 
 .search { display: grid; gap: 4px; }
@@ -227,7 +238,7 @@ body { margin: 0; }
         <select id="reading"></select>
       </div>
     </div>
-    <div class="ladder" id="ladder" role="group" aria-label="K-레벨 사다리"></div>
+    <div class="ladder" id="ladder" role="group" aria-label="시크릿 북레벨 사다리"></div>
     <div class="level-card" id="level-card"></div>
     <button class="btn primary go-books" id="go-books">이 레벨 책 보러 가기 →</button>
   </section>
@@ -360,16 +371,20 @@ function renderChild() {
   $("ladder").innerHTML = DATA.levels.map((l) => `
     <button class="rung ${l.level === mine ? "is-child" : ""} ${l.level === shown ? "is-open" : ""}"
       style="height: ${34 + l.level * 6}px; background: ${levelColor(l.level)}"
-      data-level="${l.level}" aria-pressed="${l.level === shown}" title="K-레벨 ${l.level} ${esc(l.name)}">
+      data-level="${l.level}" aria-pressed="${l.level === shown}" title="시크릿 북레벨 ${l.level} ${esc(l.name)}">
       <span>${l.level}</span>
     </button>`).join("");
 
   const l = DATA.levels[shown];
   const who = shown === mine ? "우리 아이는 지금" : "다른 단계 보기";
   $("level-card").innerHTML = `
+    <div class="level-banner ${shown === mine ? "" : "is-other"}" style="--lv: ${levelColor(l.level)}">
+      <p class="lb-who">${who}</p>
+      <h3 class="lb-title"><span class="lb-brand">시크릿 북레벨</span> <span class="lb-num num">${l.level}</span></h3>
+      <p class="lb-name">${esc(l.name)}</p>
+      <span class="lb-big num" aria-hidden="true">${l.level}</span>
+    </div>
     <div style="display: grid; gap: 10px">
-      <p class="small muted">${who}</p>
-      <h3>K-레벨 ${l.level} · ${esc(l.name)}</h3>
       <p>${esc(l.headline)}</p>
       <div class="facts">
         <span><b>AR</b><span class="num">${esc(l.ar)}</span></span>
@@ -390,7 +405,7 @@ function renderChild() {
 function renderWorkbooks(level) {
   const list = DATA.workbooks.filter((w) => level >= w.levelMin && level <= w.levelMax);
   const range = (w) => (w.levelMin === w.levelMax ? `레벨 ${w.levelMin}` : `레벨 ${w.levelMin}–${w.levelMax}`);
-  $("wb-level").textContent = `K-레벨 ${level} · ${DATA.levels[level].name} 기준이에요. 레벨은 '우리 아이'에서 바꿀 수 있어요.`;
+  $("wb-level").textContent = `시크릿 북레벨 ${level} · ${DATA.levels[level].name} 기준이에요. 레벨은 '우리 아이'에서 바꿀 수 있어요.`;
   $("workbooks").innerHTML = level === 0
     ? `<p class="small muted">레벨 0은 듣기 단계라 문제집보다 읽어주기가 먼저예요. 알파벳을 배우기 시작하면 파닉스 문제집을 시작해요.</p>
        <div class="wb-list">${DATA.workbooks.filter((w) => w.kind === "파닉스").map(wbCard).join("")}</div>`

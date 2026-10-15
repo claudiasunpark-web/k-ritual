@@ -267,6 +267,6 @@ export const STAGE_LABEL: Record<ReadingStage, string> = {
 
 export function getLevel(level: number): KLevel {
   const found = K_LEVELS.find((l) => l.level === level);
-  if (!found) throw new RangeError(`K-레벨 ${level}은 없어요 (0~10)`);
+  if (!found) throw new RangeError(`시크릿 북레벨 ${level}은 없어요 (0~10)`);
   return found;
 }

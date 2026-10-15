@@ -102,7 +102,7 @@ export function estimateLevel(book: BookIndices): LevelResult {
     warnings.push("그래픽노블이라 그림이 이해를 많이 도와줘요. 글만 있는 책보다 한 단계 쉽게 느껴질 수 있어요.");
   }
 
-  explanations.push(`K-레벨 ${level.level} '${level.name}': ${level.headline}`);
+  explanations.push(`시크릿 북레벨 ${level.level} '${level.name}': ${level.headline}`);
   explanations.push(`글밥: ${level.textDensity}`);
   if (level.level > 0) explanations.push(`아이 모습: ${STAGE_LABEL[level.stage]}`);
 
