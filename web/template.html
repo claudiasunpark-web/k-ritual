@@ -47,6 +47,8 @@
 }
 
 * { box-sizing: border-box; }
+/* hidden 속성이 .buyall 같은 display 지정보다 이기도록 (안 그러면 닫힌 패널이 남아 보인다) */
+[hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
 .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 28px; }
 h1, h2, h3 { font-family: var(--font-ko-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.3; }
