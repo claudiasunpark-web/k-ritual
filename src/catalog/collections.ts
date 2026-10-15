@@ -97,8 +97,18 @@ function groupBy(pick: (b: Book) => string[] | undefined, known: string[]): Map<
   return groups;
 }
 
+/** 시리즈 낱권은 시리즈 카드로 보여준다: 낱권에 붙은 상황은 시리즈 카드가 이어받는다 (같은 묶음에 낱권과 시리즈가 같이 뜨지 않게) */
+function situationsForCard(b: Book, children: Map<string, Book[]>): string[] | undefined {
+  if (b.seriesId) return undefined;
+  if (!b.isSeries) return b.situations;
+  const all = new Set(b.situations ?? []);
+  for (const c of children.get(b.id) ?? []) for (const s of c.situations ?? []) all.add(s);
+  return [...all];
+}
+
 function situationCollections(): Collection[] {
-  return [...groupBy((b) => b.situations, Object.keys(SITUATION_INFO))].map(([name, books]) => ({
+  const children = seriesBooks();
+  return [...groupBy((b) => situationsForCard(b, children), Object.keys(SITUATION_INFO))].map(([name, books]) => ({
     id: `situation-${name}`,
     kind: "situation" as const,
     title: SITUATION_INFO[name]?.title ?? name,

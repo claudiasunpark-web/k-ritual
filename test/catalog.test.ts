@@ -39,6 +39,14 @@ test("네 종류 묶음이 모두 있고 모든 책 id가 유효하다", () => {
   for (const c of allCollections()) assert.doesNotThrow(() => collectionBooks(c), c.id);
 });
 
+test("상황·테마·레벨 묶음에 낱권과 그 시리즈가 같이 뜨지 않는다 (문학상은 수상한 낱권을 보여준다)", () => {
+  for (const c of allCollections()) {
+    if (c.kind === "award") continue;
+    const ids = new Set(c.bookIds);
+    for (const b of collectionBooks(c)) assert.ok(!(b.seriesId && ids.has(b.seriesId)), `${c.title}: ${b.title}`);
+  }
+});
+
 test("읽어주기 그림책은 레벨 0(듣기)", () => {
   const book = BOOKS.find((b) => b.id === "where-the-wild-things-are")!;
   assert.equal(bookLevel(book).level.level, 0);
