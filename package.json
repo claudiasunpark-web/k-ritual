@@ -11,7 +11,8 @@
     "typecheck": "tsc -p .",
     "build": "node scripts/build-web.ts",
     "import-sheet": "node scripts/import-sheet.ts",
-    "build:preview": "EMBED_COVERS=1 node scripts/build-web.ts"
+    "build:preview": "EMBED_COVERS=1 node scripts/build-web.ts",
+    "fill-coupang": "node --env-file-if-exists=.env.local scripts/fill-coupang-links.ts"
   },
   "devDependencies": {
     "@types/node": "^22.15.3",

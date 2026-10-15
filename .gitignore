@@ -1,3 +1,5 @@
 node_modules/
 web/dist/
 web/.covers/
+.env
+.env.*

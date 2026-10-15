@@ -1,7 +1,11 @@
 // 내 쿠팡 파트너스 API 키로 카탈로그 책들의 구매 링크를 채운다.
 //
-//   COUPANG_ACCESS_KEY=... COUPANG_SECRET_KEY=... node scripts/fill-coupang-links.ts
-//   (--dry-run: 파일에 쓰지 않고 결과만 출력)
+//   npm run fill-coupang -- --limit 5 --dry-run   # 5권만 시험 (파일에 안 씀)
+//   npm run fill-coupang                          # 전체
+//
+// 키는 프로젝트 폴더의 .env.local 파일(깃에 올라가지 않음)이나 환경변수에서 읽는다:
+//   COUPANG_ACCESS_KEY=...
+//   COUPANG_SECRET_KEY=...
 //
 // 이미 링크가 있는 책은 건너뛴다. 검색 API는 호출 횟수 제한이 있어 중간에 막히면
 // 그때까지 찾은 링크를 저장하고 멈춘다. 나중에 다시 돌리면 남은 책부터 이어간다.
@@ -13,6 +17,8 @@ import { credentialsFromEnv, searchProducts, type CoupangProduct } from "../src/
 
 const FILE = new URL("../src/catalog/coupang-links.json", import.meta.url);
 const dryRun = process.argv.includes("--dry-run");
+const limitAt = process.argv.indexOf("--limit");
+const limit = limitAt > 0 ? Number(process.argv[limitAt + 1]) : Infinity;
 
 const creds = credentialsFromEnv();
 if (!creds) {
@@ -36,8 +42,8 @@ function bestMatch(title: string, products: CoupangProduct[]): CoupangProduct | 
 }
 
 const links = JSON.parse(readFileSync(FILE, "utf8")) as Record<string, Record<string, unknown>>;
-const todo = BOOKS.filter((b) => !b.coupang?.partnersUrl);
-console.log(`링크 없는 책 ${todo.length}권`);
+const todo = BOOKS.filter((b) => !b.coupang?.partnersUrl).slice(0, limit);
+console.log(`이번에 찾을 책 ${todo.length}권`);
 
 let found = 0;
 for (const book of todo) {

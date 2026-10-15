@@ -85,8 +85,8 @@ AR → 렉사일(근사 환산) → 권당 단어 수. AR을 먼저 보는 이�
 쿠팡 파트너스 > 추가기능 > Open API에서 키를 받은 뒤:
 
 ```sh
-COUPANG_ACCESS_KEY=... COUPANG_SECRET_KEY=... node scripts/fill-coupang-links.ts --dry-run   # 미리보기
-COUPANG_ACCESS_KEY=... COUPANG_SECRET_KEY=... node scripts/fill-coupang-links.ts             # 저장
+npm run fill-coupang -- --limit 5 --dry-run   # 5권만 미리보기 (키는 .env.local 또는 환경변수)
+npm run fill-coupang                          # 전체 저장
 ```
 
 자동 매칭은 다른 판본이나 번역본을 고를 수 있으니 `matchedName`을 꼭 확인한다.
