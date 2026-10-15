@@ -143,9 +143,9 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .mine-item.is-next { border-color: var(--accent); }
 .read-btn[aria-pressed="true"] { background: color-mix(in srgb, var(--good) 14%, var(--surface)); border-color: var(--good); color: var(--good); }
 /* 내 책장 */
-.seg { display: grid; grid-template-columns: 1fr 1fr; background: var(--soft); border-radius: 10px; padding: 4px; gap: 4px; }
-.seg button { border: 0; background: none; border-radius: 8px; padding: 8px; cursor: pointer; font-weight: 500; color: var(--muted); }
-.seg button[aria-selected="true"] { background: var(--surface); color: var(--accent); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.guide-mini { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 4px; }
+.guide-mini b { font-weight: 500; }
+.guide-mini code { font-family: var(--font-mono); background: var(--soft); color: var(--ink); padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
 .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 .stats > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 6px; display: grid; justify-items: center; gap: 2px; }
 .stats b { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--accent); }
@@ -276,6 +276,11 @@ body { margin: 0; }
     <div class="level-card" id="level-card"></div>
     <button class="btn primary go-books" id="go-books">이 레벨 책 보러 가기 →</button>
   </section>
+  <aside class="guide-mini" aria-label="지수 읽는 법">
+    <p><b>참고 · 책에 적힌 숫자 읽는 법</b></p>
+    <p><code>AR 2.5</code> 미국 원어민 2학년 5개월째 아이가 혼자 읽는 수준이에요. 한국 아이 학년과는 상관없어요.</p>
+    <p><code>520L</code> 렉사일. 문장 길이와 단어 난이도로 잰 값이라 AR과 어긋날 수 있어요. 두 값이 다르면 아이 반응을 먼저 보세요.</p>
+  </aside>
   </div>
 
   <section class="screen" id="screen-workbooks" data-screen="workbooks" aria-labelledby="wb-h" hidden>
@@ -299,39 +304,20 @@ body { margin: 0; }
     <div class="grid" id="grid"></div>
   </section>
 
-  <section class="screen guide" id="screen-guide" data-screen="guide" aria-labelledby="guide-h" hidden>
-    <h2 id="guide-h">지수 읽는 법</h2>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>책에 적힌 것</th><th>뜻</th></tr></thead>
-        <tbody>
-          <tr><td><code>AR 2.5</code></td><td>미국 원어민 2학년 5개월째 아이가 혼자 읽는 수준. 한국 아이 학년과는 상관없어요.</td></tr>
-          <tr><td><code>520L</code></td><td>렉사일. 문장 길이와 단어 난이도로 잰 값이라 AR과 어긋날 때가 있어요. 두 값이 다르면 아이 반응을 먼저 보세요.</td></tr>
-          <tr><td><code>AD</code>520L</td><td>엄마가 읽어주는 그림책. 숫자가 높아도 혼자 읽기용이 아니에요.</td></tr>
-          <tr><td><code>GN</code>390L</td><td>그래픽노블(만화). 그림이 도와줘서 숫자보다 쉽게 느껴져요.</td></tr>
-          <tr><td><code>BR</code>100L</td><td>막 읽기 시작한 아이용. 0L보다 쉬워요.</td></tr>
-          <tr><td><code>HL</code>500L</td><td>글은 쉽지만 내용은 큰 아이용이에요.</td></tr>
-          <tr><td>IL <code>LG</code> <code>MG</code> <code>MG+</code> <code>UG</code></td><td>내용 적정 나이. 유치원~초3 / 초4~중2 / 초6 이상 / 중3 이상. 영어 실력과 별개로 꼭 확인하세요.</td></tr>
-          <tr><td>글밥</td><td>한 페이지에 글이 얼마나 있는지. 레벨이 같아도 글밥이 많으면 아이가 더 힘들어해요.</td></tr>
-        </tbody>
-      </table>
+  <section class="screen" id="screen-cart" data-screen="cart" aria-labelledby="cart-h" hidden>
+    <div class="screen-head">
+      <h2 id="cart-h">장바구니</h2>
+      <p class="small muted">책장에서 '담기'를 누른 책이 모여요. 이 기기에만 저장돼요.</p>
     </div>
+    <div id="cart" style="display: grid; gap: 12px"></div>
   </section>
 
-  <section class="screen" id="screen-mine" data-screen="mine" aria-labelledby="mine-h" hidden>
+  <section class="screen" id="screen-log" data-screen="log" aria-labelledby="log-h" hidden>
     <div class="screen-head">
-      <h2 id="mine-h">내 책장</h2>
-      <p class="small muted">이 기기에만 저장돼요.</p>
-    </div>
-    <div class="seg" role="tablist" id="shelf-tabs">
-      <button role="tab" data-shelf="log">독서 기록</button>
-      <button role="tab" data-shelf="cart">장바구니 <span class="num" id="cart-count-seg"></span></button>
+      <h2 id="log-h">독서 기록</h2>
+      <p class="small muted">다 읽은 책의 '📖 읽었어요'를 누르면 쌓여요. 이 기기에만 저장돼요.</p>
     </div>
     <div id="log" style="display: grid; gap: 16px"></div>
-    <div id="cart-panel" style="display: grid; gap: 12px">
-      <p class="small muted">책장에서 '담기'를 누른 책이 모여요.</p>
-      <div id="cart" style="display: grid; gap: 12px"></div>
-    </div>
   </section>
 
   <footer>
@@ -346,8 +332,8 @@ body { margin: 0; }
     <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>우리 아이 레벨</button>
     <button data-go="books"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.5l3.6 1 -3.9 14.5-3.6-1z"/></svg>책장</button>
     <button data-go="workbooks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h5"/></svg>실력 다지기</button>
-    <button data-go="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14 M12 17.5v.01"/></svg>읽는 법</button>
-    <button data-go="mine"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h5v16H4zM10 4h5v16h-5zM16 6l4 1-3 14-4-1"/></svg><span class="badge num" id="cart-count" hidden></span></span>내 책장</button>
+    <button data-go="cart"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="badge num" id="cart-count" hidden></span></span>장바구니</button>
+    <button data-go="log"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2z M9 11l2 2 4-4"/></svg>독서 기록</button>
   </div>
 </nav>
 
@@ -380,7 +366,6 @@ const state = {
   cart: store.get("cart", []).filter((id) => DATA.books[id]),
   // 독서 기록: 읽을 때마다 한 줄 { id | title+level, at }. 같은 책을 다시 읽으면 줄이 하나 더 생긴다
   reads: store.get("reads", []).filter((r) => r.id ? DATA.books[r.id] : r.title),
-  shelf: store.get("shelf", "log"),
 };
 
 function childLevel() {
@@ -475,7 +460,7 @@ function renderWorkbooks(level) {
       <p class="wb-title">${esc(w.title)}</p>
       <p class="small muted">${esc(w.publisher)}</p>
       <p class="note">${esc(w.description)}</p>
-      <div class="actions"><a class="btn small" href="${esc(w.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 보기</a></div>
+      <div class="actions"><a class="btn small" href="${esc(w.url)}" target="_blank" rel="noopener sponsored">쿠팡에서 사러 가기</a></div>
     </div>`;
   }
 }
@@ -636,7 +621,7 @@ function bookCard(b, child = false) {
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
-        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
+        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 사러 가기" : "쿠팡에서 사러 가기"}</a>
         <button class="btn small cart-btn" data-cart="${b.id}" aria-pressed="${state.cart.includes(b.id)}">${state.cart.includes(b.id) ? "담음 ✓" : "🛒 담기"}</button>
         ${b.isSeries ? "" : `<button class="btn small read-btn" data-read="${b.id}" aria-pressed="${readCount(b.id) > 0}">${readCount(b.id) ? `읽음 ✓${readCount(b.id) > 1 ? ` ${readCount(b.id)}번` : ""}` : "📖 읽었어요"}</button>`}
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
@@ -690,7 +675,6 @@ function renderCart() {
   const n = state.cart.length;
   $("cart-count").textContent = n || "";
   $("cart-count").hidden = !n;
-  $("cart-count-seg").textContent = n ? `(${n})` : "";
   if (!n) {
     $("cart").innerHTML = `<p class="empty">장바구니가 비어 있어요. 책장에서 마음에 드는 책의 '담기'를 눌러 주세요.</p>`;
     return;
@@ -823,18 +807,7 @@ function addForm() {
   </form>`;
 }
 
-function renderShelf() {
-  document.querySelectorAll("#shelf-tabs [data-shelf]").forEach((b) => b.setAttribute("aria-selected", b.dataset.shelf === state.shelf));
-  $("log").hidden = state.shelf !== "log";
-  $("cart-panel").hidden = state.shelf !== "cart";
-}
-
-function renderAll() { renderChild(); renderTabs(); renderCollection(); renderCart(); renderLog(); renderShelf(); }
-
-$("shelf-tabs").addEventListener("click", (e) => {
-  const b = e.target.closest("[data-shelf]"); if (!b) return;
-  state.shelf = b.dataset.shelf; store.set("shelf", state.shelf); renderShelf();
-});
+function renderAll() { renderChild(); renderTabs(); renderCollection(); renderCart(); renderLog(); }
 // 책 카드의 '읽었어요': 처음 누르면 기록, 이미 읽은 책이면 한 번 더 읽은 걸로
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-read]"); if (!b) return;
@@ -956,10 +929,12 @@ $("buyall").addEventListener("click", (e) => {
   if (e.target.id === "reset-done") { store.set("done:" + currentCollection().id, []); renderBuyAll(); }
 });
 
-// ── 화면 전환: 아래 메뉴 → #home / #books / #workbooks / #guide (뒤로 가기도 동작) ──
-const SCREENS = ["home", "books", "workbooks", "guide", "mine"];
+// ── 화면 전환: 아래 메뉴 → #home / #books / #workbooks / #cart / #log (뒤로 가기도 동작) ──
+const SCREENS = ["home", "books", "workbooks", "cart", "log"];
 function showScreen() {
-  if (location.hash === "#cart") { state.shelf = "cart"; renderShelf(); history.replaceState(null, "", "#mine"); }
+  // 예전 주소: #mine(내 책장) → 독서 기록, #guide(읽는 법) → 우리 아이 레벨
+  if (location.hash === "#mine") history.replaceState(null, "", "#log");
+  if (location.hash === "#guide") history.replaceState(null, "", "#home");
   const name = SCREENS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
   document.querySelectorAll("[data-screen]").forEach((el) => { el.hidden = el.dataset.screen !== name; });
   document.querySelectorAll("#tabbar [data-go]").forEach((b) => {
