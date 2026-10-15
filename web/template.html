@@ -138,6 +138,13 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .mine-item .step-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; line-height: 1.25; }
 .mine-item .step-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mine-item.is-done .step-title { text-decoration: line-through; color: var(--muted); }
+.mine-item.is-next { border-color: var(--accent); }
+.cart-sum { display: grid; gap: 2px; font-size: 1.05rem; font-weight: 500; }
+.cart-btn[aria-pressed="true"] { background: var(--soft); border-color: var(--accent); color: var(--accent); }
+.tab-icon { position: relative; display: inline-flex; }
+.badge { position: absolute; top: -4px; right: -10px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 99px;
+  background: var(--accent); color: var(--accent-ink); font-size: 0.68rem; line-height: 17px; text-align: center; }
+.badge[hidden] { display: none; }
 
 /* ── 책 카드 ─────────────────────── */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
@@ -218,7 +225,8 @@ body { margin: 0; }
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
 .tabbar-inner { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .tabbar button { background: none; border: 0; cursor: pointer; padding: 9px 4px 10px; display: grid; justify-items: center; gap: 3px;
-  color: var(--muted); font-size: 0.75rem; font-weight: 500; }
+  color: var(--muted); font-size: 0.75rem; font-weight: 500; white-space: nowrap; letter-spacing: -0.02em; }
+@media (max-width: 420px) { .tabbar button { font-size: 0.68rem; padding-inline: 0; } }
 .tabbar button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tabbar button[aria-current="page"] { color: var(--accent); }
 .tabbar button[aria-current="page"] svg { stroke-width: 2.2; }
@@ -252,7 +260,7 @@ body { margin: 0; }
 
   <section class="screen" id="screen-workbooks" data-screen="workbooks" aria-labelledby="wb-h" hidden>
     <div class="screen-head">
-      <h2 id="wb-h">함께 풀 문제집</h2>
+      <h2 id="wb-h">실력 다지기</h2>
       <p class="small muted" id="wb-level"></p>
     </div>
     <div class="workbooks" id="workbooks" style="border-top: 0; padding-top: 0"></div>
@@ -290,12 +298,12 @@ body { margin: 0; }
     </div>
   </section>
 
-  <section class="screen" id="screen-mine" data-screen="mine" aria-labelledby="mine-h" hidden>
+  <section class="screen" id="screen-cart" data-screen="cart" aria-labelledby="cart-h" hidden>
     <div class="screen-head">
-      <h2 id="mine-h">내 책</h2>
-      <p class="small muted">'쿠팡에서 보기'를 누른 책이 여기 모여요. 이 기기에만 저장돼요.</p>
+      <h2 id="cart-h">장바구니</h2>
+      <p class="small muted">책장에서 '담기'를 누른 책이 모여요. 이 기기에만 저장돼요.</p>
     </div>
-    <div id="mine"></div>
+    <div id="cart" style="display: grid; gap: 12px"></div>
   </section>
 
   <footer>
@@ -307,11 +315,11 @@ body { margin: 0; }
 
 <nav class="tabbar" aria-label="메뉴">
   <div class="tabbar-inner" id="tabbar">
-    <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>우리 아이</button>
+    <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>우리 아이 레벨</button>
     <button data-go="books"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.5l3.6 1 -3.9 14.5-3.6-1z"/></svg>책장</button>
-    <button data-go="workbooks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h5"/></svg>문제집</button>
+    <button data-go="workbooks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h5"/></svg>실력 다지기</button>
     <button data-go="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14 M12 17.5v.01"/></svg>읽는 법</button>
-    <button data-go="mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>내 책</button>
+    <button data-go="cart"><span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4h2l2.4 11.2a1 1 0 0 0 1 .8h9.2a1 1 0 0 0 1-.8L20 8H6.2"/><circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/></svg><span class="badge num" id="cart-count" hidden></span></span>장바구니</button>
   </div>
 </nav>
 
@@ -339,8 +347,8 @@ const state = {
   // 펼쳐 놓은 시리즈 카드 id들. 같은 화면에서 낱권이 카드 아래로 펼쳐진다
   expanded: new Set(),
   query: "",
-  // 쿠팡에서 보기를 누른 책 [{ id, at }] (최근 것이 앞)
-  clicked: store.get("clicked", []).filter((c) => DATA.books[c.id]),
+  // 장바구니에 담은 책 id (담은 순서)
+  cart: store.get("cart", []).filter((id) => DATA.books[id]),
 };
 
 function childLevel() {
@@ -423,7 +431,7 @@ function renderChild() {
 function renderWorkbooks(level) {
   const list = DATA.workbooks.filter((w) => level >= w.levelMin && level <= w.levelMax);
   const range = (w) => (w.levelMin === w.levelMax ? `레벨 ${w.levelMin}` : `레벨 ${w.levelMin}–${w.levelMax}`);
-  $("wb-level").textContent = `시크릿 북레벨 ${level} · ${DATA.levels[level].name} 기준이에요. 레벨은 '우리 아이'에서 바꿀 수 있어요.`;
+  $("wb-level").textContent = `책 읽기 사이사이 푸는 보캡·그래머·파닉스 문제집이에요. 시크릿 북레벨 ${level} · ${DATA.levels[level].name} 기준이고, 레벨은 '우리 아이 레벨'에서 바꿀 수 있어요.`;
   $("workbooks").innerHTML = level === 0
     ? `<p class="small muted">레벨 0은 듣기 단계라 문제집보다 읽어주기가 먼저예요. 알파벳을 배우기 시작하면 파닉스 문제집을 시작해요.</p>
        <div class="wb-list">${DATA.workbooks.filter((w) => w.kind === "파닉스").map(wbCard).join("")}</div>`
@@ -584,7 +592,8 @@ function bookCard(b, child = false) {
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
-        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
+        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
+        <button class="btn small cart-btn" data-cart="${b.id}" aria-pressed="${state.cart.includes(b.id)}">${state.cart.includes(b.id) ? "담음 ✓" : "🛒 담기"}</button>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
     </div>
@@ -620,7 +629,7 @@ function renderBuyAll() {
           <span class="n">${i + 1}</span>
           <span class="step-title">${esc(b.title)}</span>
           <span class="step-actions">
-            <a class="btn small ${id === nextId ? "primary" : ""}" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
+            <a class="btn small ${id === nextId ? "primary" : ""}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
             <label class="toggle"><input type="checkbox" data-done="${id}" ${isDone ? "checked" : ""}> 담았어요</label>
           </span>
         </li>`;
@@ -629,50 +638,81 @@ function renderBuyAll() {
     <div class="actions"><button class="btn small" id="reset-done">처음부터 다시</button></div>`;
 }
 
-// ── 내 책: 쿠팡에서 보기를 누른 책 ─────────
-function renderMine() {
-  const list = state.clicked;
-  const bought = list.filter((c) => state.owned.has(c.id)).length;
-  const date = (t) => new Date(t).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
-  $("mine").innerHTML = list.length
-    ? `<p class="small muted" style="margin-bottom: 12px">본 책 <span class="num">${list.length}</span>권 · 샀어요 <span class="num">${bought}</span>권</p>
-       <ol class="mine-list">${list.map((c) => {
-         const b = DATA.books[c.id];
-         const owned = state.owned.has(c.id);
-         return `<li class="mine-item ${owned ? "is-done" : ""}">
-           <div><p class="step-title">${esc(b.title)}</p>
-             <p class="small muted">${esc(b.author)} · ${date(c.at)}에 봄</p></div>
-           <span class="step-actions">
-             <a class="btn small" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 다시 보기</a>
-             <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 샀어요</label>
-             <button class="btn small" data-forget="${b.id}" aria-label="${esc(b.title)} 지우기">지우기</button>
-           </span>
-         </li>`;
-       }).join("")}</ol>`
-    : `<p class="empty">아직 없어요. 책장에서 '쿠팡에서 보기'를 누르면 여기 모여요.</p>`;
+// ── 장바구니: 엄마가 고른 책. 쿠팡은 한꺼번에 담기를 막아 두어서 한 권씩 열고 체크 ─────────
+function cartDone() { return new Set(store.get("cartDone", []).filter((id) => state.cart.includes(id))); }
+
+function renderCart() {
+  const n = state.cart.length;
+  $("cart-count").textContent = n || "";
+  $("cart-count").hidden = !n;
+  if (!n) {
+    $("cart").innerHTML = `<p class="empty">장바구니가 비어 있어요. 책장에서 마음에 드는 책의 '담기'를 눌러 주세요.</p>`;
+    return;
+  }
+  const done = cartDone();
+  const books = state.cart.map((id) => DATA.books[id]);
+  const priced = books.filter((b) => b.price);
+  const total = priced.reduce((sum, b) => sum + b.price, 0);
+  const nextId = state.cart.find((id) => !done.has(id));
+  const pct = Math.round((done.size / n) * 100);
+  $("cart").innerHTML = `
+    <div class="buyall">
+      <div class="cart-sum">
+        <p><span class="num">${n}</span>권${priced.length ? ` · 예상 <span class="num">${total.toLocaleString()}</span>원${priced.length < n ? `<span class="small muted"> (가격 아는 ${priced.length}권)</span>` : ""}` : ""}</p>
+        <p class="small muted">${done.size === n ? "모두 쿠팡 장바구니에 담았어요. 쿠팡에서 결제하세요" : "쿠팡에서 한 권씩 열어 담고 '쿠팡에 담았어요'를 체크하세요"}</p>
+      </div>
+      <div class="progress" aria-label="쿠팡에 담은 책 ${done.size}권 / ${n}권"><i style="width: ${pct}%"></i></div>
+      <p class="small"><span class="num">${done.size} / ${n}</span>권 쿠팡에 담음</p>
+    </div>
+    <ol class="mine-list">${books.map((b) => {
+      const isDone = done.has(b.id);
+      return `<li class="mine-item ${isDone ? "is-done" : ""} ${b.id === nextId ? "is-next" : ""}">
+        <div><p class="step-title">${esc(b.title)}</p>
+          <p class="small muted">${esc(b.author)}${b.price ? ` · <span class="num">${b.price.toLocaleString()}</span>원` : ""}</p></div>
+        <span class="step-actions">
+          <a class="btn small ${b.id === nextId ? "primary" : ""}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
+          <label class="toggle"><input type="checkbox" data-cart-done="${b.id}" ${isDone ? "checked" : ""}> 쿠팡에 담았어요</label>
+          <button class="btn small" data-cart="${b.id}" aria-label="${esc(b.title)} 빼기">빼기</button>
+        </span>
+      </li>`;
+    }).join("")}</ol>
+    <div class="actions">
+      ${done.size ? `<button class="btn small primary" id="cart-bought">쿠팡에 담은 ${done.size}권 '집에 있어요'로 옮기기</button>` : ""}
+      <button class="btn small" id="cart-clear">장바구니 비우기</button>
+    </div>`;
 }
 
-function renderAll() { renderChild(); renderTabs(); renderCollection(); renderMine(); }
+function renderAll() { renderChild(); renderTabs(); renderCollection(); renderCart(); }
 
-// 어느 화면에서든 쿠팡 링크를 누르면 내 책에 기록 (새 탭으로 열리는 건 그대로)
+function saveCart() { store.set("cart", state.cart); renderCart(); }
+
+// 책 카드의 담기/빼기 (책장·장바구니 어디서든)
 document.addEventListener("click", (e) => {
-  const a = e.target.closest("a[data-buy]"); if (!a) return;
-  const id = a.dataset.buy;
-  state.clicked = [{ id, at: Date.now() }, ...state.clicked.filter((c) => c.id !== id)];
-  store.set("clicked", state.clicked);
-  renderMine();
+  const b = e.target.closest("[data-cart]"); if (!b) return;
+  const id = b.dataset.cart;
+  state.cart = state.cart.includes(id) ? state.cart.filter((x) => x !== id) : [...state.cart, id];
+  saveCart();
+  if (b.closest("#grid")) renderCollection();
 });
-$("mine").addEventListener("click", (e) => {
-  const id = e.target.dataset.forget; if (!id) return;
-  state.clicked = state.clicked.filter((c) => c.id !== id);
-  store.set("clicked", state.clicked);
-  renderMine();
+$("cart").addEventListener("change", (e) => {
+  const id = e.target.dataset.cartDone; if (!id) return;
+  const done = cartDone();
+  e.target.checked ? done.add(id) : done.delete(id);
+  store.set("cartDone", [...done]);
+  renderCart();
 });
-$("mine").addEventListener("change", (e) => {
-  const id = e.target.dataset.owned; if (!id) return;
-  e.target.checked ? state.owned.add(id) : state.owned.delete(id);
-  store.set("owned", [...state.owned]);
-  renderMine(); renderCollection();
+$("cart").addEventListener("click", (e) => {
+  if (e.target.id === "cart-bought") {
+    const done = cartDone();
+    done.forEach((id) => state.owned.add(id));
+    store.set("owned", [...state.owned]);
+    state.cart = state.cart.filter((id) => !done.has(id));
+    store.set("cartDone", []);
+    saveCart(); renderCollection();
+  }
+  if (e.target.id === "cart-clear" && confirm("장바구니를 비울까요?")) {
+    state.cart = []; store.set("cartDone", []); saveCart(); renderCollection();
+  }
 });
 
 // ── 이벤트 ──────────────────────────
@@ -724,7 +764,7 @@ $("grid").addEventListener("change", (e) => {
   const id = e.target.dataset.owned; if (!id) return;
   e.target.checked ? state.owned.add(id) : state.owned.delete(id);
   store.set("owned", [...state.owned]);
-  renderCollection(); renderMine();
+  renderCollection();
 });
 $("buyall").addEventListener("change", (e) => {
   const id = e.target.dataset.done; if (!id) return;
@@ -738,7 +778,7 @@ $("buyall").addEventListener("click", (e) => {
 });
 
 // ── 화면 전환: 아래 메뉴 → #home / #books / #workbooks / #guide (뒤로 가기도 동작) ──
-const SCREENS = ["home", "books", "workbooks", "guide", "mine"];
+const SCREENS = ["home", "books", "workbooks", "guide", "cart"];
 function showScreen() {
   const name = SCREENS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
   document.querySelectorAll("[data-screen]").forEach((el) => { el.hidden = el.dataset.screen !== name; });
