@@ -1,1 +1,281 @@
-{}
+{
+  "brown-bear": {
+    "partnersUrl": "https://link.coupang.com/a/hRNvfLKe0i"
+  },
+  "very-hungry-caterpillar": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=4230735&itemId=20329340&vendorItemId=71579759952&traceid=V0-153-8338b8925f9fc550&requestid=20261015183956124082783321&token=31850C%7CMIXED&pt=0&slot=8",
+    "productId": "4230735",
+    "priceKrw": 10800,
+    "matchedName": "Very Hungry Caterpillar"
+  },
+  "bear-hunt": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=2304375819&itemId=3971875764&vendorItemId=71956230673&traceid=V0-153-dcc307a6101655b7&requestid=20261015183956263241859905&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "2304375819",
+    "priceKrw": 15970,
+    "matchedName": "We're Going on a Bear Hunt"
+  },
+  "goodnight-moon": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9754898512&itemId=29207743322&vendorItemId=96127773655&traceid=V0-153-cc92450f9c0458bc&requestid=20261015183956401082783409&token=31850C%7CGM&pt=0&slot=1",
+    "productId": "9754898512",
+    "priceKrw": 21400,
+    "matchedName": "Goodnight Moon (216318)"
+  },
+  "llama-red-pajama": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9769423129&itemId=29241346692&vendorItemId=96159849350&traceid=V0-153-483298910385b5c2&requestid=20261015183956467194856764&token=31850C%7CGM&pt=0&slot=1",
+    "productId": "9769423129",
+    "priceKrw": 17900,
+    "matchedName": "Llama Red Pajama (216625)"
+  },
+  "kissing-hand": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=8686287378&itemId=25216729053&vendorItemId=92213167149&traceid=V0-153-7c60c6a3816d9ca8&requestid=20261015183956570073396468&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "8686287378",
+    "priceKrw": 16200,
+    "matchedName": "[노부영]The Kissing Hand"
+  },
+  "where-the-wild-things-are": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=1863676415&itemId=3167887274&vendorItemId=71155414293&traceid=V0-153-6d6d1afd070c0ead&requestid=20261015183956658117851841&token=31850C%7CMIXED&pt=0&slot=4",
+    "productId": "1863676415",
+    "priceKrw": 18580,
+    "matchedName": "WHERE THE WILD THINGS ARE:"
+  },
+  "snowy-day": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=8340061526&itemId=24084854578&vendorItemId=91104384255&traceid=V0-153-02276aa39fda60b5&requestid=20261015183956807302914030&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "8340061526",
+    "priceKrw": 6300,
+    "matchedName": "Snowy Day"
+  },
+  "owl-moon": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=2234037751&itemId=3812589040&vendorItemId=73553397867&traceid=V0-153-378b8c929959ebc6&requestid=20261015183957124135797601&token=31850C%7CMIXED&pt=0&slot=3",
+    "productId": "2234037751",
+    "priceKrw": 23850,
+    "matchedName": "Owl Moon 부엉이와 보름달 영어원서 영어동화책"
+  },
+  "officer-buckle": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=2234040268&itemId=3812592651&vendorItemId=71797490636&traceid=V0-153-10087c0c61d22b79&requestid=20261015183957514289710596&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "2234040268",
+    "priceKrw": 28400,
+    "matchedName": "Officer Buckle and Gloria 글로리아 영어동화책"
+  },
+  "sophie-angry": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=58008441&itemId=201167789&vendorItemId=77430737898&traceid=V0-153-2adc9ff8b111ee82&requestid=20261015183957705073396994&token=31850C%7CMIXED&pt=0&slot=5",
+    "productId": "58008441",
+    "priceKrw": 7500,
+    "matchedName": "When Sophie Gets Angry - Really Really Angry"
+  },
+  "knuffle-bunny": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9754921584&itemId=29207808561&vendorItemId=96127831780&traceid=V0-153-cbc807722b199f24&requestid=20261015183957878056303760&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "9754921584",
+    "priceKrw": 26300,
+    "matchedName": "그림책 너플버니 Knuffle Bunny 페이퍼백 3권 세트 (215725)"
+  },
+  "last-stop-market-street": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9769463675&itemId=29241474003&vendorItemId=96159969050&traceid=V0-153-6f6175941f72a8f2&requestid=20261015183958520026372706&token=31850C%7CMIXED&pt=0&slot=3",
+    "productId": "9769463675",
+    "priceKrw": 14300,
+    "matchedName": "칼데콧 수상작 행복을 나르는 버스 Last Stop on Market Street (215891)"
+  },
+  "pigeon-bus": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9769382224&itemId=29241218180&vendorItemId=96159728442&traceid=V0-153-2bb0bb8f18682777&requestid=20261015183958688243661754&token=31850C%7CGM&pt=0&slot=1",
+    "productId": "9769382224",
+    "priceKrw": 12900,
+    "matchedName": "Don't Let the Pigeon Drive Bus (215723)"
+  },
+  "bird-on-your-head": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=59518589&itemId=205279781&vendorItemId=3109640307&traceid=V0-153-cefaed4447351060&requestid=20261015183959036162649560&token=31850C%7CMIXED&pt=0&slot=9",
+    "productId": "59518589",
+    "priceKrw": 12240,
+    "matchedName": "There Is a Bird on Your Head!:An Elephant and Piggie Book"
+  },
+  "ready-to-play-outside": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=57991756&itemId=201114421&vendorItemId=3054813561&traceid=V0-153-f34ece907a498c52&requestid=20261015183959188276548730&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "57991756",
+    "priceKrw": 12240,
+    "matchedName": "Are You Ready to Play Outside? Hardcover"
+  },
+  "hi-fly-guy": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=58006947&itemId=201164492&vendorItemId=3030418685&traceid=V0-153-4190f512c59f77fe&requestid=20261015184000263241851383&token=31850C%7CGM&pt=0&slot=1",
+    "productId": "58006947",
+    "priceKrw": 6300,
+    "matchedName": "Hi! Fly Guy Paperback"
+  },
+  "frog-toad-friends": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=50551002&itemId=178229484&vendorItemId=77174649482&traceid=V0-153-ef40f7561e4abf2b&requestid=20261015184000884073398144&token=31850C%7CMIXED&pt=0&slot=9",
+    "productId": "50551002",
+    "priceKrw": 12750,
+    "matchedName": "Frog and Toad are Friends"
+  },
+  "frog-toad-together": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9225999248&itemId=27267644899&vendorItemId=94234406436&traceid=V0-153-79bd835289471c06&requestid=20261015184001312123168611&token=31850C%7CMIXED&pt=0&slot=8",
+    "productId": "9225999248",
+    "priceKrw": 26510,
+    "matchedName": "Frog and Toad Together:"
+  },
+  "nate-the-great": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=22330365&itemId=86823624&vendorItemId=3030433964&traceid=V0-153-bb0ba077f04dd88c&requestid=20261015184001464147942934&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "22330365",
+    "priceKrw": 7760,
+    "matchedName": "Nate The Great On The Owl Express"
+  },
+  "dinosaurs-before-dark": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=59605526&itemId=205426528&vendorItemId=3027179218&traceid=V0-153-56140acf81767983&requestid=20261015184001653001861221&token=31850C%7CGM&pt=0&slot=9",
+    "productId": "59605526",
+    "priceKrw": 6340,
+    "matchedName": "Dinosaurs Before Dark First paperback"
+  },
+  "mercy-watson": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=59518609&itemId=205279804&vendorItemId=96002701422&traceid=V0-153-3e481b8a7565d7dd&requestid=20261015184001801203702836&token=31850C%7CMIXED&pt=0&slot=10",
+    "productId": "59518609",
+    "priceKrw": 7000,
+    "matchedName": "Mercy Watson to the Rescue Hardback"
+  },
+  "junie-b-jones": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=4611056789&itemId=5699790285&vendorItemId=72998600482&traceid=V0-153-10590e8e82b907ee&requestid=20261015184001999184746739&token=31850C%7CMIXED&pt=0&slot=10",
+    "productId": "4611056789",
+    "priceKrw": 9360,
+    "matchedName": "Junie B. Jones 01 And The Stupid Smelly Bus"
+  },
+  "dog-man": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7999745994&itemId=22274306044&vendorItemId=91334783917&traceid=V0-153-be51bc80689d89e2&requestid=20261015184002383009251212&token=31850C%7CMIXED&pt=0&slot=4",
+    "productId": "7999745994",
+    "priceKrw": 136500,
+    "matchedName": "Dog Man 1~10권 세트"
+  },
+  "horrid-henry": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=6058418537&itemId=11130100965&vendorItemId=78408701027&traceid=V0-153-af5c10af2ec6b25b&requestid=20261015184002590117854149&token=31850C%7CMIXED&pt=0&slot=5",
+    "productId": "6058418537",
+    "priceKrw": 14670,
+    "matchedName": "Horrid Henry(20th Anniversary Edition)"
+  },
+  "sarah-plain-tall": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7141405251&itemId=17930165118&vendorItemId=91655711046&traceid=V0-153-0c6e8742830c852d&requestid=20261015184003766197598712&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "7141405251",
+    "priceKrw": 12600,
+    "matchedName": "Sarah, Plain and Tall 사라, 플레인 앤 톨 -(전2권/원서+워크북+오디오북)"
+  },
+  "new-kid": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9769421597&itemId=29241342405&vendorItemId=96159845495&traceid=V0-153-baea17ec4929e1a0&requestid=20261015184003941220779444&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "9769421597",
+    "priceKrw": 59900,
+    "matchedName": "New Kid: A Graphic Novel 페이퍼백 3종 박스 세트 (216538)"
+  },
+  "one-and-only-ivan": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9754910295&itemId=29207778167&vendorItemId=96127805874&traceid=V0-153-d35c91c62c6f0629&requestid=20261015184004072215144854&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "9754910295",
+    "priceKrw": 15200,
+    "matchedName": "수상작 The One and Only Ivan (216373)"
+  },
+  "winn-dixie": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=4833444979&itemId=6239903145&vendorItemId=76205249316&traceid=V0-153-bad9cc130f457bb1&requestid=20261015184004415302540583&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "4833444979",
+    "priceKrw": 6700,
+    "matchedName": "Because of Winn-Dixie"
+  },
+  "charlottes-web": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7196427138&itemId=18180326329&vendorItemId=3026676358&traceid=V0-153-a89f8dfc533bdd48&requestid=20261015184004689199338674&token=31850C%7CMIXED&pt=0&slot=8",
+    "productId": "7196427138",
+    "priceKrw": 7000,
+    "matchedName": "Charlotte's Web  : 1953 뉴베리 아너 : 1953 Newbery Honor"
+  },
+  "holes": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7489916868&itemId=19583570274&vendorItemId=86827094109&traceid=V0-153-d01e1a35889c73ea&requestid=20261015184005106203704270&token=31850C%7CMIXED&pt=0&slot=2",
+    "productId": "7489916868",
+    "priceKrw": 15300,
+    "matchedName": "Holes 뉴베리컬렉션 영어원서 교재 + 워크북 + 오디오북 개정판"
+  },
+  "despereaux": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7356253438&itemId=18941624269&vendorItemId=92567586579&traceid=V0-153-7df030329498c08c&requestid=20261015184005232056306512&token=31850C%7CMIXED&pt=0&slot=9",
+    "productId": "7356253438",
+    "priceKrw": 15300,
+    "matchedName": "데스페로 이야기 - 롱테일북스 영어 원서 The Tale of Despereaux (워크북 + 오디오북)"
+  },
+  "wonder": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=8721623356&itemId=25334445634&vendorItemId=92329208749&traceid=V0-153-78bfbb4d11dbf79c&clickBeacon=67184620-c87c-11f1-9fba-e8875de13b9e%7E3&requestid=20261015184005572203704435&token=31850C%7CMIXED&pt=1&slot=1",
+    "productId": "8721623356",
+    "priceKrw": 30780,
+    "matchedName": "THE WONDER OF CREATION (HARDCOVER)"
+  },
+  "matilda": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=59605818&itemId=205426855&vendorItemId=91768801405&traceid=V0-153-2004e47640cc6206&requestid=20261015184005934276569760&token=31850C%7CGM&pt=0&slot=2",
+    "productId": "59605818",
+    "priceKrw": 6480,
+    "matchedName": "Matilda"
+  },
+  "wimpy-kid": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9769463456&itemId=29241472941&vendorItemId=96159968060&traceid=V0-153-5900e4598c9baa1c&requestid=20261015184006074184748186&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "9769463456",
+    "priceKrw": 24700,
+    "matchedName": "Diary of a Wimpy Kid 1: a (216479)"
+  },
+  "harry-potter-1": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=9459000185&itemId=28144941290&vendorItemId=95100382072&traceid=V0-153-f6fb8f932897487c&requestid=20261015184006253276569918&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "9459000185",
+    "priceKrw": 18600,
+    "matchedName": "Harry Potter and the Sorcerer's Stone (Stenciled Edges)"
+  },
+  "hatchet": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=4611097328&itemId=5699905210&vendorItemId=3026864701&traceid=V0-153-021c5be4dcc00170&requestid=20261015184006514220770366&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "4611097328",
+    "priceKrw": 6800,
+    "matchedName": "Hatchet(Newbery)"
+  },
+  "the-giver": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=6865301314&itemId=16407424788&vendorItemId=83612234758&traceid=V0-153-743e065a8f39477a&requestid=20261015184006736027621999&token=31850C%7CMIXED&pt=0&slot=4",
+    "productId": "6865301314",
+    "priceKrw": 15300,
+    "matchedName": "The Giver(더기버) 기억전달자:교재+워크북+오디오북"
+  },
+  "animals-of-the-bible": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=282647486&itemId=897289799&vendorItemId=5252560017&traceid=V0-153-c1361c0fb4893a78&requestid=20261015184006891184748494&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "282647486",
+    "priceKrw": 20400,
+    "matchedName": "Animals of the Bible"
+  },
+  "abraham-lincoln": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=6072673471&itemId=11218674305&vendorItemId=78496156766&traceid=V0-153-ca02c285c9ee0b78&requestid=20261015184008074147945901&token=31850C%7CGM&pt=0&slot=7",
+    "productId": "6072673471",
+    "priceKrw": 11700,
+    "matchedName": "ABRAHAM LINCOLN(에이브러햄 링컨)(영문판)"
+  },
+  "make-way-for-ducklings": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=7677743712&itemId=20499025567&vendorItemId=87577106961&traceid=V0-153-300a4a3869b78f03&requestid=20261015184008865078556439&token=31850C%7CMIXED&pt=0&slot=7",
+    "productId": "7677743712",
+    "priceKrw": 12800,
+    "matchedName": "베오영 퍼핀 스토리타임 Make Way for Ducklings"
+  },
+  "the-little-house": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=2234038924&itemId=3812590545&vendorItemId=71797488331&traceid=V0-153-96e29487f9f3bfa1&requestid=20261015184009007302918955&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "2234038924",
+    "priceKrw": 13900,
+    "matchedName": "The Little House 작은 집 이야기 영어동화책"
+  },
+  "many-moons": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=59518479&itemId=205279654&vendorItemId=3368219083&traceid=V0-153-06b01a22d040c311&requestid=20261015184009277289714987&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "59518479",
+    "priceKrw": 6900,
+    "matchedName": "Many Moons Paperback"
+  },
+  "prayer-for-a-child": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=58045357&itemId=201324951&vendorItemId=3413093357&traceid=V0-153-aa02cfda74cda1d3&requestid=20261015184009435009254003&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "58045357",
+    "priceKrw": 7600,
+    "matchedName": "Prayer for a Child"
+  },
+  "the-rooster-crows": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=58010014&itemId=201171046&vendorItemId=3478313033&traceid=V0-153-2595d3c857c51cd4&requestid=20261015184009644215147100&token=31850C%7CMIXED&pt=0&slot=6",
+    "productId": "58010014",
+    "priceKrw": 11870,
+    "matchedName": "The Rooster Crows: A Book of American Rhymes and Jingles Paperback"
+  },
+  "white-snow-bright-snow": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=135181577&itemId=396698335&vendorItemId=3966275608&traceid=V0-153-b87d260c9c08fa8f&requestid=20261015184010381194852504&token=31850C%7CMIXED&pt=0&slot=5",
+    "productId": "135181577",
+    "priceKrw": 19550,
+    "matchedName": "White Snow, Bright Snow, Hardcover"
+  },
+  "the-big-snow": {
+    "partnersUrl": "https://link.coupang.com/re/AFFSDP?lptag=AF7274458&pageKey=8320639402&itemId=24016238133&vendorItemId=91036857250&traceid=V0-153-56dc98f3d8634139&requestid=20261015184010740009254503&token=31850C%7CMIXED&pt=0&slot=8",
+    "productId": "8320639402",
+    "priceKrw": 15120,
+    "matchedName": "Big Fat Cat and the Snow of the Century 빅팻캣과 100년 만의 폭설"
+  }
+}

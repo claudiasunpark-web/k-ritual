@@ -120,6 +120,68 @@ export interface CoupangProduct {
 
 const SEARCH_PATH = "/v2/providers/affiliate_open_api/apis/openapi/v1/products/search";
 
+/** 쿠팡 검색 API는 keyword가 50자를 넘으면 거절한다 */
+export const SEARCH_KEYWORD_MAX = 50;
+
+/**
+ * 책 검색어. "제목 저자 원서"가 50자를 넘으면 저자 → "원서" 순으로 빼고,
+ * 제목만으로도 넘으면 단어 단위로 자른다. 매칭은 제목 기준이라 제목을 가장 오래 남긴다.
+ */
+export function bookSearchKeyword(title: string, author: string): string {
+  const candidates = [`${title} ${author} 원서`, `${title} 원서`, title];
+  const fit = candidates.find((k) => k.length <= SEARCH_KEYWORD_MAX);
+  if (fit) return fit;
+  let cut = "";
+  for (const word of title.split(/\s+/)) {
+    const next = cut ? `${cut} ${word}` : word;
+    if (next.length > SEARCH_KEYWORD_MAX) break;
+    cut = next;
+  }
+  return cut || title.slice(0, SEARCH_KEYWORD_MAX);
+}
+
+/**
+ * 못 찾았을 때 차례로 다시 써 볼 검색어. 긴 검색어는 쿠팡이 엉뚱한 상품(곰인형 등)을
+ * 섞어 주는데, 제목 앞부분만 넣으면 그 책이 위로 올라온다 ("Brown Bear Brown Bear").
+ */
+export function bookSearchKeywords(title: string, author: string): string[] {
+  const plain = title.replace(/[^\p{L}\p{N}']+/gu, " ").trim();
+  const words = plain.split(" ");
+  const head = words.slice(0, Math.max(2, Math.ceil(words.length / 2))).join(" ");
+  const tries = [bookSearchKeyword(title, author), plain, head].filter((k) => k.length <= SEARCH_KEYWORD_MAX);
+  return [...new Set(tries)];
+}
+
+const ARTICLES = new Set(["the", "a", "an"]);
+/** 영문 단어만 (관사·숫자 제외). 한글 설명이나 상품코드는 매칭에 쓰지 않는다 */
+const titleWords = (s: string) =>
+  (s.toLowerCase().match(/[a-z0-9]+/g) ?? []).filter((w) => !ARTICLES.has(w) && !/^\d+$/.test(w));
+
+/**
+ * 검색 결과에서 그 책 자체인 상품을 고른다. 번역본을 피하려고 영문 제목 기준.
+ * - 제목 단어가 (거의) 다 들어 있어야 한다: "Polar Bear…"는 "Brown Bear…"가 아니다
+ * - 상품명이 제목 첫 단어로 시작해야 한다: "Boo! from The Very Hungry Caterpillar" 같은 스핀오프 제외
+ * - 그중 제목에 없는 단어가 가장 적은 상품
+ * 맞는 게 없으면 null (틀린 링크보다 직접 붙여넣는 게 낫다).
+ */
+export function bestProductMatch<P extends { productName: string }>(title: string, products: P[]): P | null {
+  const want = titleWords(title);
+  const wantSet = new Set(want);
+  if (wantSet.size === 0) return null;
+  let best: P | null = null;
+  let bestExtra = Infinity;
+  for (const p of products) {
+    const have = titleWords(p.productName);
+    if (have[0] !== want[0]) continue;
+    const haveSet = new Set(have);
+    const coverage = [...wantSet].filter((w) => haveSet.has(w)).length / wantSet.size;
+    if (coverage < 0.9) continue;
+    const extra = [...haveSet].filter((w) => !wantSet.has(w)).length;
+    if (extra < bestExtra) [best, bestExtra] = [p, extra];
+  }
+  return best;
+}
+
 /**
  * 쿠팡 파트너스 상품 검색. 쿠팡 웹페이지를 긁는 대신 이 API로 실제 상품 ID와
  * 구매 링크를 받아온다. 검색 API는 호출 횟수 제한이 빡빡하니 카탈로그 채울 때만 쓴다.

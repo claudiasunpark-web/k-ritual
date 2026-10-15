@@ -21,6 +21,10 @@ import {
   partnersAuthorization,
   purchaseProgress,
   searchProducts,
+  bookSearchKeyword,
+  bookSearchKeywords,
+  bestProductMatch,
+  SEARCH_KEYWORD_MAX,
   type Book,
 } from "../src/catalog/index.ts";
 
@@ -109,6 +113,42 @@ test("파트너스 상품 검색 응답 해석", async () => {
   const products = await searchProducts("charlotte", { accessKey: "a", secretKey: "b" }, 5, fakeFetch);
   assert.equal(products[0].productUrl, "https://link.coupang.com/re/x");
   assert.ok(calledUrl.endsWith("/products/search?keyword=charlotte&limit=5"));
+});
+
+test("쿠팡 검색어는 50자를 넘지 않는다", () => {
+  assert.equal(bookSearchKeyword("Charlotte's Web", "E. B. White"), "Charlotte's Web E. B. White 원서");
+  assert.equal(
+    bookSearchKeyword("Diary of a Wimpy Kid: The Long Haul", "Jeff Kinney and Someone Else"),
+    "Diary of a Wimpy Kid: The Long Haul 원서",
+  );
+  const longTitle = "Alexander and the Terrible, Horrible, No Good, Very Bad Day";
+  assert.equal(bookSearchKeyword(longTitle, "Judith Viorst"), "Alexander and the Terrible, Horrible, No Good,");
+  for (const b of BOOKS) assert.ok(bookSearchKeyword(b.title, b.author).length <= SEARCH_KEYWORD_MAX, b.title);
+});
+
+test("못 찾으면 더 짧은 검색어로 다시", () => {
+  assert.deepEqual(bookSearchKeywords("Brown Bear, Brown Bear, What Do You See?", "Bill Martin Jr."), [
+    "Brown Bear, Brown Bear, What Do You See? 원서",
+    "Brown Bear Brown Bear What Do You See",
+    "Brown Bear Brown Bear",
+  ]);
+  assert.deepEqual(bookSearchKeywords("Goodnight Moon", "Margaret Wise Brown"), ["Goodnight Moon Margaret Wise Brown 원서", "Goodnight Moon"]);
+  for (const b of BOOKS) for (const k of bookSearchKeywords(b.title, b.author)) assert.ok(k.length <= SEARCH_KEYWORD_MAX, k);
+});
+
+test("쿠팡 상품 매칭: 스핀오프·비슷한 제목은 고르지 않는다", () => {
+  const names = (...n: string[]) => n.map((productName) => ({ productName }));
+  // 실제 검색 결과 (2026-10)
+  const caterpillar = names(
+    "Boo! from The Very Hungry Caterpillar",
+    "The Very Hungry Caterpillar : Little Learning Library 미니 보드북 4종 박스 (215751)",
+    "The Very Hungry Caterpillar's First Summer",
+    "Very Hungry Caterpillar",
+  );
+  assert.equal(bestProductMatch("The Very Hungry Caterpillar", caterpillar)?.productName, "Very Hungry Caterpillar");
+  const brownBear = names("The Very Hungry Caterpillar", "Polar Bear Polar Bear  What Do you see 유아 보드북 아기 영어 도서");
+  assert.equal(bestProductMatch("Brown Bear, Brown Bear, What Do You See?", brownBear), null);
+  assert.equal(bestProductMatch("Goodnight Moon", names("Goodnight Moon (216318)"))?.productName, "Goodnight Moon (216318)");
 });
 
 test("시트 데이터: 낱권·시리즈가 충분히 들어 있다", () => {
