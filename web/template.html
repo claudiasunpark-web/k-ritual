@@ -132,6 +132,12 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .step.is-done .step-title { text-decoration: line-through; color: var(--muted); }
 .step .n { font-family: var(--font-mono); color: var(--muted); text-align: right; }
 .step .step-actions { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: end; }
+/* 내 책 */
+.mine-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mine-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 8px; }
+.mine-item .step-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; line-height: 1.25; }
+.mine-item .step-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mine-item.is-done .step-title { text-decoration: line-through; color: var(--muted); }
 
 /* ── 책 카드 ─────────────────────── */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 14px; }
@@ -210,7 +216,7 @@ body { margin: 0; }
 .go-books { justify-self: start; }
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 10; background: color-mix(in srgb, var(--surface) 92%, transparent);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
-.tabbar-inner { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.tabbar-inner { max-width: 560px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .tabbar button { background: none; border: 0; cursor: pointer; padding: 9px 4px 10px; display: grid; justify-items: center; gap: 3px;
   color: var(--muted); font-size: 0.75rem; font-weight: 500; }
 .tabbar button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
@@ -284,6 +290,14 @@ body { margin: 0; }
     </div>
   </section>
 
+  <section class="screen" id="screen-mine" data-screen="mine" aria-labelledby="mine-h" hidden>
+    <div class="screen-head">
+      <h2 id="mine-h">내 책</h2>
+      <p class="small muted">'쿠팡에서 보기'를 누른 책이 여기 모여요. 이 기기에만 저장돼요.</p>
+    </div>
+    <div id="mine"></div>
+  </section>
+
   <footer>
     <p id="disclosure"></p>
     <p>레벨은 매일 20~30분 꾸준히 영어책을 읽은 아이를 기준으로 했어요. 아이마다 속도가 달라요.</p>
@@ -297,6 +311,7 @@ body { margin: 0; }
     <button data-go="books"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.5 4.5l3.6 1 -3.9 14.5-3.6-1z"/></svg>책장</button>
     <button data-go="workbooks"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z M14 3v5h5 M9 13h7 M9 17h5"/></svg>문제집</button>
     <button data-go="guide"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14 M12 17.5v.01"/></svg>읽는 법</button>
+    <button data-go="mine"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>내 책</button>
   </div>
 </nav>
 
@@ -324,6 +339,8 @@ const state = {
   // 펼쳐 놓은 시리즈 카드 id들. 같은 화면에서 낱권이 카드 아래로 펼쳐진다
   expanded: new Set(),
   query: "",
+  // 쿠팡에서 보기를 누른 책 [{ id, at }] (최근 것이 앞)
+  clicked: store.get("clicked", []).filter((c) => DATA.books[c.id]),
 };
 
 function childLevel() {
@@ -346,12 +363,13 @@ function fit(book) {
   return { fit: "어려움", message: "지금은 읽어주거나 아껴두세요", warnings, diff, mature };
 }
 
-// '우리 아이에게 맞는 책만': 아이 레벨 한 단계 아래~한 단계 위.
-// 읽어주기 그림책은 아직 혼자 읽기 초반(레벨 3 이하)일 때만, 내용이 아이 나이보다 성숙한 책은 뺀다.
+// '우리 아이 레벨에 맞는 책만': 레벨로만 거른다. 아이 레벨 한 단계 아래~한 단계 위.
+// 내용 나이(IL)로는 빼지 않는다(너무 적게 남아서). 성숙한 내용은 카드의 주의 문구로만 알려준다.
+// 읽어주기 그림책은 아직 혼자 읽기 초반(레벨 3 이하)일 때만.
 function isGoodFit(book) {
   const f = fit(book);
   if (book.listen) return childLevel() <= 3;
-  if (f.diff == null || f.mature) return false;
+  if (f.diff == null) return false;
   return f.diff >= -1 && f.diff <= 1;
 }
 
@@ -478,7 +496,7 @@ function renderCollection() {
       <p class="muted small">${(c.description ? esc(c.description) + " · " : "") + countLabel(c.bookIds)}${ownedCount ? ` (집에 있는 책 ${ownedCount}개)` : ""}</p>
     </div>
     <div class="actions">
-      <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이에게 맞는 책만${state.onlyFit ? ` <span class="num">(${books.length})</span>` : ""}</label>
+      <label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이 레벨에 맞는 책만${state.onlyFit ? ` <span class="num">(${books.length})</span>` : ""}</label>
       ${c.bookIds.length > BUY_ALL_MAX ? "" : `<button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
         ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}개` : "모두 집에 있어요"}
       </button>`}
@@ -491,7 +509,7 @@ function renderCollection() {
       (rest > 0 ? `<button class="btn more" id="more" style="grid-column: 1 / -1">더 보기 · ${rest}개 남음</button>` : "")
     : `<p class="empty" style="grid-column: 1 / -1">${c.kind === "search" && !c.bookIds.length
         ? "검색 결과가 없어요. 영어 제목이나 작가 이름 일부로 찾아보세요."
-        : "여기에는 지금 아이 레벨(한 단계 아래~위)에 맞는 책이 없어요. '우리 아이에게 맞는 책만'을 끄면 전체를 볼 수 있어요."}</p>`;
+        : "여기에는 지금 아이 레벨(한 단계 아래~위)에 맞는 책이 없어요. '우리 아이 레벨에 맞는 책만'을 끄면 전체를 볼 수 있어요."}</p>`;
   renderBuyAll();
 }
 
@@ -566,7 +584,7 @@ function bookCard(b, child = false) {
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
-        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
+        <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "쿠팡에서 세트 보기" : "쿠팡에서 보기"}</a>
         <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 집에 있어요</label>
       </div>
     </div>
@@ -602,7 +620,7 @@ function renderBuyAll() {
           <span class="n">${i + 1}</span>
           <span class="step-title">${esc(b.title)}</span>
           <span class="step-actions">
-            <a class="btn small ${id === nextId ? "primary" : ""}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
+            <a class="btn small ${id === nextId ? "primary" : ""}" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 열기</a>
             <label class="toggle"><input type="checkbox" data-done="${id}" ${isDone ? "checked" : ""}> 담았어요</label>
           </span>
         </li>`;
@@ -611,7 +629,51 @@ function renderBuyAll() {
     <div class="actions"><button class="btn small" id="reset-done">처음부터 다시</button></div>`;
 }
 
-function renderAll() { renderChild(); renderTabs(); renderCollection(); }
+// ── 내 책: 쿠팡에서 보기를 누른 책 ─────────
+function renderMine() {
+  const list = state.clicked;
+  const bought = list.filter((c) => state.owned.has(c.id)).length;
+  const date = (t) => new Date(t).toLocaleDateString("ko-KR", { month: "long", day: "numeric" });
+  $("mine").innerHTML = list.length
+    ? `<p class="small muted" style="margin-bottom: 12px">본 책 <span class="num">${list.length}</span>권 · 샀어요 <span class="num">${bought}</span>권</p>
+       <ol class="mine-list">${list.map((c) => {
+         const b = DATA.books[c.id];
+         const owned = state.owned.has(c.id);
+         return `<li class="mine-item ${owned ? "is-done" : ""}">
+           <div><p class="step-title">${esc(b.title)}</p>
+             <p class="small muted">${esc(b.author)} · ${date(c.at)}에 봄</p></div>
+           <span class="step-actions">
+             <a class="btn small" data-buy="${b.id}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">쿠팡 다시 보기</a>
+             <label class="toggle"><input type="checkbox" data-owned="${b.id}" ${owned ? "checked" : ""}> 샀어요</label>
+             <button class="btn small" data-forget="${b.id}" aria-label="${esc(b.title)} 지우기">지우기</button>
+           </span>
+         </li>`;
+       }).join("")}</ol>`
+    : `<p class="empty">아직 없어요. 책장에서 '쿠팡에서 보기'를 누르면 여기 모여요.</p>`;
+}
+
+function renderAll() { renderChild(); renderTabs(); renderCollection(); renderMine(); }
+
+// 어느 화면에서든 쿠팡 링크를 누르면 내 책에 기록 (새 탭으로 열리는 건 그대로)
+document.addEventListener("click", (e) => {
+  const a = e.target.closest("a[data-buy]"); if (!a) return;
+  const id = a.dataset.buy;
+  state.clicked = [{ id, at: Date.now() }, ...state.clicked.filter((c) => c.id !== id)];
+  store.set("clicked", state.clicked);
+  renderMine();
+});
+$("mine").addEventListener("click", (e) => {
+  const id = e.target.dataset.forget; if (!id) return;
+  state.clicked = state.clicked.filter((c) => c.id !== id);
+  store.set("clicked", state.clicked);
+  renderMine();
+});
+$("mine").addEventListener("change", (e) => {
+  const id = e.target.dataset.owned; if (!id) return;
+  e.target.checked ? state.owned.add(id) : state.owned.delete(id);
+  store.set("owned", [...state.owned]);
+  renderMine(); renderCollection();
+});
 
 // ── 이벤트 ──────────────────────────
 $("age").addEventListener("change", (e) => { state.age = Number(e.target.value); store.set("age", state.age); renderAll(); });
@@ -662,7 +724,7 @@ $("grid").addEventListener("change", (e) => {
   const id = e.target.dataset.owned; if (!id) return;
   e.target.checked ? state.owned.add(id) : state.owned.delete(id);
   store.set("owned", [...state.owned]);
-  renderCollection();
+  renderCollection(); renderMine();
 });
 $("buyall").addEventListener("change", (e) => {
   const id = e.target.dataset.done; if (!id) return;
@@ -676,7 +738,7 @@ $("buyall").addEventListener("click", (e) => {
 });
 
 // ── 화면 전환: 아래 메뉴 → #home / #books / #workbooks / #guide (뒤로 가기도 동작) ──
-const SCREENS = ["home", "books", "workbooks", "guide"];
+const SCREENS = ["home", "books", "workbooks", "guide", "mine"];
 function showScreen() {
   const name = SCREENS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
   document.querySelectorAll("[data-screen]").forEach((el) => { el.hidden = el.dataset.screen !== name; });

@@ -3,6 +3,7 @@
 //   node scripts/fetch-series-openlibrary.ts            # 미리보기만 (파일 안 바꿈)
 //   node scripts/fetch-series-openlibrary.ts --write    # 저장
 //   node scripts/fetch-series-openlibrary.ts --write "Magic Tree House"   # 한 시리즈만
+//   node scripts/fetch-series-openlibrary.ts --write --only-empty         # 낱권이 없는 시리즈만
 //
 // Open Library의 시리즈 태그는 빈 곳이 많아서, 시리즈마다 "저자 + 제목 키워드" 규칙으로 찾는다.
 // 상자 세트·합본·활동지·번역본 같은 건 걸러낸다. 그래도 섞일 수 있으니 메모에 출처를 남긴다.
@@ -90,6 +91,33 @@ const RULES: Record<string, Rule> = {
   "Hilo": { author: "Judd Winick", keywords: ["hilo"] },
   "InvestiGators": { author: "John Patrick Green", keywords: ["investigators"] },
   "Lunch Lady": { author: "Jarrett J. Krosoczka", keywords: ["lunch lady"] },
+  // 2026-10: 낱권이 하나도 없던 시리즈들
+  "Anthony Browne 그림책": { author: "Anthony Browne", keywords: [], exclude: ["lib ed", "willy y hugo", "picturemacs", "alice's adventures", "through the magic"] },
+  "Little Critter": { author: "Mercer Mayer", keywords: ["little critter", "just "], exclude: ["i can read"] },
+  "Pete the Cat 그림책": { author: "James Dean", keywords: ["white shoes", "school shoes", "groovy buttons", "magic sunglasses", "saves christmas", "wheels on the bus", "twelve groovy days", "big easter adventure", "valentine's day is cool", "first day of school", "trick or pete", "crayons rock", "construction destruction", "pete the cat's", "the great leprechaun chase"] },
+  "Bob Books": { author: "Bobby Lynn Maslen", keywords: [], exclude: ["bob books for", "bob books first", "bob bks", "more bob books", "bob books plus", "cut-ups"] },
+  Mittens: { author: "Lola M. Schaefer", keywords: ["mittens"] },
+  "Clifford Phonics & Readers": { author: "Norman Bridwell", keywords: ["clifford"] },
+  "Berenstain Bears I Can Read": { author: "Stan Berenstain", keywords: ["berenstain"], exclude: ["baby book", "b book"] },
+  "Ling & Ting": { author: "Grace Lin", keywords: ["ling & ting", "ling and ting"] },
+  "The Baby-Sitters Club Graphix": { author: "Ann M. Martin", keywords: ["kristy's great idea", "truth about stacey", "mary anne saves the day", "claudia and mean janine", "dawn and the impossible three", "kristy's big day", "boy-crazy stacey", "logan likes mary anne", "claudia and the new girl", "kristy and the snobs", "good-bye stacey", "jessi's secret language", "claudia and the bad joke"] },
+  "Ready, Freddy!": { author: "Abby Klein", keywords: [], exclude: ["caterpillars on the move"] },
+  "Notebook of Doom": { author: "Troy Cummings", keywords: [], exclude: ["can i be your dog", "little red gliding hood", "giddy-up", "binky", "flyaway katie", "more-igami", "hide and seek", "eat your science", "eensy weensy", "branches book"] },
+  "Eerie Elementary": { author: "Jack Chabert", keywords: [], exclude: ["branches book", "recreo"] },
+  "Kung Pow Chicken": { author: "Cyndi Marko", keywords: [] },
+  "Black Lagoon Adventures": { author: "Mike Thaler", keywords: ["black lagoon"] },
+  "Horrible Harry": { author: "Suzy Kline", keywords: ["horrible harry"] },
+  "Arthur Chapter Books": { author: "Marc Brown", keywords: ["mystery envelope", "scare-your-pants-off", "makes the team", "crunch cereal", "arthur accused", "locked in the library", "dino dilemma", "stolen bike", "lost diary", "in love with arthur", "rocks with binky", "francine, believe", "cootie-catcher", "buster makes the grade", "muffy's secret admirer", "popularity test", "big, bad teacher", "cat saver", "double dare", "big blow-up", "no-go rule", "recess rookie", "poetry contest", "comet crisis", "seventh arthur", "big snow", "perfect brother", "goalie ghost", "pen pal playoff", "bad-luck brain"] },
+  "Heidi Heckelbeck": { author: "Wanda Coven", keywords: ["heidi heckelbeck"] },
+  "Nancy Drew Clue Book": { author: "Carolyn Keene", keywords: ["pool party puzzler", "last lemonade standing", "a star witness", "big top flop", "movie madness", "pets on parade", "candy kingdom chaos", "world record mystery", "springtime crime", "boo crew", "the tortoise and the scare", "turkey trouble", "puppy love prank", "the big island burglary"] },
+  "Kingdom of Wrenly": { author: "Jordan Quinn", keywords: [], exclude: ["books in 1", "poppin"] },
+  "Jigsaw Jones": { author: "James Preller", keywords: ["jigsaw", "case of the"] },
+  "The Zack Files": { author: "Dan Greenburg", keywords: ["litter box", "medicine cabinet", "ghost named wanda", "mind reader", "orthodontist", "out of my body", "cat who wears earrings", "time traveler", "volcano goddess", "bozo the clone", "bad to verse", "turnip", "greenish eggs", "league slugger", "unnatural history", "my mummy", "misfortune cookie", "your butt will grow", "grandma's a teenager", "just add water", "left at venus", "queen tut", "speak dolphin", "now you see me", "join the nerd", "space cadet", "how to scare the pants", "the zack files"] },
+  "Dinosaur Cove": { author: "Rex Stone", keywords: [] },
+  "Capital Mysteries": { author: "Ron Roy", keywords: ["cloned the president", "kidnapped at the capital", "smithsonian", "spy in the white house", "lincoln's thumb", "fbi", "treasury", "washington monument", "national zoo", "election-day", "jefferson's mansion", "camp david", "d.c. train", "national mall"] },
+  "The Magic School Bus Chapter Books": { author: "Joanna Cole", keywords: ["magic school bus"], exclude: ["lesson plan", "riding the magic school bus"] },
+  "Secrets of Droon": { author: "Tony Abbott", keywords: ["droon", "hidden stairs", "mysterious island", "city in the clouds", "great ice battle", "sleeping giant of goll", "golden wasp", "tower of the elf king", "quest for the queen", "hawk bandits of tarkoom", "under the serpent sea", "mask of maliban", "voyage of the jaffa wind", "moon scroll", "knights of silversnow", "dream thief", "search for the dragon ship", "coiled viper", "in the ice caves of krog", "flight of the genie", "crown of wizards"] },
+  "Magic Tree House Merlin Missions": { author: "Mary Pope Osborne", keywords: ["christmas in camelot", "haunted castle on hallows eve", "summer of the sea serpent", "winter of the ice wizard", "carnival at candlelight", "season of the sandstorms", "night of the new magicians", "blizzard of the blue moon", "dragon of the red dawn", "monday with a mad genius", "dark day in the deep sea", "eve of the emperor penguin", "moonlight on the magic flute", "a good night for ghosts", "leprechaun in late winter", "a ghost tale for christmas time", "a crazy day with cobras", "dogs in the dead of night", "abe lincoln at last", "a perfect time for pandas", "stallion by starlight", "hurry up, houdini", "high time for heroes", "soccer on sunday", "shadow of the shark", "balto of the blue dawn", "night of the ninth dragon"] },
 };
 
 // 상자 세트·합본·부록·번역본처럼 시리즈 낱권이 아닌 것
@@ -152,6 +180,9 @@ for (const r of books) {
   byTitle.set(titleKey(r["제목"], r["시리즈"] || ""), r);
 }
 const ids = new Set(books.map((r) => r["id"]));
+// --only-empty: 낱권이 한 권도 없는 시리즈만 (이미 채운 시리즈는 다시 건드리지 않는다)
+const onlyEmpty = process.argv.includes("--only-empty");
+const filled = new Set(books.map((r) => r["시리즈"]).filter(Boolean));
 
 const detail: string[] = [];
 let totalAdded = 0;
@@ -159,7 +190,7 @@ let coversAdded = 0;
 for (const s of seriesRows) {
   const name = s["시리즈명"];
   const rule = RULES[name];
-  if (!rule || (only && only !== name)) continue;
+  if (!rule || (only && only !== name) || (onlyEmpty && filled.has(name))) continue;
   const max = Math.max(Number(s["권수"]) || 0, 10) + 5;
 
   const seen = new Set<string>();
