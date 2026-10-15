@@ -477,7 +477,7 @@ function renderTabs() {
   const current = currentCollection();
   $("collections").hidden = !!state.query;
   $("collections").innerHTML = collectionsOfKind(state.kind).map((c) =>
-    `<button class="chip-btn" data-collection="${c.id}" aria-pressed="${c.id === current.id}">${esc(c.title)}<span class="count">${c.bookIds.length}</span></button>`).join("");
+    `<button class="chip-btn" data-collection="${c.id}" aria-pressed="${c.id === current.id}">${esc(c.title)}<span class="count">${c.bookIds.length}권</span></button>`).join("");
 }
 
 // 문학상 전체 목록처럼 큰 묶음은 '모두 사기'가 의미 없어서 숨긴다

@@ -156,7 +156,7 @@ function levelCollections(): Collection[] {
   return K_LEVELS.map((l) => ({
     id: `level-${l.level}`,
     kind: "level" as const,
-    title: `시크릿 북레벨 ${l.level} · ${l.name}`,
+    title: `시크릿 북레벨 ${l.level}`,
     description: l.headline,
     // 시리즈 낱권은 시리즈 카드(시작 레벨) 안에서 본다
     bookIds: BOOKS.filter((b) => !b.seriesId && isRated(b) && bookLevel(b).level.level === l.level).map((b) => b.id),
