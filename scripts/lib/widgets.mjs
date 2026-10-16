@@ -1,7 +1,7 @@
 // 원고의 ::: 블록에 대응하는 인터랙티브 컴포넌트 생성기.
-import { lineChart, groupedBarChart, progressMeters, timeline } from './charts.mjs';
+import { lineChart, groupedBarChart, progressMeters, timeline, tableTwin } from './charts.mjs';
 import { zoneMap } from './zonemap.mjs';
-import { geoMap, analyzeGeography } from './geomap.mjs';
+import { geoMap, analyzeGeography, ZONE_COLOR } from './geomap.mjs';
 import { locatorBase, locatorFor, zoneLocator, accessArrows } from './minimap.mjs';
 import {
   findFacilities, zoneDistances, nearestByGroup, mapMarkers, findTransit, transitAccess, distKm, formatKm,
@@ -445,12 +445,145 @@ export function makeWidgets({ zones, complexes, trades, location, policy, source
 
     /** 재건축 10단계 절차 설명표 */
     'stage-ladder': () =>
-      `<div class="table-wrap"><table><thead><tr><th>단계</th><th>절차</th><th>투자자 관점 의미</th></tr></thead><tbody>${zones.stageLadder
-        .map(
-          (s) =>
-            `<tr><td>${s.step}</td><td>${escapeHtml(s.label)}</td><td>${escapeHtml(STAGE_MEANING[s.step] ?? '')}</td></tr>`,
-        )
+      `<div class="table-wrap"><table class="stageladder">`
+      + `<colgroup><col class="sl__c-step"><col class="sl__c-proc"><col><col class="sl__c-up"><col class="sl__c-tr"></colgroup><thead><tr>`
+      + `<th scope="col">단계</th><th scope="col">절차</th><th scope="col">투자자 관점 의미</th>`
+      + `<th scope="col">진입 시 가격 여력</th><th scope="col">조합원 지위 양도</th>`
+      + `</tr></thead><tbody>${zones.stageLadder
+        .map((s) => {
+          const iv = STAGE_INVEST[s.step] ?? {};
+          return `<tr><td>${s.step}</td><td>${escapeHtml(s.label)}</td>`
+            + `<td>${escapeHtml(STAGE_MEANING[s.step] ?? '')}</td>`
+            + `<td class="sl__up sl__up--${iv.upside ?? 0}">`
+            + `<span class="sl__bar" aria-hidden="true">${UPSIDE_BARS[iv.upside] ?? ''}</span>`
+            + `<span class="sl__uplab">${escapeHtml(iv.up ?? '—')}</span></td>`
+            + `<td class="sl__tr sl__tr--${iv.transfer ?? 'free'}">${escapeHtml(iv.tr ?? '—')}</td></tr>`;
+        })
         .join('')}</tbody></table></div>`,
+
+    /**
+     * 구역 × 10단계 진행 도표.
+     *
+     * 구역마다 막대를 따로 그리면 "2구역이 더 갔다" 는 알아도 "어느 단계에서
+     * 갈렸나" 가 안 보입니다. 같은 10칸 위에 6개 구역을 올려 어느 칸에서
+     * 멈춰 있는지를 한 화면에서 비교합니다.
+     */
+    'stage-matrix': () => {
+      const ladder = zones.stageLadder;
+      const total = ladder.length;
+
+      const head = ladder.map((st) => `<th scope="col" class="sm__h">`
+        + `<span class="sm__num">${st.step}</span>`
+        + `<span class="sm__lab">${escapeHtml(st.short ?? st.label)}</span></th>`).join('');
+
+      const rows = zones.zones.map((z) => {
+        const done = z.stageDone ?? 0;
+        const cells = ladder.map((st) => {
+          const state = st.step < done ? 'done' : st.step === done ? 'now' : 'todo';
+          const label = state === 'now' ? '현재' : state === 'done' ? '완료' : '예정';
+          return `<td class="sm__c sm__c--${state}" data-zone="${z.id}">`
+            + `<span class="sr-only">${escapeHtml(st.label)} ${label}</span></td>`;
+        }).join('');
+        const cur = ladder.find((st) => st.step === done);
+        return `<tr class="sm__r sm__r--risk-${z.riskLevel}">
+      <th scope="row" class="sm__z"><span class="sm__dot" style="background:${ZONE_COLOR[z.id]}"></span>${escapeHtml(z.shortName)}</th>
+      ${cells}
+      <td class="sm__state">${done}/${total}<span class="sm__cur">${escapeHtml(cur?.short ?? cur?.label ?? '—')}</span></td>
+    </tr>`;
+      }).join('');
+
+      // 일정 축과 같은 10칸 위에 투자 판단 요소를 올립니다. 별표로 떼어 놓으면
+      // '4단계가 어느 칸인가' 를 독자가 다시 맞춰 봐야 합니다.
+      const upRow = ladder.map((st) => {
+        const iv = STAGE_INVEST[st.step] ?? {};
+        return `<td class="sm__up sm__up--${iv.upside ?? 0}" title="${escapeHtml(iv.risk ?? '')}">`
+          + `<span class="sm__uplab">${escapeHtml(iv.up ?? '—')}</span></td>`;
+      }).join('');
+      const trRow = ladder.map((st) => {
+        const iv = STAGE_INVEST[st.step] ?? {};
+        return `<td class="sm__tr sm__tr--${iv.transfer ?? 'free'}">`
+          + `<span class="sm__trlab">${escapeHtml(iv.tr ?? '—')}</span></td>`;
+      }).join('');
+
+      const tableRows = zones.zones.map((z) => [
+        z.shortName,
+        `${z.stageDone ?? 0}/${total}`,
+        ladder.find((st) => st.step === z.stageDone)?.label ?? '—',
+        ladder.find((st) => st.step === (z.stageDone ?? 0) + 1)?.label ?? '준공 이후',
+      ]);
+
+      return `<figure class="chart stagematrix" id="chart-stage-matrix">
+  <figcaption class="chart__title">구역별 진행 단계 — 10단계 중 어디까지 왔나</figcaption>
+  <div class="stagematrix__legend">
+    <span class="sm__key sm__key--done">완료</span>
+    <span class="sm__key sm__key--now">현재 단계</span>
+    <span class="sm__key sm__key--todo">남은 단계</span>
+  </div>
+  <div class="table-wrap stagematrix__wrap">
+    <table class="sm">
+      <thead><tr><th scope="col" class="sm__z">구역</th>${head}<th scope="col" class="sm__state">진행</th></tr></thead>
+      <tbody>${rows}</tbody>
+      <tfoot>
+        <tr class="sm__f"><th scope="row" class="sm__z">진입 시 가격 여력</th>${upRow}<td class="sm__state"></td></tr>
+        <tr class="sm__f"><th scope="row" class="sm__z">조합원 지위 양도</th>${trRow}<td class="sm__state"></td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p class="chart__unit">위쪽은 구역별 현재 위치, 아래 두 줄은 <strong>그 단계에서 매수할 때의 조건</strong>입니다. 칸이 짙을수록 가격 여력이 크고, 빗금 칸은 조합원 지위 양도가 제한되는 구간입니다.</p>
+  ${tableTwin('구역별 진행 단계', ['구역', '진행', '완료된 최근 단계', '다음 단계'], tableRows)}
+  ${tableTwin('단계별 투자 판단 요소', ['단계', '절차', '가격 여력', '지위 양도', '주요 리스크'],
+    ladder.map((st) => {
+      const iv = STAGE_INVEST[st.step] ?? {};
+      return [`${st.step}`, st.label, iv.up ?? '—', iv.tr ?? '—', iv.risk ?? '—'];
+    }))}
+</figure>`;
+    },
+
+    /** 구역별 지연 요인 표. 어느 구역이 무엇에 막혀 있는지를 한 줄로 봅니다. */
+    'delay-table': () => {
+      const SEV = {
+        high: { label: '높음', cls: 'high' },
+        medium: { label: '중간', cls: 'medium' },
+        low: { label: '낮음', cls: 'low' },
+        none: { label: '없음', cls: 'none' },
+      };
+      const src = (keys) => (keys ?? []).map((k) => (sources.sources[k]
+        ? `<a href="${sources.sources[k].url}" target="_blank" rel="noopener noreferrer">${escapeHtml(sources.sources[k].publisher)}</a>`
+        : escapeHtml(k))).join(' · ');
+
+      const rows = zones.zones.flatMap((z) => {
+        const list = z.delays ?? [];
+        if (!list.length) {
+          return [`<tr><th scope="row">${escapeHtml(z.shortName)}</th>`
+            + '<td colspan="3" class="muted">확인된 지연 요인 없음</td></tr>'];
+        }
+        return list.map((d, i) => {
+          const sev = SEV[d.severity] ?? SEV.medium;
+          return `<tr class="dl dl--${sev.cls}">`
+            + (i === 0 ? `<th scope="row" rowspan="${list.length}">${escapeHtml(z.shortName)}</th>` : '')
+            + `<td><span class="dl__sev dl__sev--${sev.cls}">${sev.label}</span> ${escapeHtml(d.type)}</td>`
+            + `<td>${escapeHtml(d.detail)}`
+            + `<span class="dl__status">현재 상태 — ${escapeHtml(d.status)}</span></td>`
+            + `<td class="dl__src">${src(d.sources)}</td></tr>`;
+        });
+      }).join('');
+
+      const common = zones.commonDelay
+        ? `<tr class="dl dl--common"><th scope="row">전 구역</th>`
+          + `<td><span class="dl__sev dl__sev--medium">중간</span> ${escapeHtml(zones.commonDelay.type)}</td>`
+          + `<td colspan="2">${escapeHtml(zones.commonDelay.detail)}</td></tr>`
+        : '';
+
+      return `<div class="table-wrap">
+  <table class="datatable__table delaytable">
+    <colgroup><col class="dl__c-zone"><col class="dl__c-type"><col><col class="dl__c-src"></colgroup>
+    <caption>구역별로 지금 일정을 막고 있는 것. 위험도는 지연 가능성이 아니라 <strong>해결에 걸리는 시간</strong> 기준입니다.</caption>
+    <thead><tr><th scope="col">구역</th><th scope="col">유형</th>
+      <th scope="col">내용과 현재 상태</th><th scope="col">출처</th></tr></thead>
+    <tbody>${rows}${common}</tbody>
+  </table>
+</div>`;
+    },
 
     /** 구역별 평당가 추이 라인 차트 (평형대 전환) */
     'price-trend': () => {
@@ -876,3 +1009,23 @@ const STAGE_MEANING = {
   9: '공사 기간이 시작됩니다. 공사비 상승분은 이후 분담금 변동으로 이어집니다.',
   10: '입주와 함께 재초환 부담금이 확정 부과됩니다.',
 };
+
+/**
+ * 단계별 투자 판단 요소. 일정 도표와 같은 10단계 축을 쓰기 때문에
+ * '지금 어디까지 왔나' 와 '그 단계에서 들어가면 어떻게 되나' 를
+ * 같은 가로축에서 읽을 수 있습니다. 숫자가 아니라 4단계 서열입니다.
+ */
+const STAGE_INVEST = {
+  1: { upside: 4, up: '가장 큼', transfer: 'free', tr: '자유', risk: '계획 자체가 무산될 위험' },
+  2: { upside: 4, up: '큼', transfer: 'free', tr: '자유', risk: '조합 내부 갈등, 무기한 지연' },
+  3: { upside: 3, up: '중간', transfer: 'locked', tr: '제한 시작', risk: '분담금 미확정 상태로 매수' },
+  4: { upside: 3, up: '중간', transfer: 'locked', tr: '제한', risk: '도급 단가 재협상 가능' },
+  5: { upside: 2, up: '작아짐', transfer: 'locked', tr: '제한', risk: '설계·세대수 확정으로 변동 여지 축소' },
+  6: { upside: 2, up: '작아짐', transfer: 'locked', tr: '제한', risk: '종전자산 평가 결과에 따른 분담금 충격' },
+  7: { upside: 1, up: '가장 작음', transfer: 'locked', tr: '제한', risk: '분담금 확정 통보, 재초환 예정액 산정' },
+  8: { upside: 1, up: '가장 작음', transfer: 'locked', tr: '제한', risk: '이주비 대출 이자 부담' },
+  9: { upside: 1, up: '가장 작음', transfer: 'locked', tr: '제한', risk: '공사비 상승분 추가 분담' },
+  10: { upside: 1, up: '반영 완료', transfer: 'free', tr: '해제', risk: '재초환 부담금 확정 부과' },
+};
+
+const UPSIDE_BARS = { 4: '■■■■', 3: '■■■□', 2: '■■□□', 1: '■□□□' };

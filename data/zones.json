@@ -4,43 +4,53 @@
   "stageLadder": [
     {
       "step": 1,
-      "label": "정비구역 지정"
+      "label": "정비구역 지정",
+      "short": "지정"
     },
     {
       "step": 2,
-      "label": "추진위 구성"
+      "label": "추진위 구성",
+      "short": "추진위"
     },
     {
       "step": 3,
-      "label": "조합설립인가"
+      "label": "조합설립인가",
+      "short": "조합"
     },
     {
       "step": 4,
-      "label": "시공사 선정"
+      "label": "시공사 선정",
+      "short": "시공사"
     },
     {
       "step": 5,
-      "label": "정비사업 통합심의"
+      "label": "정비사업 통합심의",
+      "short": "통합심의"
     },
     {
       "step": 6,
-      "label": "사업시행계획인가"
+      "label": "사업시행계획인가",
+      "short": "사업시행"
     },
     {
       "step": 7,
-      "label": "관리처분계획인가"
+      "label": "관리처분계획인가",
+      "short": "관리처분"
     },
     {
       "step": 8,
-      "label": "이주·철거"
+      "label": "이주·철거",
+      "short": "이주·철거"
     },
     {
       "step": 9,
-      "label": "착공"
+      "label": "착공",
+      "short": "착공"
     },
     {
       "step": 10,
-      "label": "준공·입주"
+      "label": "준공·입주",
+      "short": "준공"
     }
   ],
   "zones": [
@@ -75,6 +85,17 @@
       "sources": [
         "bizwatch-2026-06-02",
         "smarttoday-apgujeong-status"
+      ],
+      "delays": [
+        {
+          "type": "조합 내부 이견",
+          "severity": "high",
+          "detail": "미성1차의 단독 재건축 주장과 강남구청을 상대로 한 소송",
+          "status": "추진위원장 자리가 약 3년간 공석",
+          "sources": [
+            "bizwatch-2026-06-02"
+          ]
+        }
       ]
     },
     {
@@ -166,7 +187,18 @@
       "brandNote": "일부 보도가 '힐스테이트' 로 적었으나 사실과 다릅니다. 압구정 현대는 단지명 자체가 브랜드 가치를 가지므로 '압구정 현대' 명칭 유지를 전제로 논의됩니다. 최종 명칭은 확정 고시 전까지 바뀔 수 있습니다.",
       "ceilingHeightM": 2.9,
       "ceilingNote": "실내 천장고 2.9m — 조합 의견을 수용해 적용. 기존 창호 대비 3배가는 알루미늄 섀시 채택",
-      "ceilingVerified": false
+      "ceilingVerified": false,
+      "delays": [
+        {
+          "type": "심의 조건 이행",
+          "severity": "low",
+          "detail": "통합심의가 '조건부' 의결이므로 부가된 조건을 이행해야 사업시행계획인가로 넘어감",
+          "status": "조건 내용은 고시문에서 확인 필요",
+          "sources": [
+            "seoul-2026-07-03"
+          ]
+        }
+      ]
     },
     {
       "id": "z3",
@@ -281,7 +313,18 @@
       ],
       "ceilingHeightM": 3.0,
       "ceilingNote": "우물천장 3m 적용. 고급 석재·알루미늄 패널, 건물일체형 태양광(BIPV)",
-      "ceilingVerified": false
+      "ceilingVerified": false,
+      "delays": [
+        {
+          "type": "토지 소유권",
+          "severity": "high",
+          "detail": "현대건설·HDC현대산업개발·서울시 명의로 남은 일부 필지. 조합이 장기 점유에 따른 취득시효를 근거로 소유권 이전 소송 진행",
+          "status": "소송 진행 중 — 심급·종결 시점 미확인",
+          "sources": [
+            "tf-2234907"
+          ]
+        }
+      ]
     },
     {
       "id": "z4",
@@ -362,7 +405,19 @@
       "ceilingHeightM": null,
       "ceilingNote": "천장고 수치는 공개되지 않음. 최대 4.5m 캔틸레버, 필로티 최고 15m, 조합원 1,341세대 전 세대 테라스",
       "brand": "컬리넌 압구정 (삼성물산 제안)",
-      "ceilingVerified": false
+      "ceilingVerified": false,
+      "delays": [
+        {
+          "type": "해결됨",
+          "severity": "none",
+          "detail": "공유지분 토지 누락등기 문제를 2026년 2월 해결",
+          "status": "현재 확인된 지연 요인 없음",
+          "sources": [
+            "nate-2026-02-19",
+            "mt-2026-09-03"
+          ]
+        }
+      ]
     },
     {
       "id": "z5",
@@ -424,7 +479,19 @@
       "ceilingHeightM": 3.0,
       "ceilingNote": "우물천장 3m 적용",
       "brand": "압구정 현대 갤러리아 (현대건설 제안)",
-      "ceilingVerified": false
+      "ceilingVerified": false,
+      "delays": [
+        {
+          "type": "토지 소유권",
+          "severity": "high",
+          "detail": "한양(현 BS한양) 명의로 남은 대지지분 — 한양1차 약 179㎡, 한양2차 약 428㎡, 합계 607㎡",
+          "status": "조합원 소유 이전 소송 준비 중",
+          "sources": [
+            "tf-2234907",
+            "pinpoint-369861"
+          ]
+        }
+      ]
     },
     {
       "id": "z6",
@@ -463,7 +530,23 @@
       "sources": [
         "bizwatch-2026-06-02",
         "seoul-2026-05-30"
+      ],
+      "delays": [
+        {
+          "type": "조합 내부 이견",
+          "severity": "high",
+          "detail": "한양5·7·8차 간 통합 재건축과 단지별 재건축을 둘러싼 이견",
+          "status": "한양7차만 조합 설립",
+          "sources": [
+            "bizwatch-2026-06-02"
+          ]
+        }
       ]
     }
-  ]
+  ],
+  "commonDelay": {
+    "type": "공사비 변동",
+    "detail": "착공까지 3~4년이 남은 상태에서 도급 단가는 물가 변동에 따라 재협상될 수 있습니다. 공사비 갈등으로 착공이 지연된 정비사업 사례는 최근 수년간 반복되었습니다.",
+    "appliesTo": "전 구역"
+  }
 }

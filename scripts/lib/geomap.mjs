@@ -28,7 +28,7 @@ const H = Math.round((W * (mercY(VIEW.north) - mercY(VIEW.south))) / (VIEW.east 
 // 살짝 여유(0.002도 ≈ 200m)를 두어 테두리에 걸친 것이 잘려 나가지 않게 합니다.
 const viewBbox = [VIEW.west - 0.002, VIEW.south - 0.002, VIEW.east + 0.002, VIEW.north + 0.002];
 
-const ZONE_COLOR = {
+export const ZONE_COLOR = {
   z1: 'var(--series-1)', z2: 'var(--series-2)', z3: 'var(--series-3)',
   z4: 'var(--series-4)', z5: 'var(--series-5)', z6: 'var(--series-7)',
 };
