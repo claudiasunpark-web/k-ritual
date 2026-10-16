@@ -3,6 +3,7 @@
 //   npm run fill-coupang -- --limit 5 --dry-run   # 5권만 시험 (파일에 안 씀)
 //   npm run fill-coupang                          # 전체 (시간당 40회 속도로 천천히)
 //   npm run fill-coupang -- --per-hour 30         # 더 천천히
+//   npm run fill-coupang -- --retry-missing       # 예전에 못 찾은 책도 다시
 //
 // 키는 프로젝트 폴더의 .env.local 파일(깃에 올라가지 않음)이나 환경변수에서 읽는다:
 //   COUPANG_ACCESS_KEY=...
@@ -13,7 +14,7 @@
 // 찾은 링크는 10권마다 저장하니 중간에 꺼도(Ctrl+C) 다시 돌리면 남은 책부터 이어간다.
 // 자동 매칭은 틀릴 수 있다(다른 판본·한국어 번역본). matchedName을 보고 꼭 확인할 것.
 
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { setTimeout as sleep } from "node:timers/promises";
 import { BOOKS } from "../src/catalog/books.ts";
 import { bestProductMatch, bookSearchKeywords, credentialsFromEnv, searchProducts, type CoupangProduct } from "../src/catalog/coupang.ts";
@@ -36,7 +37,12 @@ if (!creds) {
 }
 
 const links = JSON.parse(readFileSync(FILE, "utf8")) as Record<string, Record<string, unknown>>;
-const todo = BOOKS.filter((b) => !b.coupang?.partnersUrl).slice(0, limit);
+// 못 찾은 책은 기억해 두고 다음 실행에서 건너뛴다 (검색어 2~3개를 또 쓰면 시간당 한도만 깎인다).
+// 다시 찾아보려면 --retry-missing
+const MISSING_FILE = new URL("../data/coupang-not-found.json", import.meta.url);
+const missing = (existsSync(MISSING_FILE) ? JSON.parse(readFileSync(MISSING_FILE, "utf8")) : {}) as Record<string, string>;
+const retryMissing = process.argv.includes("--retry-missing");
+const todo = BOOKS.filter((b) => !b.coupang?.partnersUrl && (retryMissing || !missing[b.id])).slice(0, limit);
 console.log(`이번에 찾을 책 ${todo.length}권 (검색 ${gapMs / 1000}초에 1번, 시간당 ${perHour}번)`);
 
 let found = 0;
@@ -73,6 +79,8 @@ for (const book of todo) {
   if (stopped) break;
   if (!match) {
     console.log(`  ✗ ${book.title}: 맞는 상품을 못 찾음, 직접 링크를 붙여넣어 주세요`);
+    missing[book.id] = new Date().toISOString().slice(0, 10);
+    if (!dryRun) writeFileSync(MISSING_FILE, JSON.stringify(missing, null, 2) + "\n");
     continue;
   }
   links[book.id] = {

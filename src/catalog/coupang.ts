@@ -164,6 +164,8 @@ const titleWords = (s: string) =>
  * - 그중 제목에 없는 단어가 가장 적은 상품
  * 맞는 게 없으면 null (틀린 링크보다 직접 붙여넣는 게 낫다).
  */
+const NOT_THE_BOOK = /\b(guide|workbook|activit(y|ies)|teacher|study|summary|quiz|comprehension|lesson|unit|novel study|literature (circle|unit))\b|가이드|워크북|교사용|문제집|요약/i;
+
 export function bestProductMatch<P extends { productName: string }>(title: string, products: P[]): P | null {
   const want = titleWords(title);
   const wantSet = new Set(want);
@@ -171,6 +173,8 @@ export function bestProductMatch<P extends { productName: string }>(title: strin
   let best: P | null = null;
   let bestExtra = Infinity;
   for (const p of products) {
+    // 그 책이 아니라 그 책으로 하는 수업 자료·문제집·요약본인 상품 ("…: An Instructional Guide for Literature")
+    if (NOT_THE_BOOK.test(p.productName) && !NOT_THE_BOOK.test(title)) continue;
     const have = titleWords(p.productName);
     if (have[0] !== want[0]) continue;
     const haveSet = new Set(have);
