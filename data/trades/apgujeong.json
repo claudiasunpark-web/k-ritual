@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-27T09:41:37.372Z",
+  "generatedAt": "2026-10-16T14:37:43.682Z",
   "range": {
-    "from": "202310",
-    "to": "202609",
+    "from": "202311",
+    "to": "202610",
     "months": 36
   },
   "recentWindow": {
     "months": 12,
-    "from": "202510"
+    "from": "202511"
   },
   "source": {
     "name": "국토교통부 아파트 매매 실거래가 상세 자료",
@@ -28,7 +28,6 @@
     "failedMonths": 0
   },
   "ymList": [
-    "2023-10",
     "2023-11",
     "2023-12",
     "2024-01",
@@ -63,7 +62,8 @@
     "2026-06",
     "2026-07",
     "2026-08",
-    "2026-09"
+    "2026-09",
+    "2026-10"
   ],
   "bands": [
     {
@@ -318,8 +318,8 @@
       "id": "c-ms2",
       "label": "미성2차",
       "zone": "z1",
-      "tradeCount": 67,
-      "recentCount": 10,
+      "tradeCount": 66,
+      "recentCount": 8,
       "medianPerPyeongManKRW": 18040,
       "buildYear": 1987,
       "sizes": [
@@ -328,9 +328,9 @@
           "pyeong": 22.5,
           "pyeongLabel": "23평형",
           "count": 34,
-          "recentCount": 5,
-          "medianAmountManKRW": 483000,
-          "medianPerPyeongManKRW": 21461,
+          "recentCount": 4,
+          "medianAmountManKRW": 460000,
+          "medianPerPyeongManKRW": 20439,
           "minAmountManKRW": 420000,
           "maxAmountManKRW": 500000,
           "lastTrade": {
@@ -363,12 +363,12 @@
           "area": 140.9,
           "pyeong": 42.6,
           "pyeongLabel": "43평형",
-          "count": 22,
-          "recentCount": 2,
-          "medianAmountManKRW": 635000,
-          "medianPerPyeongManKRW": 14898,
+          "count": 21,
+          "recentCount": 1,
+          "medianAmountManKRW": 570000,
+          "medianPerPyeongManKRW": 13373,
           "minAmountManKRW": 570000,
-          "maxAmountManKRW": 700000,
+          "maxAmountManKRW": 570000,
           "lastTrade": {
             "date": "2026-08-20",
             "amountManKRW": 570000,
@@ -401,7 +401,7 @@
         },
         {
           "date": "2026-06-19",
-          "dong": null,
+          "dong": "25",
           "pyeong": 36,
           "area": 118.63,
           "amountManKRW": 515000,
@@ -696,10 +696,10 @@
       "id": "c-sh",
       "label": "신현대(9·11·12차)",
       "zone": "z2",
-      "tradeCount": 163,
-      "recentCount": 55,
-      "medianPerPyeongManKRW": 18235,
-      "buildYear": 1983,
+      "tradeCount": 168,
+      "recentCount": 56,
+      "medianPerPyeongManKRW": 18069,
+      "buildYear": 1982,
       "sizes": [
         {
           "area": 107.16,
@@ -759,16 +759,16 @@
           "area": 108.88,
           "pyeong": 32.9,
           "pyeongLabel": "33평형",
-          "count": 15,
-          "recentCount": 3,
-          "medianAmountManKRW": 629000,
-          "medianPerPyeongManKRW": 19098,
-          "minAmountManKRW": 610000,
+          "count": 16,
+          "recentCount": 4,
+          "medianAmountManKRW": 619500,
+          "medianPerPyeongManKRW": 18810,
+          "minAmountManKRW": 555000,
           "maxAmountManKRW": 650000,
           "lastTrade": {
-            "date": "2026-06-04",
-            "amountManKRW": 610000,
-            "floor": 2
+            "date": "2026-09-19",
+            "amountManKRW": 555000,
+            "floor": 8
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -778,9 +778,9 @@
           "pyeong": 33,
           "pyeongLabel": "33평형",
           "count": 11,
-          "recentCount": 5,
-          "medianAmountManKRW": 680000,
-          "medianPerPyeongManKRW": 20578,
+          "recentCount": 3,
+          "medianAmountManKRW": 650000,
+          "medianPerPyeongManKRW": 19670,
           "minAmountManKRW": 627000,
           "maxAmountManKRW": 700000,
           "lastTrade": {
@@ -849,16 +849,16 @@
           "area": 115.23,
           "pyeong": 34.9,
           "pyeongLabel": "35평형",
-          "count": 6,
-          "recentCount": 2,
-          "medianAmountManKRW": 615000,
-          "medianPerPyeongManKRW": 17644,
-          "minAmountManKRW": 580000,
+          "count": 7,
+          "recentCount": 3,
+          "medianAmountManKRW": 580000,
+          "medianPerPyeongManKRW": 16639,
+          "minAmountManKRW": 579000,
           "maxAmountManKRW": 650000,
           "lastTrade": {
-            "date": "2026-05-23",
-            "amountManKRW": 580000,
-            "floor": 5
+            "date": "2026-09-30",
+            "amountManKRW": 579000,
+            "floor": 4
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -868,11 +868,11 @@
           "pyeong": 36.7,
           "pyeongLabel": "37평형",
           "count": 4,
-          "recentCount": 2,
-          "medianAmountManKRW": 700000,
-          "medianPerPyeongManKRW": 19096,
+          "recentCount": 1,
+          "medianAmountManKRW": 670000,
+          "medianPerPyeongManKRW": 18278,
           "minAmountManKRW": 670000,
-          "maxAmountManKRW": 730000,
+          "maxAmountManKRW": 670000,
           "lastTrade": {
             "date": "2026-04-02",
             "amountManKRW": 670000,
@@ -885,16 +885,16 @@
           "area": 152.28,
           "pyeong": 46.1,
           "pyeongLabel": "46평형",
-          "count": 7,
-          "recentCount": 2,
-          "medianAmountManKRW": 845000,
-          "medianPerPyeongManKRW": 18344,
-          "minAmountManKRW": 840000,
+          "count": 8,
+          "recentCount": 3,
+          "medianAmountManKRW": 840000,
+          "medianPerPyeongManKRW": 18235,
+          "minAmountManKRW": 750000,
           "maxAmountManKRW": 850000,
           "lastTrade": {
-            "date": "2026-03-14",
-            "amountManKRW": 840000,
-            "floor": 4
+            "date": "2026-09-23",
+            "amountManKRW": 750000,
+            "floor": 8
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -921,16 +921,16 @@
           "area": 155.52,
           "pyeong": 47,
           "pyeongLabel": "47평형",
-          "count": 12,
-          "recentCount": 5,
+          "count": 13,
+          "recentCount": 6,
           "medianAmountManKRW": 850000,
           "medianPerPyeongManKRW": 18068,
           "minAmountManKRW": 779000,
           "maxAmountManKRW": 860000,
           "lastTrade": {
-            "date": "2026-07-29",
-            "amountManKRW": 800000,
-            "floor": 8
+            "date": "2026-08-15",
+            "amountManKRW": 850000,
+            "floor": 13
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -993,16 +993,16 @@
           "area": 182.95,
           "pyeong": 55.3,
           "pyeongLabel": "55평형",
-          "count": 8,
-          "recentCount": 3,
-          "medianAmountManKRW": 1125000,
-          "medianPerPyeongManKRW": 20328,
-          "minAmountManKRW": 1100000,
+          "count": 10,
+          "recentCount": 5,
+          "medianAmountManKRW": 1100000,
+          "medianPerPyeongManKRW": 19876,
+          "minAmountManKRW": 880000,
           "maxAmountManKRW": 1125000,
           "lastTrade": {
-            "date": "2026-07-08",
-            "amountManKRW": 1125000,
-            "floor": 10
+            "date": "2026-10-14",
+            "amountManKRW": 880000,
+            "floor": 6
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -1011,22 +1011,82 @@
           "area": 183.41,
           "pyeong": 55.5,
           "pyeongLabel": "55평형",
-          "count": 32,
-          "recentCount": 12,
-          "medianAmountManKRW": 976500,
-          "medianPerPyeongManKRW": 17601,
+          "count": 31,
+          "recentCount": 10,
+          "medianAmountManKRW": 970000,
+          "medianPerPyeongManKRW": 17483,
           "minAmountManKRW": 900000,
           "maxAmountManKRW": 1280000,
           "lastTrade": {
-            "date": "2026-08-28",
-            "amountManKRW": 973000,
-            "floor": 9
+            "date": "2026-10-08",
+            "amountManKRW": 930000,
+            "floor": 4
           },
           "landSharePyeong": null,
           "landShareByDong": {}
         }
       ],
       "recentTrades": [
+        {
+          "date": "2026-10-14",
+          "dong": null,
+          "pyeong": 55,
+          "area": 182.95,
+          "amountManKRW": 880000,
+          "perPyeongManKRW": 15901,
+          "floor": 6,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-10-08",
+          "dong": null,
+          "pyeong": 55,
+          "area": 183.41,
+          "amountManKRW": 930000,
+          "perPyeongManKRW": 16762,
+          "floor": 4,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-09-30",
+          "dong": null,
+          "pyeong": 35,
+          "area": 115.23,
+          "amountManKRW": 579000,
+          "perPyeongManKRW": 16611,
+          "floor": 4,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-09-23",
+          "dong": "107",
+          "pyeong": 46,
+          "area": 152.28,
+          "amountManKRW": 750000,
+          "perPyeongManKRW": 16282,
+          "floor": 8,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-09-23",
+          "dong": null,
+          "pyeong": 55,
+          "area": 182.95,
+          "amountManKRW": 1000000,
+          "perPyeongManKRW": 18069,
+          "floor": 3,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-09-19",
+          "dong": null,
+          "pyeong": 33,
+          "area": 108.88,
+          "amountManKRW": 555000,
+          "perPyeongManKRW": 16851,
+          "floor": 8,
+          "dealType": "중개거래"
+        },
         {
           "date": "2026-08-28",
           "dong": null,
@@ -1045,6 +1105,16 @@
           "amountManKRW": 665000,
           "perPyeongManKRW": 19737,
           "floor": 4,
+          "dealType": "중개거래"
+        },
+        {
+          "date": "2026-08-15",
+          "dong": null,
+          "pyeong": 47,
+          "area": 155.52,
+          "amountManKRW": 850000,
+          "perPyeongManKRW": 18068,
+          "floor": 13,
           "dealType": "중개거래"
         },
         {
@@ -1095,16 +1165,6 @@
           "amountManKRW": 915000,
           "perPyeongManKRW": 17753,
           "floor": 10,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-07-22",
-          "dong": null,
-          "pyeong": 55,
-          "area": 183.41,
-          "amountManKRW": 1005000,
-          "perPyeongManKRW": 18114,
-          "floor": 4,
           "dealType": "중개거래"
         },
         {
@@ -1169,7 +1229,7 @@
         },
         {
           "date": "2026-06-30",
-          "dong": null,
+          "dong": "122",
           "pyeong": 32,
           "area": 107.16,
           "amountManKRW": 580000,
@@ -1179,7 +1239,7 @@
         },
         {
           "date": "2026-06-20",
-          "dong": null,
+          "dong": "116",
           "pyeong": 34,
           "area": 112.05,
           "amountManKRW": 600000,
@@ -1209,7 +1269,7 @@
         },
         {
           "date": "2026-06-10",
-          "dong": null,
+          "dong": "115",
           "pyeong": 33,
           "area": 108.31,
           "amountManKRW": 610000,
@@ -1265,66 +1325,6 @@
           "amountManKRW": 629000,
           "perPyeongManKRW": 19098,
           "floor": 6,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-05-12",
-          "dong": "106",
-          "pyeong": 46,
-          "area": 152.39,
-          "amountManKRW": 760000,
-          "perPyeongManKRW": 16487,
-          "floor": 12,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-05-08",
-          "dong": "123",
-          "pyeong": 52,
-          "area": 170.38,
-          "amountManKRW": 840000,
-          "perPyeongManKRW": 16298,
-          "floor": 5,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-05-06",
-          "dong": "117",
-          "pyeong": 47,
-          "area": 155.52,
-          "amountManKRW": 850000,
-          "perPyeongManKRW": 18068,
-          "floor": 10,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-04-29",
-          "dong": "108",
-          "pyeong": 55,
-          "area": 183.41,
-          "amountManKRW": 900000,
-          "perPyeongManKRW": 16222,
-          "floor": 4,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-04-29",
-          "dong": "113",
-          "pyeong": 55,
-          "area": 182.95,
-          "amountManKRW": 1100000,
-          "perPyeongManKRW": 19876,
-          "floor": 7,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2026-04-27",
-          "dong": "123",
-          "pyeong": 52,
-          "area": 170.38,
-          "amountManKRW": 830000,
-          "perPyeongManKRW": 16104,
-          "floor": 1,
           "dealType": "중개거래"
         }
       ],
@@ -1830,7 +1830,7 @@
         },
         {
           "date": "2026-04-02",
-          "dong": null,
+          "dong": "204",
           "pyeong": 26,
           "area": 84.98,
           "amountManKRW": 580000,
@@ -2040,7 +2040,7 @@
       "id": "c-hd1",
       "label": "현대1차",
       "zone": "z3",
-      "tradeCount": 31,
+      "tradeCount": 30,
       "recentCount": 8,
       "medianPerPyeongManKRW": 16501,
       "buildYear": 1976,
@@ -2139,11 +2139,11 @@
           "area": 196.21,
           "pyeong": 59.4,
           "pyeongLabel": "59평형",
-          "count": 12,
+          "count": 11,
           "recentCount": 0,
-          "medianAmountManKRW": 895000,
-          "medianPerPyeongManKRW": 15079,
-          "minAmountManKRW": 670000,
+          "medianAmountManKRW": 900000,
+          "medianPerPyeongManKRW": 15163,
+          "minAmountManKRW": 740000,
           "maxAmountManKRW": 1305000,
           "lastTrade": {
             "date": "2025-08-18",
@@ -2471,8 +2471,8 @@
       "label": "현대2차",
       "zone": "z3",
       "tradeCount": 43,
-      "recentCount": 8,
-      "medianPerPyeongManKRW": 17215,
+      "recentCount": 7,
+      "medianPerPyeongManKRW": 17130,
       "buildYear": 1976,
       "sizes": [
         {
@@ -2552,11 +2552,11 @@
           "pyeong": 48.8,
           "pyeongLabel": "49평형",
           "count": 5,
-          "recentCount": 2,
-          "medianAmountManKRW": 820000,
-          "medianPerPyeongManKRW": 16817,
+          "recentCount": 1,
+          "medianAmountManKRW": 780000,
+          "medianPerPyeongManKRW": 15997,
           "minAmountManKRW": 780000,
-          "maxAmountManKRW": 860000,
+          "maxAmountManKRW": 780000,
           "lastTrade": {
             "date": "2026-04-06",
             "amountManKRW": 780000,
@@ -2980,7 +2980,7 @@
       "recentTrades": [
         {
           "date": "2026-06-19",
-          "dong": null,
+          "dong": "62",
           "pyeong": 25,
           "area": 82.5,
           "amountManKRW": 465000,
@@ -3229,6 +3229,16 @@
           "dealType": "중개거래"
         },
         {
+          "date": "2024-05-08",
+          "dong": "64",
+          "pyeong": 25,
+          "area": 82.5,
+          "amountManKRW": 340000,
+          "perPyeongManKRW": 13624,
+          "floor": 12,
+          "dealType": "중개거래"
+        },
+        {
           "date": "2024-05-04",
           "dong": "63",
           "pyeong": 25,
@@ -3267,16 +3277,6 @@
           "perPyeongManKRW": 13684,
           "floor": 3,
           "dealType": "중개거래"
-        },
-        {
-          "date": "2024-02-16",
-          "dong": "63",
-          "pyeong": 25,
-          "area": 82.5,
-          "amountManKRW": 345000,
-          "perPyeongManKRW": 13824,
-          "floor": 6,
-          "dealType": "중개거래"
         }
       ],
       "dongs": [
@@ -3290,25 +3290,25 @@
       "id": "c-hd4",
       "label": "현대4차",
       "zone": "z3",
-      "tradeCount": 10,
-      "recentCount": 3,
-      "medianPerPyeongManKRW": 19067,
+      "tradeCount": 8,
+      "recentCount": 2,
+      "medianPerPyeongManKRW": 19766,
       "buildYear": 1977,
       "sizes": [
         {
           "area": 117.9,
           "pyeong": 35.7,
           "pyeongLabel": "36평형",
-          "count": 3,
-          "recentCount": 1,
-          "medianAmountManKRW": 680000,
-          "medianPerPyeongManKRW": 19067,
-          "minAmountManKRW": 680000,
-          "maxAmountManKRW": 680000,
+          "count": 2,
+          "recentCount": 0,
+          "medianAmountManKRW": 565000,
+          "medianPerPyeongManKRW": 15842,
+          "minAmountManKRW": 520000,
+          "maxAmountManKRW": 610000,
           "lastTrade": {
-            "date": "2026-05-20",
-            "amountManKRW": 680000,
-            "floor": 2
+            "date": "2024-08-27",
+            "amountManKRW": 610000,
+            "floor": 5
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -3317,7 +3317,7 @@
           "area": 117.91,
           "pyeong": 35.7,
           "pyeongLabel": "36평형",
-          "count": 7,
+          "count": 6,
           "recentCount": 2,
           "medianAmountManKRW": 705000,
           "medianPerPyeongManKRW": 19766,
@@ -3334,18 +3334,8 @@
       ],
       "recentTrades": [
         {
-          "date": "2026-05-20",
-          "dong": null,
-          "pyeong": 36,
-          "area": 117.9,
-          "amountManKRW": 680000,
-          "perPyeongManKRW": 19067,
-          "floor": 2,
-          "dealType": "중개거래"
-        },
-        {
           "date": "2026-05-09",
-          "dong": null,
+          "dong": "56",
           "pyeong": 36,
           "area": 117.91,
           "amountManKRW": 680000,
@@ -3422,21 +3412,10 @@
           "perPyeongManKRW": 15000,
           "floor": 3,
           "dealType": "중개거래"
-        },
-        {
-          "date": "2023-10-04",
-          "dong": "52",
-          "pyeong": 36,
-          "area": 117.91,
-          "amountManKRW": 538000,
-          "perPyeongManKRW": 15084,
-          "floor": 3,
-          "dealType": "중개거래"
         }
       ],
       "dongs": [
         "51",
-        "52",
         "54",
         "55",
         "56"
@@ -3473,7 +3452,7 @@
       "recentTrades": [
         {
           "date": "2026-09-07",
-          "dong": null,
+          "dong": "71",
           "pyeong": 25,
           "area": 82.23,
           "amountManKRW": 510000,
@@ -3503,7 +3482,7 @@
         },
         {
           "date": "2026-05-29",
-          "dong": null,
+          "dong": "71",
           "pyeong": 25,
           "area": 82.23,
           "amountManKRW": 550000,
@@ -3652,7 +3631,7 @@
       "label": "현대6차",
       "zone": "z3",
       "tradeCount": 61,
-      "recentCount": 5,
+      "recentCount": 3,
       "medianPerPyeongManKRW": 16906,
       "buildYear": 1978,
       "sizes": [
@@ -3679,10 +3658,10 @@
           "pyeong": 43.8,
           "pyeongLabel": "44평형",
           "count": 19,
-          "recentCount": 4,
+          "recentCount": 2,
           "medianAmountManKRW": 742500,
           "medianPerPyeongManKRW": 16963,
-          "minAmountManKRW": 725000,
+          "minAmountManKRW": 740000,
           "maxAmountManKRW": 745000,
           "lastTrade": {
             "date": "2026-07-09",
@@ -4046,7 +4025,7 @@
       "id": "c-hd7",
       "label": "현대7차",
       "zone": "z3",
-      "tradeCount": 33,
+      "tradeCount": 32,
       "recentCount": 4,
       "medianPerPyeongManKRW": 17067,
       "buildYear": 1979,
@@ -4091,11 +4070,11 @@
           "area": 196.7,
           "pyeong": 59.5,
           "pyeongLabel": "60평형",
-          "count": 3,
+          "count": 2,
           "recentCount": 0,
-          "medianAmountManKRW": 950000,
-          "medianPerPyeongManKRW": 15966,
-          "minAmountManKRW": 685000,
+          "medianAmountManKRW": 980000,
+          "medianPerPyeongManKRW": 16470,
+          "minAmountManKRW": 950000,
           "maxAmountManKRW": 1010000,
           "lastTrade": {
             "date": "2025-06-10",
@@ -4441,24 +4420,24 @@
       "label": "한양3차",
       "zone": "z4",
       "tradeCount": 21,
-      "recentCount": 6,
-      "medianPerPyeongManKRW": 16210,
+      "recentCount": 7,
+      "medianPerPyeongManKRW": 15825,
       "buildYear": 1978,
       "sizes": [
         {
           "area": 116.94,
           "pyeong": 35.4,
           "pyeongLabel": "35평형",
-          "count": 12,
-          "recentCount": 3,
+          "count": 13,
+          "recentCount": 4,
           "medianAmountManKRW": 587000,
           "medianPerPyeongManKRW": 16594,
-          "minAmountManKRW": 587000,
+          "minAmountManKRW": 530000,
           "maxAmountManKRW": 600000,
           "lastTrade": {
-            "date": "2026-08-06",
-            "amountManKRW": 587000,
-            "floor": 12
+            "date": "2026-09-30",
+            "amountManKRW": 530000,
+            "floor": 4
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -4467,10 +4446,10 @@
           "area": 117.26,
           "pyeong": 35.5,
           "pyeongLabel": "35평형",
-          "count": 3,
+          "count": 2,
           "recentCount": 0,
-          "medianAmountManKRW": 415000,
-          "medianPerPyeongManKRW": 11700,
+          "medianAmountManKRW": 408500,
+          "medianPerPyeongManKRW": 11517,
           "minAmountManKRW": 400000,
           "maxAmountManKRW": 417000,
           "lastTrade": {
@@ -4502,6 +4481,16 @@
       ],
       "recentTrades": [
         {
+          "date": "2026-09-30",
+          "dong": null,
+          "pyeong": 35,
+          "area": 116.94,
+          "amountManKRW": 530000,
+          "perPyeongManKRW": 14983,
+          "floor": 4,
+          "dealType": "중개거래"
+        },
+        {
           "date": "2026-08-20",
           "dong": "31",
           "pyeong": 49,
@@ -4513,7 +4502,7 @@
         },
         {
           "date": "2026-08-06",
-          "dong": null,
+          "dong": "35",
           "pyeong": 35,
           "area": 116.94,
           "amountManKRW": 587000,
@@ -4523,7 +4512,7 @@
         },
         {
           "date": "2026-07-03",
-          "dong": null,
+          "dong": "31",
           "pyeong": 49,
           "area": 161.9,
           "amountManKRW": 750000,
@@ -4699,16 +4688,6 @@
           "amountManKRW": 417000,
           "perPyeongManKRW": 11756,
           "floor": 3,
-          "dealType": "중개거래"
-        },
-        {
-          "date": "2023-10-14",
-          "dong": "33",
-          "pyeong": 35,
-          "area": 117.26,
-          "amountManKRW": 415000,
-          "perPyeongManKRW": 11700,
-          "floor": 5,
           "dealType": "중개거래"
         }
       ],
@@ -5218,25 +5197,25 @@
       "id": "c-hd8",
       "label": "현대8차",
       "zone": "z4",
-      "tradeCount": 41,
+      "tradeCount": 42,
       "recentCount": 11,
-      "medianPerPyeongManKRW": 15663,
+      "medianPerPyeongManKRW": 15049,
       "buildYear": 1980,
       "sizes": [
         {
           "area": 107.64,
           "pyeong": 32.6,
           "pyeongLabel": "33평형",
-          "count": 13,
+          "count": 14,
           "recentCount": 4,
-          "medianAmountManKRW": 567500,
-          "medianPerPyeongManKRW": 17429,
-          "minAmountManKRW": 510000,
-          "maxAmountManKRW": 595000,
+          "medianAmountManKRW": 537500,
+          "medianPerPyeongManKRW": 16508,
+          "minAmountManKRW": 490000,
+          "maxAmountManKRW": 570000,
           "lastTrade": {
-            "date": "2026-07-08",
-            "amountManKRW": 570000,
-            "floor": 12
+            "date": "2026-09-07",
+            "amountManKRW": 490000,
+            "floor": 7
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -5297,6 +5276,16 @@
         }
       ],
       "recentTrades": [
+        {
+          "date": "2026-09-07",
+          "dong": null,
+          "pyeong": 33,
+          "area": 107.64,
+          "amountManKRW": 490000,
+          "perPyeongManKRW": 15049,
+          "floor": 7,
+          "dealType": "중개거래"
+        },
         {
           "date": "2026-07-08",
           "dong": "95",
@@ -5586,16 +5575,6 @@
           "perPyeongManKRW": 11715,
           "floor": 9,
           "dealType": "중개거래"
-        },
-        {
-          "date": "2024-08-13",
-          "dong": "92",
-          "pyeong": 50,
-          "area": 163.67,
-          "amountManKRW": 555000,
-          "perPyeongManKRW": 11210,
-          "floor": 2,
-          "dealType": "중개거래"
         }
       ],
       "dongs": [
@@ -5611,8 +5590,8 @@
       "label": "한양1차",
       "zone": "z5",
       "tradeCount": 70,
-      "recentCount": 14,
-      "medianPerPyeongManKRW": 23432,
+      "recentCount": 13,
+      "medianPerPyeongManKRW": 21135,
       "buildYear": 1977,
       "sizes": [
         {
@@ -5620,9 +5599,9 @@
           "pyeong": 15.1,
           "pyeongLabel": "15평형",
           "count": 20,
-          "recentCount": 7,
-          "medianAmountManKRW": 405000,
-          "medianPerPyeongManKRW": 26788,
+          "recentCount": 6,
+          "medianAmountManKRW": 406750,
+          "medianPerPyeongManKRW": 26904,
           "minAmountManKRW": 389000,
           "maxAmountManKRW": 420000,
           "lastTrade": {
@@ -6042,9 +6021,9 @@
       "id": "c-hy2",
       "label": "한양2차",
       "zone": "z5",
-      "tradeCount": 16,
-      "recentCount": 4,
-      "medianPerPyeongManKRW": 16563,
+      "tradeCount": 17,
+      "recentCount": 5,
+      "medianPerPyeongManKRW": 15409,
       "buildYear": 1978,
       "sizes": [
         {
@@ -6069,22 +6048,32 @@
           "area": 175.92,
           "pyeong": 53.2,
           "pyeongLabel": "53평형",
-          "count": 11,
-          "recentCount": 2,
-          "medianAmountManKRW": 785000,
-          "medianPerPyeongManKRW": 14752,
+          "count": 12,
+          "recentCount": 3,
+          "medianAmountManKRW": 780000,
+          "medianPerPyeongManKRW": 14657,
           "minAmountManKRW": 750000,
           "maxAmountManKRW": 820000,
           "lastTrade": {
-            "date": "2026-07-31",
-            "amountManKRW": 820000,
-            "floor": 10
+            "date": "2026-09-23",
+            "amountManKRW": 780000,
+            "floor": 8
           },
           "landSharePyeong": null,
           "landShareByDong": {}
         }
       ],
       "recentTrades": [
+        {
+          "date": "2026-09-23",
+          "dong": null,
+          "pyeong": 53,
+          "area": 175.92,
+          "amountManKRW": 780000,
+          "perPyeongManKRW": 14657,
+          "floor": 8,
+          "dealType": "중개거래"
+        },
         {
           "date": "2026-08-29",
           "dong": null,
@@ -6107,7 +6096,7 @@
         },
         {
           "date": "2026-05-29",
-          "dong": null,
+          "dong": "22",
           "pyeong": 53,
           "area": 175.92,
           "amountManKRW": 750000,
@@ -6555,25 +6544,25 @@
       "id": "c-hy7",
       "label": "한양7차",
       "zone": "z6",
-      "tradeCount": 13,
-      "recentCount": 2,
-      "medianPerPyeongManKRW": 16106,
+      "tradeCount": 12,
+      "recentCount": 1,
+      "medianPerPyeongManKRW": 16962,
       "buildYear": 1981,
       "sizes": [
         {
           "area": 106.22,
           "pyeong": 32.1,
           "pyeongLabel": "32평형",
-          "count": 9,
-          "recentCount": 2,
-          "medianAmountManKRW": 517500,
-          "medianPerPyeongManKRW": 16106,
-          "minAmountManKRW": 490000,
+          "count": 8,
+          "recentCount": 1,
+          "medianAmountManKRW": 545000,
+          "medianPerPyeongManKRW": 16962,
+          "minAmountManKRW": 545000,
           "maxAmountManKRW": 545000,
           "lastTrade": {
-            "date": "2026-05-27",
-            "amountManKRW": 490000,
-            "floor": 12
+            "date": "2026-01-20",
+            "amountManKRW": 545000,
+            "floor": 3
           },
           "landSharePyeong": null,
           "landShareByDong": {}
@@ -6616,16 +6605,6 @@
         }
       ],
       "recentTrades": [
-        {
-          "date": "2026-05-27",
-          "dong": null,
-          "pyeong": 32,
-          "area": 106.22,
-          "amountManKRW": 490000,
-          "perPyeongManKRW": 15250,
-          "floor": 12,
-          "dealType": "중개거래"
-        },
         {
           "date": "2026-01-20",
           "dong": "72",
@@ -6866,27 +6845,8 @@
   "zoneMonthly": [
     {
       "zone": "z1",
-      "totalCount": 79,
+      "totalCount": 78,
       "series": [
-        {
-          "ym": "2023-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 10441,
-          "byBand": {
-            "small": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            },
-            "mid": {
-              "count": 1,
-              "medianPerPyeongManKRW": 10441
-            },
-            "large": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            }
-          }
-        },
         {
           "ym": "2023-11",
           "count": 2,
@@ -7551,17 +7511,11 @@
               "medianPerPyeongManKRW": null
             }
           }
-        }
-      ]
-    },
-    {
-      "zone": "z2",
-      "totalCount": 163,
-      "series": [
+        },
         {
-          "ym": "2023-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 12527,
+          "ym": "2026-10",
+          "count": 0,
+          "medianPerPyeongManKRW": null,
           "byBand": {
             "small": {
               "count": 0,
@@ -7572,11 +7526,17 @@
               "medianPerPyeongManKRW": null
             },
             "large": {
-              "count": 1,
-              "medianPerPyeongManKRW": 12527
+              "count": 0,
+              "medianPerPyeongManKRW": null
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "zone": "z2",
+      "totalCount": 168,
+      "series": [
         {
           "ym": "2023-11",
           "count": 0,
@@ -8187,8 +8147,8 @@
         },
         {
           "ym": "2026-07",
-          "count": 12,
-          "medianPerPyeongManKRW": 18158,
+          "count": 11,
+          "medianPerPyeongManKRW": 18201,
           "byBand": {
             "small": {
               "count": 0,
@@ -8199,23 +8159,23 @@
               "medianPerPyeongManKRW": 18201
             },
             "large": {
-              "count": 7,
-              "medianPerPyeongManKRW": 18114
+              "count": 6,
+              "medianPerPyeongManKRW": 18485
             }
           }
         },
         {
           "ym": "2026-08",
-          "count": 2,
-          "medianPerPyeongManKRW": 18637,
+          "count": 3,
+          "medianPerPyeongManKRW": 18068,
           "byBand": {
             "small": {
               "count": 0,
               "medianPerPyeongManKRW": null
             },
             "mid": {
-              "count": 1,
-              "medianPerPyeongManKRW": 19737
+              "count": 2,
+              "medianPerPyeongManKRW": 18903
             },
             "large": {
               "count": 1,
@@ -8225,8 +8185,27 @@
         },
         {
           "ym": "2026-09",
-          "count": 0,
-          "medianPerPyeongManKRW": null,
+          "count": 4,
+          "medianPerPyeongManKRW": 16731,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "mid": {
+              "count": 3,
+              "medianPerPyeongManKRW": 16611
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 18069
+            }
+          }
+        },
+        {
+          "ym": "2026-10",
+          "count": 2,
+          "medianPerPyeongManKRW": 16332,
           "byBand": {
             "small": {
               "count": 0,
@@ -8237,8 +8216,8 @@
               "medianPerPyeongManKRW": null
             },
             "large": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
+              "count": 2,
+              "medianPerPyeongManKRW": 16332
             }
           }
         }
@@ -8246,27 +8225,8 @@
     },
     {
       "zone": "z3",
-      "totalCount": 275,
+      "totalCount": 271,
       "series": [
-        {
-          "ym": "2023-10",
-          "count": 4,
-          "medianPerPyeongManKRW": 12769,
-          "byBand": {
-            "small": {
-              "count": 1,
-              "medianPerPyeongManKRW": 14025
-            },
-            "mid": {
-              "count": 1,
-              "medianPerPyeongManKRW": 15084
-            },
-            "large": {
-              "count": 2,
-              "medianPerPyeongManKRW": 11400
-            }
-          }
-        },
         {
           "ym": "2023-11",
           "count": 2,
@@ -8383,12 +8343,12 @@
         },
         {
           "ym": "2024-05",
-          "count": 10,
-          "medianPerPyeongManKRW": 12360,
+          "count": 11,
+          "medianPerPyeongManKRW": 12363,
           "byBand": {
             "small": {
-              "count": 1,
-              "medianPerPyeongManKRW": 13824
+              "count": 2,
+              "medianPerPyeongManKRW": 13724
             },
             "mid": {
               "count": 7,
@@ -8839,16 +8799,16 @@
         },
         {
           "ym": "2026-05",
-          "count": 16,
-          "medianPerPyeongManKRW": 19066,
+          "count": 15,
+          "medianPerPyeongManKRW": 19065,
           "byBand": {
             "small": {
               "count": 6,
               "medianPerPyeongManKRW": 21910
             },
             "mid": {
-              "count": 8,
-              "medianPerPyeongManKRW": 17086
+              "count": 7,
+              "medianPerPyeongManKRW": 16342
             },
             "large": {
               "count": 2,
@@ -8931,32 +8891,32 @@
               "medianPerPyeongManKRW": null
             }
           }
-        }
-      ]
-    },
-    {
-      "zone": "z4",
-      "totalCount": 97,
-      "series": [
+        },
         {
-          "ym": "2023-10",
-          "count": 1,
-          "medianPerPyeongManKRW": 11700,
+          "ym": "2026-10",
+          "count": 0,
+          "medianPerPyeongManKRW": null,
           "byBand": {
             "small": {
               "count": 0,
               "medianPerPyeongManKRW": null
             },
             "mid": {
-              "count": 1,
-              "medianPerPyeongManKRW": 11700
+              "count": 0,
+              "medianPerPyeongManKRW": null
             },
             "large": {
               "count": 0,
               "medianPerPyeongManKRW": null
             }
           }
-        },
+        }
+      ]
+    },
+    {
+      "zone": "z4",
+      "totalCount": 98,
+      "series": [
         {
           "ym": "2023-11",
           "count": 1,
@@ -9605,6 +9565,25 @@
         },
         {
           "ym": "2026-09",
+          "count": 2,
+          "medianPerPyeongManKRW": 15016,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "mid": {
+              "count": 2,
+              "medianPerPyeongManKRW": 15016
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            }
+          }
+        },
+        {
+          "ym": "2026-10",
           "count": 0,
           "medianPerPyeongManKRW": null,
           "byBand": {
@@ -9626,27 +9605,8 @@
     },
     {
       "zone": "z5",
-      "totalCount": 86,
+      "totalCount": 87,
       "series": [
-        {
-          "ym": "2023-10",
-          "count": 0,
-          "medianPerPyeongManKRW": null,
-          "byBand": {
-            "small": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            },
-            "mid": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            },
-            "large": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            }
-          }
-        },
         {
           "ym": "2023-11",
           "count": 2,
@@ -10295,6 +10255,25 @@
         },
         {
           "ym": "2026-09",
+          "count": 1,
+          "medianPerPyeongManKRW": 14657,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "mid": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "large": {
+              "count": 1,
+              "medianPerPyeongManKRW": 14657
+            }
+          }
+        },
+        {
+          "ym": "2026-10",
           "count": 0,
           "medianPerPyeongManKRW": null,
           "byBand": {
@@ -10316,27 +10295,8 @@
     },
     {
       "zone": "z6",
-      "totalCount": 34,
+      "totalCount": 33,
       "series": [
-        {
-          "ym": "2023-10",
-          "count": 0,
-          "medianPerPyeongManKRW": null,
-          "byBand": {
-            "small": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            },
-            "mid": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            },
-            "large": {
-              "count": 0,
-              "medianPerPyeongManKRW": null
-            }
-          }
-        },
         {
           "ym": "2023-11",
           "count": 0,
@@ -10909,16 +10869,16 @@
         },
         {
           "ym": "2026-05",
-          "count": 1,
-          "medianPerPyeongManKRW": 15250,
+          "count": 0,
+          "medianPerPyeongManKRW": null,
           "byBand": {
             "small": {
               "count": 0,
               "medianPerPyeongManKRW": null
             },
             "mid": {
-              "count": 1,
-              "medianPerPyeongManKRW": 15250
+              "count": 0,
+              "medianPerPyeongManKRW": null
             },
             "large": {
               "count": 0,
@@ -11001,6 +10961,25 @@
               "medianPerPyeongManKRW": null
             }
           }
+        },
+        {
+          "ym": "2026-10",
+          "count": 0,
+          "medianPerPyeongManKRW": null,
+          "byBand": {
+            "small": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "mid": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            },
+            "large": {
+              "count": 0,
+              "medianPerPyeongManKRW": null
+            }
+          }
         }
       ]
     }
@@ -11008,7 +10987,7 @@
   "unmapped": [
     {
       "aptName": "현대빌라트",
-      "count": 2
+      "count": 1
     }
   ],
   "failures": []
