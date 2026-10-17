@@ -507,6 +507,8 @@ function renderTabs() {
 
 // 문학상 전체 목록처럼 큰 묶음은 '모두 사기'가 의미 없어서 숨긴다
 const BUY_ALL_MAX = 40;
+// 당분간 '이 묶음 모두 사기'는 숨긴다. 다시 켜려면 true
+const SHOW_BUY_ALL = false;
 
 function countLabel(ids) {
   const series = ids.filter((id) => DATA.books[id].isSeries).length;
@@ -542,7 +544,7 @@ function renderCollection() {
     </div>
     <div class="actions">
       ${c.kind === "level" || c.kind === "search" ? "" : `<label class="toggle"><input type="checkbox" id="only-fit" ${state.onlyFit ? "checked" : ""}> 우리 아이 레벨에 맞는 책만</label>`}
-      ${ids.length > BUY_ALL_MAX ? "" : `<button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
+      ${!SHOW_BUY_ALL || ids.length > BUY_ALL_MAX ? "" : `<button class="btn primary" id="buy-all" ${toBuy.length ? "" : "disabled"} aria-expanded="${state.buyOpen}">
         ${toBuy.length ? `이 묶음 모두 사기 · ${toBuy.length}개` : "모두 집에 있어요"}
       </button>`}
     </div>`;
