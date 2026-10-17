@@ -5,7 +5,7 @@
 // web/dist/index.html: 그대로 열거나 정적 호스팅에 올리는 완성 페이지
 // web/dist/app.html: <head> 없는 조각(미리보기 아티팩트용)
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import {
   INTEREST_LEVEL_INFO,
   K_LEVELS,
@@ -152,6 +152,9 @@ writeFileSync(
   new URL("dist/index.html", root),
   `<!doctype html>\n<html lang="ko">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n</head>\n<body>\n${app}\n</body>\n</html>\n`,
 );
+
+// 챕터별 단어·문제 학습지(web/materials)는 그대로 복사
+if (existsSync(new URL("materials/", root))) cpSync(new URL("materials/", root), new URL("dist/materials/", root), { recursive: true });
 
 const notPartners = BOOKS.filter((b) => bookLinkKind(b) !== "partners").length;
 const seriesCount = BOOKS.filter((b) => b.isSeries).length;
