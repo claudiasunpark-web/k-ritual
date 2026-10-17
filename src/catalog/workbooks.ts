@@ -1,4 +1,4 @@
-// 문제집 추천: 보캡·그래머·파닉스 문제집을 K-레벨 범위에 맞춰 보여준다.
+// 문제집 추천: 파닉스·보캡·그래머·리딩(독해) 문제집을 시크릿 북레벨 범위에 맞춰 보여준다.
 // 데이터는 data/workbooks.csv(구글 시트 '문제집')에 있다. 레벨 범위는 모두 근사값이다.
 
 import { readFileSync } from "node:fs";
@@ -6,7 +6,7 @@ import { CatalogError } from "./sheet.ts";
 import { coupangSearchUrl } from "./coupang.ts";
 import { parseCsvRecords } from "./csv.ts";
 
-export const WORKBOOK_KINDS = ["파닉스", "사이트워드", "보캡", "그래머"] as const;
+export const WORKBOOK_KINDS = ["파닉스", "사이트워드", "보캡", "그래머", "리딩"] as const;
 export type WorkbookKind = (typeof WORKBOOK_KINDS)[number];
 
 export interface Workbook {

@@ -291,6 +291,7 @@ body { margin: 0; }
       <h2 id="wb-h">실력 다지기</h2>
       <p class="small muted" id="wb-level"></p>
     </div>
+    <div class="tabs" role="tablist" id="wb-tabs"></div>
     <div class="workbooks" id="workbooks" style="border-top: 0; padding-top: 0"></div>
   </section>
 
@@ -365,6 +366,7 @@ const state = {
   // 펼쳐 놓은 시리즈 카드 id들. 같은 화면에서 낱권이 카드 아래로 펼쳐진다
   expanded: new Set(),
   query: "",
+  wbTab: store.get("wbTab", "grammar"),
   // 장바구니에 담은 책 id (담은 순서)
   cart: store.get("cart", []).filter((id) => DATA.books[id]),
   // 독서 기록: 읽을 때마다 한 줄 { id | title+level, at }. 같은 책을 다시 읽으면 줄이 하나 더 생긴다
@@ -453,15 +455,30 @@ function renderChild() {
 }
 
 // 이 레벨에서 책 읽기 사이사이에 풀면 좋은 문제집
+// 실력 다지기: 문법 · 보캡 · 리딩 탭. 파닉스·사이트워드는 읽기의 기초라 '리딩'에 함께 둔다
+const WB_TABS = [
+  { id: "grammar", label: "문법", kinds: ["그래머"], early: "문법은 레벨 2부터 시작해요. 지금은 책 읽기와 파닉스가 먼저예요." },
+  { id: "vocab", label: "보캡", kinds: ["보캡"], early: "보캡 문제집은 레벨 2부터예요. 지금은 그림책으로 단어를 귀에 익히는 시기예요." },
+  { id: "reading", label: "리딩", kinds: ["리딩", "파닉스", "사이트워드"], early: "" },
+];
+
 function renderWorkbooks(level) {
-  const list = DATA.workbooks.filter((w) => level >= w.levelMin && level <= w.levelMax);
+  const tab = WB_TABS.find((t) => t.id === state.wbTab) ?? WB_TABS[0];
   const range = (w) => (w.levelMin === w.levelMax ? `레벨 ${w.levelMin}` : `레벨 ${w.levelMin}–${w.levelMax}`);
-  $("wb-level").textContent = `책 읽기 사이사이 푸는 보캡·그래머·파닉스 문제집이에요. 시크릿 북레벨 ${level} · ${DATA.levels[level].name} 기준이고, 레벨은 '우리 아이 레벨'에서 바꿀 수 있어요.`;
-  $("workbooks").innerHTML = level === 0
-    ? `<p class="small muted">레벨 0은 듣기 단계라 문제집보다 읽어주기가 먼저예요. 알파벳을 배우기 시작하면 파닉스 문제집을 시작해요.</p>
-       <div class="wb-list">${DATA.workbooks.filter((w) => w.kind === "파닉스").map(wbCard).join("")}</div>`
-    : `<p class="small muted">책 읽기 사이사이에 하루 10~15분. 문제집은 읽기 레벨보다 살짝 쉬운 걸로 골랐어요.</p>
-       <div class="wb-list">${list.map(wbCard).join("")}</div>`;
+  const forTab = (t) => DATA.workbooks.filter((w) => t.kinds.includes(w.kind) && level >= w.levelMin && level <= w.levelMax);
+  $("wb-level").textContent = `책 읽기 사이사이 하루 10~15분 푸는 문제집이에요. 시크릿 북레벨 ${level} · ${DATA.levels[level].keyName} 기준이고, 레벨은 '우리 아이 레벨'에서 바꿀 수 있어요.`;
+  $("wb-tabs").innerHTML = WB_TABS.map((t) =>
+    `<button class="tab" role="tab" data-wb="${t.id}" aria-selected="${t.id === tab.id}">${t.label} <span class="count">${forTab(t).length}</span></button>`).join("");
+  let list = forTab(tab);
+  let lead = "문제집은 읽기 레벨보다 살짝 쉬운 걸로 골랐어요.";
+  // 레벨 0은 듣기 단계: 리딩 탭에서 파닉스 교재를 미리 보여준다
+  if (!list.length && tab.id === "reading") {
+    list = DATA.workbooks.filter((w) => w.kind === "파닉스");
+    lead = "레벨 0은 듣기 단계라 문제집보다 읽어주기가 먼저예요. 알파벳을 배우기 시작하면 파닉스 교재부터 시작해요.";
+  }
+  $("workbooks").innerHTML = list.length
+    ? `<p class="small muted">${lead}</p><div class="wb-list">${list.map(wbCard).join("")}</div>`
+    : `<p class="empty">${esc(tab.early || "이 레벨에 맞는 문제집을 준비하고 있어요.")}</p>`;
   function wbCard(w) {
     return `<div class="wb">
       <div class="tags"><span class="tag">${esc(w.kind)}</span><span class="tag">${range(w)}<span class="approx">근사</span></span></div>
@@ -965,6 +982,12 @@ $("go-books").addEventListener("click", () => {
   state.buyOpen = false; state.limit = 24; state.expanded.clear();
   store.set("kind", state.kind); store.set("collection", state.collectionId);
   renderTabs(); renderCollection(); go("books");
+});
+
+$("wb-tabs").addEventListener("click", (e) => {
+  const t = e.target.closest("[data-wb]"); if (!t) return;
+  state.wbTab = t.dataset.wb; store.set("wbTab", state.wbTab);
+  renderWorkbooks(state.openLevel ?? childLevel());
 });
 
 $("disclosure").textContent = DATA.disclosure;
