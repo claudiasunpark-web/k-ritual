@@ -49,6 +49,7 @@ const range = (min: number, max: number, unit = "") =>
 const levels = K_LEVELS.map((l) => ({
   level: l.level,
   name: l.name,
+  keyName: l.keyName,
   headline: l.headline,
   ar: l.level === 0 ? "—" : range(l.ar.min, l.ar.max),
   lexile:

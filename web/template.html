@@ -92,7 +92,9 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .lb-who { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em; opacity: 0.8; position: relative; }
 .lb-title { position: relative; font-size: 1.7rem; line-height: 1.2; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .lb-num { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; line-height: 1; }
-.lb-name { position: relative; font-family: var(--font-ko-display); font-size: 1.1rem; font-weight: 700; }
+.lb-name { position: relative; font-family: var(--font-ko-display); font-size: 1.05rem; font-weight: 700; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.lb-key { display: inline-flex; align-items: center; gap: 5px; background: var(--surface); color: var(--accent); border-radius: 99px; padding: 3px 10px 3px 8px; font-size: 0.95rem; }
+.key-ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .lb-big { position: absolute; right: 8px; bottom: -28px; font-family: var(--font-display); font-weight: 700; font-size: 9rem; line-height: 1;
   color: var(--ink); opacity: 0.07; pointer-events: none; }
 @media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
@@ -399,6 +401,11 @@ function isGoodFit(book) {
   return f.diff >= -1 && f.diff <= 1;
 }
 
+// 레벨 캐릭터 '~키'의 열쇠 표시 (캐릭터 그림이 생기기 전까지)
+function keyIcon() {
+  return `<svg class="key-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="12" r="4.2"/><path d="M12.2 12H21M17.5 12v3M20 12v2.2"/></svg>`;
+}
+
 function levelColor(level) {
   return `hsl(${150 + level * 4} 36% calc(var(--level-l) - ${level} * var(--level-step) / 2))`;
 }
@@ -415,7 +422,7 @@ function renderChild() {
   $("ladder").innerHTML = DATA.levels.map((l) => `
     <button class="rung ${l.level === mine ? "is-child" : ""} ${l.level === shown ? "is-open" : ""}"
       style="height: ${34 + l.level * 6}px; background: ${levelColor(l.level)}"
-      data-level="${l.level}" aria-pressed="${l.level === shown}" title="시크릿 북레벨 ${l.level} ${esc(l.name)}">
+      data-level="${l.level}" aria-pressed="${l.level === shown}" title="시크릿 북레벨 ${l.level} ${esc(l.keyName)} · ${esc(l.name)}">
       <span>${l.level}</span>
     </button>`).join("");
 
@@ -425,7 +432,7 @@ function renderChild() {
     <div class="level-banner ${shown === mine ? "" : "is-other"}" style="--lv: ${levelColor(l.level)}">
       <p class="lb-who">${who}</p>
       <h3 class="lb-title"><span class="lb-brand">시크릿 북레벨</span> <span class="lb-num num">${l.level}</span></h3>
-      <p class="lb-name">${esc(l.name)}</p>
+      <p class="lb-name"><span class="lb-key">${keyIcon()}${esc(l.keyName)}</span> · ${esc(l.name)}</p>
       <span class="lb-big num" aria-hidden="true">${l.level}</span>
     </div>
     <div style="display: grid; gap: 10px">

@@ -22,6 +22,8 @@ export type BookFormat =
 export interface KLevel {
   level: number;
   name: string;
+  /** 레벨 캐릭터 이름. 레벨이 오를 때마다 다음 방을 여는 '열쇠'를 하나씩 모은다 */
+  keyName: string;
   /** 엄마에게 보여줄 한 줄 요약 */
   headline: string;
   /** AR(ATOS) 범위, 하한 포함·상한 미포함 */
@@ -48,6 +50,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 0,
     name: "귀 열기",
+    keyName: "쫑긋키",
     headline: "파닉스 전 · 엄마가 읽어주는 단계",
     ar: { min: 0, max: 0 },
     lexile: { min: -Infinity, max: -Infinity },
@@ -67,6 +70,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 1,
     name: "첫 글자",
+    keyName: "콕콕키",
     headline: "파닉스 배우는 중 · 한 단어씩 짚으며 읽기",
     ar: { min: 0.1, max: 1.0 },
     lexile: { min: -Infinity, max: 150 },
@@ -86,6 +90,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 2,
     name: "막 뗀 파닉스",
+    keyName: "뚝딱키",
     headline: "파닉스 뗀 직후~3개월 · 소리 내어 혼자 읽기 시작",
     ar: { min: 1.0, max: 1.5 },
     lexile: { min: 150, max: 300 },
@@ -109,6 +114,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 3,
     name: "리더스 독립",
+    keyName: "혼자키",
     headline: "파닉스 후 3~6개월 · 짧은 리더스북 혼자 완독",
     ar: { min: 1.5, max: 2.0 },
     lexile: { min: 300, max: 400 },
@@ -128,6 +134,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 4,
     name: "얼리챕터 입문",
+    keyName: "챕터키",
     headline: "파닉스 후 6~9개월 · 챕터로 나뉜 책 시작",
     ar: { min: 2.0, max: 2.5 },
     lexile: { min: 400, max: 480 },
@@ -147,6 +154,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 5,
     name: "혼자 읽기",
+    keyName: "술술키",
     headline: "파닉스 후 6~12개월 · 혼자 읽기 가능",
     ar: { min: 2.5, max: 3.0 },
     lexile: { min: 480, max: 550 },
@@ -166,6 +174,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 6,
     name: "챕터북",
+    keyName: "쑥쑥키",
     headline: "파닉스 후 1~1년 반 · 속으로 읽기 전환",
     ar: { min: 3.0, max: 3.5 },
     lexile: { min: 550, max: 620 },
@@ -185,6 +194,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 7,
     name: "챕터북 몰입",
+    keyName: "풍덩키",
     headline: "파닉스 후 1년 반~2년 · 두꺼운 챕터북 시리즈 몰입",
     ar: { min: 3.5, max: 4.0 },
     lexile: { min: 620, max: 690 },
@@ -204,6 +214,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 8,
     name: "소설 입문",
+    keyName: "이야기키",
     headline: "파닉스 후 2~3년 · 그림 없는 소설 시작",
     ar: { min: 4.0, max: 5.0 },
     lexile: { min: 690, max: 810 },
@@ -223,6 +234,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 9,
     name: "소설 독립",
+    keyName: "날개키",
     headline: "파닉스 후 3~4년 · 미국 또래 수준 소설",
     ar: { min: 5.0, max: 6.0 },
     lexile: { min: 810, max: 910 },
@@ -242,6 +254,7 @@ export const K_LEVELS: readonly KLevel[] = [
   {
     level: 10,
     name: "상급 독서",
+    keyName: "마스터키",
     headline: "원어민 고학년 이상 · 내용 성숙도 꼭 확인",
     ar: { min: 6.0, max: Infinity },
     lexile: { min: 910, max: Infinity },
