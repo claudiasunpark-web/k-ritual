@@ -266,6 +266,57 @@ td code { font-family: var(--font-mono); background: var(--soft); padding: 1px 6
 
 footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 4px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+/* ── 온보딩 ─────────────────────────── */
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.onb { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto;
+  padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.onb-in-wrap { max-width: 480px; margin: 0 auto; min-height: 100%; box-sizing: border-box; display: flex; flex-direction: column; gap: 18px;
+  padding-block: 16px 24px; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.onb-top { display: flex; align-items: center; gap: 12px; }
+.onb-bars { flex: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.onb-bars i { height: 5px; border-radius: 3px; background: var(--line); }
+.onb-bars i.on { background: var(--accent); }
+.onb-icon { width: 44px; height: 44px; margin-left: -10px; border: 0; background: none; border-radius: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--ink); flex: none; }
+.onb-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.onb-icon.sm { margin: 0 -8px 0 auto; }
+.onb-h { font-size: 1.65rem; line-height: 1.3; margin-top: 6px; }
+.onb-field { display: grid; gap: 10px; }
+.onb-field > label, .onb-label { font-size: 0.85rem; font-weight: 700; }
+.onb-in { height: 52px; font-size: 16px; border-radius: 14px; background: var(--surface); padding: 0 16px; }
+.onb-grid { display: grid; gap: 8px; }
+.onb-grid.g5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+.onb-grid.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.onb-grid.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.onb-opt { min-height: 46px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; padding: 6px 8px; font-size: 0.9rem; }
+.onb-opt[aria-pressed="true"], .onb-chip[aria-pressed="true"] { border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent); font-weight: 700; }
+.onb-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.onb-chip { min-height: 44px; padding: 0 16px; border-radius: 22px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.onb-hits { display: grid; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.onb-hits:empty { display: none; }
+.onb-hit { display: flex; align-items: center; gap: 12px; padding: 8px 12px; min-height: 56px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--ink); text-align: left; cursor: pointer; }
+.onb-hit:last-child { border-bottom: 0; }
+.onb-hit-t { flex: 1; min-width: 0; display: grid; }
+.onb-hit-t b { font-size: 0.9rem; }
+.onb-lv { font-size: 0.72rem; font-weight: 700; padding: 4px 8px; border-radius: 8px; background: color-mix(in srgb, var(--accent) 12%, var(--surface)); color: var(--accent); white-space: nowrap; }
+.onb-cover { width: 30px; height: 42px; border-radius: 3px 6px 6px 3px; flex: none; position: relative; overflow: hidden; }
+.onb-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.onb-pick { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 12px; display: grid; gap: 10px; }
+.onb-pick-h { display: flex; align-items: center; gap: 10px; }
+.onb-pick-h b { flex: 1; min-width: 0; font-size: 0.92rem; }
+.onb-cta { margin-top: auto; display: grid; gap: 6px; padding-top: 8px; }
+.onb-next { height: 56px; justify-content: center; font-size: 1rem; border-radius: 16px; }
+.onb-next:disabled { opacity: 0.45; cursor: default; }
+.onb-link { min-height: 44px; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 0.9rem; }
+.onb-c { text-align: center; }
+.onb-res { display: grid; justify-items: center; gap: 2px; padding: 8px 0 4px; }
+.onb-res .key-art { width: 132px; height: 132px; }
+.onb-key { font-size: 2.2rem; letter-spacing: -0.03em; }
+.onb-sub { font-weight: 600; color: var(--muted); }
+.onb-box { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 8px; }
+.onb-why { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; font-size: 0.9rem; }
+.onb-rec { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 8px; min-width: 0; }
+.onb-rec > span:last-child { display: grid; min-width: 0; font-size: 0.82rem; line-height: 1.3; }
+
 
 /* ── 앱 화면: 아래 메뉴로 한 화면씩 ─────────── */
 body { margin: 0; }
@@ -307,7 +358,10 @@ body { margin: 0; }
     </div>
     <div class="ladder" id="ladder" role="group" aria-label="시크릿 북레벨 사다리"></div>
     <div class="level-card" id="level-card"></div>
-    <button class="btn primary go-books" id="go-books">이 레벨 책 보러 가기 →</button>
+    <div class="actions">
+      <button class="btn primary go-books" id="go-books">이 레벨 책 보러 가기 →</button>
+      <button class="btn" id="onb-again">레벨 다시 찾기</button>
+    </div>
   </section>
   <aside class="guide-mini" aria-label="지수 읽는 법">
     <p><b>참고 · 책에 적힌 숫자 읽는 법</b></p>
@@ -362,6 +416,8 @@ body { margin: 0; }
   </footer>
 </div>
 
+<div class="onb" id="onb" role="dialog" aria-modal="true" aria-label="우리 아이 레벨 찾기" hidden></div>
+
 <nav class="tabbar" aria-label="메뉴">
   <div class="tabbar-inner" id="tabbar">
     <button data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>우리 아이 레벨</button>
@@ -386,6 +442,9 @@ const store = {
 const state = {
   age: store.get("age", 7),
   reading: store.get("reading", "m6"),
+  // 온보딩 설문 결과. levelOverride가 있으면 파닉스 시기보다 우선한다 (읽는 책까지 보고 정한 레벨)
+  profile: store.get("profile", null),
+  levelOverride: store.get("levelOverride", null),
   openLevel: null,
   kind: store.get("kind", "situation"),
   collectionId: store.get("collection", null),
@@ -407,8 +466,18 @@ const state = {
 };
 
 function childLevel() {
-  return (DATA.readingOptions.find((o) => o.id === state.reading) ?? DATA.readingOptions[0]).level;
+  if (state.levelOverride != null) return state.levelOverride;
+  return phonicsLevel(state.reading);
 }
+function phonicsLevel(id) {
+  return (DATA.readingOptions.find((o) => o.id === id) ?? DATA.readingOptions[0]).level;
+}
+// 받침 있으면 '은', 없으면 '는' ("서아는", "지민은")
+function josa(word, withFinal, without) {
+  const c = word.charCodeAt(word.length - 1);
+  return c >= 0xac00 && c <= 0xd7a3 && (c - 0xac00) % 28 ? withFinal : without;
+}
+function childName() { return state.profile?.name?.trim() || ""; }
 
 // 판정 규칙은 src/levels/estimate.ts의 fitForChild와 같다
 function fit(book) {
@@ -490,7 +559,8 @@ function renderChild() {
     </button>`).join("");
 
   const l = DATA.levels[shown];
-  const who = shown === mine ? "우리 아이는 지금" : "다른 단계 보기";
+  const nm = childName();
+  const who = shown === mine ? (nm ? `${esc(nm)}${josa(nm, "은", "는")} 지금` : "우리 아이는 지금") : "다른 단계 보기";
   $("level-card").innerHTML = `
     <div class="level-banner ${shown === mine ? "" : "is-other"}" style="--lv: ${levelColor(l.level)}">
       <div class="lb-text">
@@ -991,7 +1061,11 @@ $("cart").addEventListener("click", (e) => {
 
 // ── 이벤트 ──────────────────────────
 $("age").addEventListener("change", (e) => { state.age = Number(e.target.value); store.set("age", state.age); renderAll(); });
-$("reading").addEventListener("change", (e) => { state.reading = e.target.value; state.openLevel = null; store.set("reading", state.reading); renderAll(); });
+$("reading").addEventListener("change", (e) => {
+  state.reading = e.target.value; state.openLevel = null; store.set("reading", state.reading);
+  state.levelOverride = null; store.set("levelOverride", null);
+  renderAll();
+});
 $("ladder").addEventListener("click", (e) => {
   const r = e.target.closest("[data-level]"); if (!r) return;
   const lv = Number(r.dataset.level);
@@ -1097,7 +1171,180 @@ $("wb-tabs").addEventListener("click", (e) => {
   renderWorkbooks(state.openLevel ?? childLevel());
 });
 
+// ── 온보딩: 우리 아이 레벨 찾기 (처음 온 사람에게 자동으로, 홈의 '레벨 다시 찾기'로 언제든) ──
+const ONB_THEMES = ["동물", "공룡", "유머", "판타지", "모험", "미스터리", "과학", "가족", "우정", "감정"]
+  .filter((t) => DATA.collections.some((c) => c.kind === "theme" && c.title === t));
+// 골고루 읽기: 좋아하는 이야기와 다른 쪽에서 하나씩 (논픽션·생각하는 책 위주)
+const BALANCE_THEMES = ["과학", "지식", "역사", "자연", "미스터리"];
+const IN_SERIES = new Set(Object.values(DATA.seriesBooks).flat());
+const cardLevel = (b) => (b.listen ? 0 : b.level);
+// [값, 버튼 글자, 레벨 보정, 결과 문장]
+const FEELS = [["easy", "술술 읽어요", 1, "술술 읽어요"], ["fit", "딱 좋아요", 0, "딱 좋아해요"], ["hard", "어려워해요", -1, "어려워해요"]];
+const MINUTES = [["10", "10분 안"], ["20", "20~30분"], ["60", "1시간 이상"]];
+
+let onb = null;
+function openOnb() {
+  const p = state.profile ?? {};
+  onb = { step: 1, name: p.name ?? "", age: p.age ?? state.age, q: "", picks: (p.picks ?? []).filter((x) => DATA.books[x.id]),
+    phonics: p.phonics ?? state.reading, themes: p.themes ?? [], minutes: p.minutes ?? "20" };
+  $("onb").hidden = false; document.body.style.overflow = "hidden";
+  renderOnb();
+}
+function closeOnb() {
+  $("onb").hidden = true; document.body.style.overflow = ""; onb = null;
+}
+
+function onbResult() {
+  const ph = phonicsLevel(onb.phonics);
+  const rated = onb.picks.map((x) => ({ ...x, b: DATA.books[x.id] })).filter((x) => cardLevel(x.b) != null);
+  const est = rated.map((x) => cardLevel(x.b) + FEELS.find((f) => f[0] === x.feel)[2]);
+  const bookAvg = est.length ? est.reduce((a, n) => a + n, 0) / est.length : null;
+  // 읽는 책 반응을 파닉스 시기보다 2배로 본다
+  const level = Math.max(0, Math.min(10, Math.round(bookAvg == null ? ph : (2 * bookAvg + ph) / 3)));
+  const reasons = [
+    ...rated.map((x) => `${esc(x.b.title)}(북레벨 ${cardLevel(x.b)})를 <b>${FEELS.find((f) => f[0] === x.feel)[3]}</b>`),
+    `${DATA.readingOptions.find((o) => o.id === onb.phonics).label}${onb.minutes ? `, 하루 ${MINUTES.find((m) => m[0] === onb.minutes)[1]}` : ""}`,
+  ];
+  const picked = new Set(onb.picks.map((x) => x.id));
+  const pool = (d) => Object.values(DATA.books).filter((b) => !IN_SERIES.has(b.id) && !picked.has(b.id) && cardLevel(b) != null && Math.abs(cardLevel(b) - level) <= d && !(b.listen && level > 3));
+  let near = pool(0); if (near.length < 6) near = pool(1);
+  const likes = new Set(onb.themes);
+  const fav = near.filter((b) => !likes.size || b.themes.some((t) => likes.has(t))).sort((a, b) => b.isSeries - a.isSeries).slice(0, 2);
+  const used = new Set(fav.map((b) => b.id));
+  const bal = [];
+  for (const t of BALANCE_THEMES.filter((t) => !likes.has(t))) {
+    const b = near.find((x) => !used.has(x.id) && x.themes.includes(t));
+    if (b) { bal.push({ b, t }); used.add(b.id); }
+    if (bal.length === 2) break;
+  }
+  return { level, reasons, fav, bal };
+}
+
+function onbCover(b) {
+  return `<span class="onb-cover" style="background: ${levelColor(cardLevel(b) ?? 0)}">${b.cover ? `<img src="${esc(b.cover)}" alt="" loading="lazy" onerror="this.remove()">` : ""}</span>`;
+}
+
+function renderOnb() {
+  const o = onb;
+  const nm = o.name.trim();
+  const bars = [1, 2, 3].map((i) => `<i class="${i <= o.step ? "on" : ""}"></i>`).join("");
+  const top = o.step <= 3 ? `<div class="onb-top">
+      <button class="onb-icon" data-act="back" aria-label="${o.step === 1 ? "닫기" : "뒤로"}">${o.step === 1
+        ? `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>`
+        : `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>`}</button>
+      <div class="onb-bars">${bars}</div><span class="small muted">${o.step}/3</span>
+    </div>` : "";
+  let body = "";
+  if (o.step === 1) {
+    body = `<h2 class="onb-h">우리 아이를<br>소개해 주세요</h2>
+      <p class="muted">딱 맞는 책을 고르는 데만 써요. 이 기기에만 저장돼요.</p>
+      <div class="onb-field"><label for="onb-name">부를 이름 <span class="muted">(선택)</span></label>
+        <input id="onb-name" class="text-in onb-in" maxlength="12" value="${esc(o.name)}" placeholder="예: 서아" autocomplete="off"></div>
+      <div class="onb-field"><span class="onb-label">만 나이</span>
+        <div class="onb-grid g5">${[4, 5, 6, 7, 8, 9, 10, 11, 12].map((a) => `<button class="onb-opt" data-act="age" data-v="${a}" aria-pressed="${o.age === a}">${a}${a === 12 ? "+" : ""}</button>`).join("")}</div></div>
+      <div class="onb-cta"><button class="btn primary onb-next" data-act="next">다음</button>
+        <button class="onb-link" data-act="skip">나중에 할게요</button></div>`;
+  } else if (o.step === 2) {
+    body = `<h2 class="onb-h">${nm ? esc(nm) + josa(nm, "이", "가") : "아이가"} 요즘<br>읽는 책은요?</h2>
+      <p class="muted">1~3권 골라 주시면 레벨을 더 정확히 맞춰요.</p>
+      <div class="onb-field"><label for="onb-q" class="sr">책 제목 검색</label>
+        <input id="onb-q" class="text-in onb-in" type="search" value="${esc(o.q)}" placeholder="책이나 시리즈 이름 (예: Magic Tree House)" autocomplete="off">
+        <div id="onb-hits" class="onb-hits"></div></div>
+      ${o.picks.length ? `<div class="onb-field"><span class="onb-label">고른 책</span>${o.picks.map((x) => {
+        const b = DATA.books[x.id];
+        return `<div class="onb-pick">
+          <div class="onb-pick-h">${onbCover(b)}<b>${esc(b.title)}</b>
+            <span class="onb-lv">${cardLevel(b) == null ? "레벨 확인 중" : `북레벨 ${cardLevel(b)}`}</span>
+            <button class="onb-icon sm" data-act="unpick" data-v="${b.id}" aria-label="${esc(b.title)} 빼기"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+          <div class="onb-grid g3">${FEELS.map(([k, label]) => `<button class="onb-opt" data-act="feel" data-id="${b.id}" data-v="${k}" aria-pressed="${x.feel === k}">${label}</button>`).join("")}</div>
+        </div>`;
+      }).join("")}</div>` : ""}
+      <div class="onb-cta"><button class="btn primary onb-next" data-act="next" ${o.picks.some((x) => !x.feel) ? "disabled" : ""}>${o.picks.length ? "다음" : "다음"}</button>
+        ${o.picks.length ? "" : `<button class="onb-link" data-act="next">아직 읽는 책이 없어요</button>`}</div>`;
+  } else if (o.step === 3) {
+    body = `<h2 class="onb-h">마지막이에요</h2>
+      <div class="onb-field"><span class="onb-label">파닉스는 언제 뗐나요?</span>
+        <div class="onb-grid g2">${DATA.readingOptions.map((r) => `<button class="onb-opt" data-act="phonics" data-v="${r.id}" aria-pressed="${o.phonics === r.id}">${esc(r.label.replace("파닉스 뗀 지 ", ""))}</button>`).join("")}</div></div>
+      <div class="onb-field"><span class="onb-label">좋아하는 이야기 <span class="muted">(여러 개 선택)</span></span>
+        <div class="onb-chips">${ONB_THEMES.map((t) => `<button class="onb-chip" data-act="theme" data-v="${t}" aria-pressed="${o.themes.includes(t)}">${t}</button>`).join("")}</div></div>
+      <div class="onb-field"><span class="onb-label">하루 영어책 읽는 시간</span>
+        <div class="onb-grid g3">${MINUTES.map(([k, label]) => `<button class="onb-opt" data-act="minutes" data-v="${k}" aria-pressed="${o.minutes === k}">${label}</button>`).join("")}</div></div>
+      <div class="onb-cta"><button class="btn primary onb-next" data-act="next">우리 아이 레벨 보기</button></div>`;
+  } else {
+    const r = onbResult(); o.result = r;
+    const L = DATA.levels[r.level];
+    const recCard = (b, sub) => `<div class="onb-rec">${onbCover(b)}<span><b>${esc(b.title)}</b>${sub ? `<span class="small muted">${esc(sub)}</span>` : ""}</span></div>`;
+    body = `<p class="muted onb-c">${nm ? esc(nm) + "의" : "우리 아이"} 결과가 나왔어요</p>
+      <div class="onb-res" style="--lv: ${levelColor(r.level)}">${keyArt(r.level)}
+        <h2 class="onb-key">${esc(L.keyName)}</h2>
+        <p class="onb-sub">시크릿 북레벨 <span class="num">${r.level}</span> · ${esc(L.name)}</p></div>
+      <div class="onb-box"><span class="onb-label">이렇게 정했어요</span>
+        <ul class="onb-why">${r.reasons.map((x) => `<li>${x}</li>`).join("")}</ul></div>
+      ${r.fav.length ? `<div class="onb-field"><span class="onb-label">${o.themes.length ? `좋아하는 ${esc(o.themes.slice(0, 2).join("·"))} 이야기` : "첫 추천"}</span>
+        <div class="onb-grid g2">${r.fav.map((b) => recCard(b, b.isSeries ? "시리즈" : "")).join("")}</div></div>` : ""}
+      ${r.bal.length ? `<div class="onb-field"><span class="onb-label">골고루 읽기 · 함께 읽으면 좋은 책</span>
+        <div class="onb-grid g2">${r.bal.map(({ b, t }) => recCard(b, t)).join("")}</div></div>` : ""}
+      <div class="onb-cta"><button class="btn primary onb-next" data-act="finish">${nm ? esc(nm) + " " : ""}책장 보러 가기</button>
+        <p class="small muted onb-c">레벨은 '우리 아이 레벨'에서 언제든 다시 찾을 수 있어요.</p></div>`;
+  }
+  $("onb").innerHTML = `<div class="onb-in-wrap">${top}${body}</div>`;
+  if (o.step === 2) renderOnbHits();
+  $("onb").scrollTop = 0;
+}
+
+function renderOnbHits() {
+  const key = norm(onb.q);
+  const el = $("onb-hits"); if (!el) return;
+  if (key.length < 2) { el.innerHTML = ""; return; }
+  const picked = new Set(onb.picks.map((x) => x.id));
+  const hits = Object.values(DATA.books)
+    .filter((b) => !picked.has(b.id) && norm(b.title + " " + (b.series ?? "") + " " + b.author).includes(key))
+    .sort((a, b) => (b.isSeries - a.isSeries) || (IN_SERIES.has(a.id) - IN_SERIES.has(b.id)) || a.title.length - b.title.length)
+    .slice(0, 6);
+  el.innerHTML = hits.length ? hits.map((b) => `<button class="onb-hit" data-act="pick" data-v="${b.id}" ${onb.picks.length >= 3 ? "disabled" : ""}>
+      ${onbCover(b)}<span class="onb-hit-t"><b>${esc(b.title)}${b.isSeries ? " (시리즈)" : ""}</b><span class="small muted">${esc(b.author)}</span></span>
+      <span class="onb-lv">${cardLevel(b) == null ? "확인 중" : `북레벨 ${cardLevel(b)}`}</span></button>`).join("")
+    : `<p class="small muted" style="padding: 12px">찾는 책이 없어요. 영어 제목 일부로 찾아보세요.</p>`;
+}
+
+$("onb").addEventListener("input", (e) => {
+  if (e.target.id === "onb-name") onb.name = e.target.value;
+  if (e.target.id === "onb-q") { onb.q = e.target.value; renderOnbHits(); }
+});
+$("onb").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-act]"); if (!b || !onb) return;
+  const { act, v } = b.dataset;
+  if (act === "back") { if (onb.step === 1) closeOnb(); else { onb.step--; renderOnb(); } return; }
+  if (act === "skip") { state.profile = { ...(state.profile ?? {}), skipped: true }; store.set("profile", state.profile); closeOnb(); return; }
+  if (act === "next") { onb.step++; renderOnb(); return; }
+  if (act === "age") onb.age = Number(v);
+  if (act === "pick" && onb.picks.length < 3) { onb.picks.push({ id: v, feel: "" }); onb.q = ""; }
+  if (act === "unpick") onb.picks = onb.picks.filter((x) => x.id !== v);
+  if (act === "feel") onb.picks.find((x) => x.id === b.dataset.id).feel = v;
+  if (act === "phonics") onb.phonics = v;
+  if (act === "theme") onb.themes = onb.themes.includes(v) ? onb.themes.filter((t) => t !== v) : [...onb.themes, v];
+  if (act === "minutes") onb.minutes = v;
+  if (act === "finish") {
+    const r = onb.result;
+    state.profile = { name: onb.name.trim(), age: onb.age, picks: onb.picks, phonics: onb.phonics, themes: onb.themes, minutes: onb.minutes, level: r.level, at: Date.now() };
+    store.set("profile", state.profile);
+    state.age = Math.min(onb.age, 13); store.set("age", state.age);
+    state.reading = onb.phonics; store.set("reading", state.reading);
+    state.levelOverride = r.level; store.set("levelOverride", r.level);
+    state.openLevel = null;
+    state.kind = "level"; state.collectionId = `level-${r.level}`; state.query = ""; $("search").value = "";
+    state.limit = 24; state.expanded.clear();
+    store.set("kind", state.kind); store.set("collection", state.collectionId);
+    closeOnb(); renderAll(); go("home");
+    return;
+  }
+  renderOnb();
+});
+$("onb-again").addEventListener("click", openOnb);
+
 $("disclosure").textContent = DATA.disclosure;
 renderAll();
 showScreen();
+// 처음 온 사람에게만 설문을 띄운다 (건너뛰었거나 이미 했으면 안 띄움)
+if (!state.profile) openOnb();
 </script>
