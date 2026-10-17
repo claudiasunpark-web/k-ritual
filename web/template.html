@@ -1,9 +1,9 @@
 <title>시크릿 북클럽</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Gowun+Batang:wght@400;700&family=IBM+Plex+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<!-- 프리텐다드: 국내 앱에서 가장 많이 쓰는 한글·영문 글꼴. 쓰는 글자만 내려받는 버전 -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* 레이아웃: 위는 "우리 아이" 사다리(K-레벨 0~10), 아래는 묶음 탭 → 책 카드 그리드. 레벨은 연분홍→자두색 사다리 색으로 일관되게 표시 */
+/* 레이아웃: 아래 메뉴로 화면 전환. 글꼴은 프리텐다드 하나, 레벨은 연민트→청록 사다리 색으로 일관되게 표시 */
 :root {
   /* 크림 바탕 + 세이지 그린 + 살구 포인트. 레벨은 연민트 → 청록 한 계열로 */
   --bg: #f8f6f1;
@@ -24,10 +24,10 @@
   --series-ink: #ffffff;
   --level-l: 91%;
   --level-step: 5.4%;
-  --font-display: "Cormorant Garamond", "Gowun Batang", serif;
-  --font-ko-display: "Gowun Batang", "Nanum Myeongjo", serif;
-  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-body: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: var(--font-body);
+  --font-ko-display: var(--font-body);
+  --font-mono: var(--font-body);
   --radius: 10px;
 }
 @media (prefers-color-scheme: dark) {
@@ -52,7 +52,7 @@
 [hidden] { display: none !important; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
 .wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: grid; gap: 28px; }
-h1, h2, h3 { font-family: var(--font-ko-display); font-weight: 700; text-wrap: balance; margin: 0; line-height: 1.3; }
+h1, h2, h3 { font-family: var(--font-ko-display); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; margin: 0; line-height: 1.3; }
 h1 { font-size: 2rem; letter-spacing: -0.01em; }
 h2 { font-size: 1.35rem; }
 h3 { font-size: 1.05rem; }
@@ -66,7 +66,7 @@ button, select { font: inherit; color: inherit; }
 
 header.top { display: grid; gap: 6px; }
 header.top { justify-items: start; }
-header.top .brand { font-family: var(--font-display); font-style: italic; font-size: 1.15rem; letter-spacing: 0.04em; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+header.top .brand { font-family: var(--font-display); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--accent); display: flex; align-items: center; gap: 10px; }
 header.top .brand::before, header.top .brand::after { content: ""; width: 28px; height: 1px; background: var(--accent); opacity: 0.5; }
 
 /* ── 우리 아이 ───────────────────── */
@@ -91,7 +91,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .level-banner.is-other { background: var(--surface); border-left: 6px solid var(--lv); }
 .lb-who { font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em; opacity: 0.8; position: relative; }
 .lb-title { position: relative; font-size: 1.7rem; line-height: 1.2; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.lb-num { font-family: var(--font-display); font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.lb-num { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; line-height: 1; }
 .lb-name { position: relative; font-family: var(--font-ko-display); font-size: 1.1rem; font-weight: 700; }
 .lb-big { position: absolute; right: 8px; bottom: -28px; font-family: var(--font-display); font-weight: 700; font-size: 9rem; line-height: 1;
   color: var(--ink); opacity: 0.07; pointer-events: none; }
@@ -105,7 +105,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .workbooks { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 16px; }
 .wb-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 10px; }
 .wb { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
-.wb-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 600; font-size: 1.05rem; line-height: 1.25; }
+.wb-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 700; font-size: 1rem; line-height: 1.3; }
 .wb .actions { margin-top: 4px; }
 
 /* ── 묶음 ───────────────────────── */
@@ -138,7 +138,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 /* 내 책 */
 .mine-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
 .mine-item { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; display: grid; gap: 8px; }
-.mine-item .step-title { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; line-height: 1.25; }
+.mine-item .step-title { font-family: var(--font-display); font-weight: 700; font-size: 1rem; line-height: 1.3; }
 .mine-item .step-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .mine-item.is-done .step-title { text-decoration: line-through; color: var(--muted); }
 .mine-item.is-next { border-color: var(--accent); }
@@ -149,7 +149,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .guide-mini code { font-family: var(--font-mono); background: var(--soft); color: var(--ink); padding: 1px 6px; border-radius: 4px; margin-right: 4px; }
 .stats { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
 .stats > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px 6px; display: grid; justify-items: center; gap: 2px; }
-.stats b { font-family: var(--font-display); font-size: 1.6rem; line-height: 1; color: var(--accent); }
+.stats b { font-family: var(--font-display); font-weight: 800; font-size: 1.5rem; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
 .stats span { font-size: 0.72rem; color: var(--muted); white-space: nowrap; }
 @media (max-width: 480px) { .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .cols { display: flex; align-items: end; gap: 4px; min-height: 160px; padding-top: 8px; }
@@ -179,7 +179,7 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .book-body { display: grid; gap: 8px; align-content: start; min-width: 0; }
 .series-badge { display: inline-flex; align-items: center; gap: 4px; background: var(--series); color: var(--series-ink); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.02em; border-radius: 6px; padding: 3px 9px; margin-bottom: 6px; }
 .series-line { font-size: 0.75rem; letter-spacing: 0.02em; color: var(--accent); font-weight: 500; margin-bottom: 2px; }
-.book-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; line-height: 1.2; }
+.book-title { font-variant-numeric: lining-nums; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; letter-spacing: -0.01em; line-height: 1.3; }
 .tags { display: flex; flex-wrap: wrap; gap: 5px; }
 .tag { font-size: 0.75rem; padding: 2px 8px; border-radius: 99px; background: var(--soft); color: var(--ink); white-space: nowrap; }
 .tag.num { font-size: 0.72rem; }
