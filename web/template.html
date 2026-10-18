@@ -282,14 +282,12 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
 .onb-save { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; display: grid; gap: 8px; }
 .link-btn { border: 0; background: none; padding: 0; color: var(--accent); font: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
 /* 실력 다지기: 책 자료 */
-.mat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; display: grid; gap: 10px; }
-.mat-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.mat-head b { font-size: 1.05rem; }
-.mat-new { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--series); color: var(--series-ink); }
-.mat-sample { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--soft); color: var(--ink); text-decoration: none; min-height: 64px; }
-.mat-sample svg { width: 18px; height: 18px; fill: none; stroke: var(--muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
-.mat-cover { width: 36px; height: 50px; border-radius: 3px 7px 7px 3px; flex: none; background: linear-gradient(90deg, rgba(0, 0, 0, 0.15) 0 4px, transparent 4px), #3a6f9e; }
-.mat-t { flex: 1; min-width: 0; display: grid; }
+.mat-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; text-decoration: none; color: var(--ink);
+  background: color-mix(in srgb, var(--wb-reading) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--wb-reading) 35%, var(--line)); }
+.mat-link svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--wb-reading); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.mat-link > span:nth-child(2) { flex: 1; min-width: 0; display: grid; line-height: 1.35; }
+.mat-link .small { color: var(--muted); }
+.mat-free { font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: var(--wb-reading); color: var(--surface); flex: none; }
 /* ── 온보딩 ─────────────────────────── */
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .onb { position: fixed; inset: 0; z-index: 30; background: var(--bg); overflow-y: auto;
@@ -398,16 +396,6 @@ body { margin: 0; }
     <div class="screen-head">
       <h2 id="wb-h">실력 다지기</h2>
       <p class="small muted" id="wb-level"></p>
-    </div>
-    <div class="mat-card">
-      <div class="mat-head"><span class="mat-new">새로 나왔어요</span><b>책으로 배우는 단어·문제</b></div>
-      <p class="small">읽는 책의 장마다 꼭 알아야 할 단어 8개, 새로 쓴 예문, 문제와 정답을 담은 학습지예요.</p>
-      <a class="mat-sample" href="materials/voyages-doctor-dolittle-1-2.html">
-        <span class="mat-cover" aria-hidden="true"></span>
-        <span class="mat-t"><b>The Voyages of Doctor Dolittle</b><span class="small muted">1~2장 무료 맛보기 · 북레벨 8</span></span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </a>
-      <p class="small muted">3장부터는 <button class="link-btn" data-login="materials">로그인하고 받기</button> · 다른 책은 차례로 추가돼요.</p>
     </div>
     <div class="wb-sum" id="wb-summary"></div>
     <div class="tabs" role="tablist" id="wb-tabs"></div>
@@ -792,6 +780,11 @@ function seriesLine(b, child) {
   return "";
 }
 
+// 책별 학습 자료. 장 단위로 늘려 간다
+const MATERIALS = {
+  "the-voyages-of-doctor-dolittle": [{ label: "1~2장", href: "materials/voyages-doctor-dolittle-1-2.html", free: true }],
+};
+
 function bookCard(b, child = false) {
   const f = fit(b);
   const owned = state.owned.has(b.id);
@@ -830,6 +823,10 @@ function bookCard(b, child = false) {
       ${b.summaryKo || b.summary ? `<p class="summary" lang="${b.summaryKo ? "ko" : "en"}" title="눌러서 펼치기">${esc(b.summaryKo ?? b.summary)}</p>` : ""}
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
+      ${MATERIALS[b.id] ? MATERIALS[b.id].map((m) => `<a class="mat-link" href="${esc(m.href)}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z M14 4v5h5 M8 13h8 M8 17h5"/></svg>
+        <span><b>학습 자료 · ${esc(m.label)}</b><span class="small">꼭 알아야 할 단어 · 내용 이해 · 생각하고 쓰기</span></span>
+        ${m.free ? `<span class="mat-free">무료</span>` : ""}</a>`).join("") : ""}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
         <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "세트 사러 가기" : "사러 가기"}</a>

@@ -75,6 +75,12 @@ p { margin: 0; }
 .answers summary { font-weight: 800; cursor: pointer; min-height: 32px; }
 .answers ul { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
 
+.part { display: grid; gap: 12px; }
+.part-h { display: flex; gap: 8px; align-items: center; font-size: 1.1rem; }
+.gloss { border: 1px dashed var(--line); border-radius: 12px; padding: 10px 12px; display: grid; gap: 6px; }
+.gloss-list { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 0.88rem; }
+.think { display: grid; gap: 6px; }
+.starter { background: var(--soft); border-radius: 8px; padding: 6px 10px; font-weight: 600; }
 .locked { border: 1px dashed var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 8px; text-align: center; justify-items: center; }
 footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 14px; display: grid; gap: 4px; }
 
@@ -100,7 +106,7 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
   <div class="top noprint">
     <span class="brand">Secret Book Club</span>
     <div style="display: flex; gap: 8px; flex-wrap: wrap">
-      <a class="btn" href="../#workbooks">← 실력 다지기</a>
+      <a class="btn" href="../#books">← 책장</a>
       <button class="btn primary" id="print">인쇄하기</button>
     </div>
   </div>
@@ -109,204 +115,71 @@ footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--lin
     <p class="small muted">책으로 배우는 단어·문제 · 무료 맛보기</p>
     <h1 class="en">The Voyages of Doctor Dolittle</h1>
     <p>휴 로프팅 · 1922년 뉴베리상 · 1부 1~2장</p>
-    <div class="meta"><span class="tag">시크릿 북레벨 8 · 이야기키</span><span class="tag">장마다 단어 8개</span><span class="tag">문제 3종</span></div>
+    <div class="meta"><span class="tag">시크릿 북레벨 8 · 이야기키</span><span class="tag">① 꼭 알아야 할 단어</span><span class="tag">② 내용 이해</span><span class="tag">③ 생각·쓰기</span></div>
   </header>
 
   <div class="how">
     <b>이렇게 써요</b>
     <ol>
-      <li>장을 읽기 <b>전에</b> 단어 8개를 아이와 소리 내어 읽어요.</li>
-      <li>책을 읽으며 그 단어가 나오면 표시해요.</li>
-      <li>다 읽고 문제를 풀어요. 답은 맨 뒤에 있어요.</li>
+      <li><b>읽기 전</b> · ① 단어 8개를 아이와 소리 내어 읽어요.</li>
+      <li><b>읽은 뒤</b> · ② 내용 이해 질문으로 줄거리를 확인해요.</li>
+      <li><b>마무리</b> · ③ 생각해 볼 질문으로 이야기 나누고, 영어로 2~3문장 써 봐요. 예시 답안은 맨 뒤에 있어요.</li>
     </ol>
     <p class="small muted">'책 속 문장'은 저작권이 끝난 원문이고, '새 예문'은 이 학습지를 위해 새로 쓴 문장이에요.</p>
   </div>
 
-  <!-- ── 1장 ───────────────────────── -->
+    <!-- ── 1장 ───────────────────────── -->
   <section class="chapter" aria-labelledby="ch1">
-    <div class="ch-head">
-      <span class="ch-no">CHAPTER 1</span>
-      <h2 id="ch1"><span class="en">The Cobbler’s Son</span> · 구두장이의 아들</h2>
-    </div>
+    <div class="ch-head"><span class="ch-no">CHAPTER 1</span><h2 id="ch1"><span class="en">The Cobbler’s Son</span> · 구두장이의 아들</h2></div>
     <p class="story">아홉 살 반 토미 스터빈스는 강가 작은 마을에 살아요. 배들이 드나드는 다리 위에서 선원들의 노래를 따라 부르며, 언젠가 넓은 세상으로 떠나는 꿈을 꿔요. 홍합 잡는 조 할아버지, 고양이 먹이 파는 매튜 아저씨가 토미의 친한 친구예요.</p>
-
-    <div class="words">
-      <div class="word">
-        <div class="w-head"><span class="w-en en">cobbler</span><span class="w-pos">명사</span><span class="w-ko">구두를 고치는 사람, 구두장이</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…son of Jacob Stubbins, the <b>cobbler</b> of Puddleby-on-the-Marsh”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The <b>cobbler</b> fixed the hole in my old boots.</i><br><span class="ko-line">구두장이 아저씨가 내 낡은 부츠의 구멍을 고쳐 주셨어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">anchor</span><span class="w-pos">동사</span><span class="w-ko">(배가) 닻을 내리고 멈추다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“Sailing-ships came up this river from the sea and <b>anchored</b> near the bridge.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The fishing boat <b>anchored</b> in the quiet bay for the night.</i><br><span class="ko-line">고깃배가 밤을 보내려고 조용한 만에 닻을 내렸어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">dangle</span><span class="w-pos">동사</span><span class="w-ko">(아래로) 대롱대롱 매달리다, 늘어뜨리다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“I would sit on the river-wall with my feet <b>dangling</b> over the water”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">My little brother sat on the bench with his legs <b>dangling</b>.</i><br><span class="ko-line">남동생이 다리를 대롱대롱 늘어뜨린 채 벤치에 앉아 있었어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">long (to)</span><span class="w-pos">동사</span><span class="w-ko">몹시 바라다, 간절히 원하다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“For I <b>longed</b> always to sail away with those brave ships”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">On rainy days, she <b>longed</b> to play outside.</i><br><span class="ko-line">비 오는 날이면 그 아이는 밖에서 놀고 싶어서 견딜 수가 없었어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">marsh</span><span class="w-pos">명사</span><span class="w-ko">습지, 늪이 많은 축축한 땅</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…across the wide lonely <b>marshes</b> to the sea.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">Frogs and tall grass are everywhere in the <b>marsh</b>.</i><br><span class="ko-line">습지에는 개구리와 키 큰 풀이 가득해요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">mend</span><span class="w-pos">동사</span><span class="w-ko">고치다, 수선하다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“He used to <b>mend</b> my toy ships for me”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">Grandma can <b>mend</b> a torn shirt in five minutes.</i><br><span class="ko-line">할머니는 찢어진 셔츠를 5분 만에 고치실 수 있어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">tide</span><span class="w-pos">명사</span><span class="w-ko">밀물과 썰물, 조수</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…when the <b>tide</b> was running out we would paddle down the river”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">When the <b>tide</b> goes out, we can find crabs on the beach.</i><br><span class="ko-line">썰물이 되면 바닷가에서 게를 찾을 수 있어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">ramble</span><span class="w-pos">동사</span><span class="w-ko">(정해진 길 없이) 이리저리 거닐다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…<b>rambling</b> through the countryside after blackberries and mushrooms”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">We <b>rambled</b> through the park and found a hidden pond.</i><br><span class="ko-line">우리는 공원을 이리저리 거닐다가 숨은 연못을 발견했어요.</span></span></div>
-      </div>
+    <div class="part"><h3 class="part-h"><span class="q-badge">1</span>꼭 알아야 할 단어</h3>
+      <p class="small muted">이 책 밖에서도 자주 만나는 단어만 골랐어요. 읽기 전에 소리 내어 읽어 보세요.</p>
+      <div class="words"><div class="word"><div class="w-head"><span class="w-en en">long (to)</span><span class="w-pos">동사</span><span class="w-ko">몹시 바라다, 간절히 원하다</span></div><div class="w-row"><span>책 속</span><i class="en">“For I <b>longed</b> always to sail away with those brave ships”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">On rainy days, she <b>longed</b> to play outside.</i><br><span class="ko-line">비 오는 날이면 그 아이는 밖에서 너무 놀고 싶었어요.</span></span></div><div class="w-row"><span>더 알기</span><span class="small">형용사 long(긴)과 철자가 같지만 뜻이 달라요.</span></div></div><div class="word"><div class="w-head"><span class="w-en en">pretend</span><span class="w-pos">동사</span><span class="w-ko">~인 척하다</span></div><div class="w-row"><span>책 속</span><i class="en">“…<b>pretending</b> to myself that I too was a sailor.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">My sister <b>pretends</b> to be a cat when she plays.</i><br><span class="ko-line">동생은 놀 때 고양이인 척해요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">foreign</span><span class="w-pos">형용사</span><span class="w-ko">외국의, 다른 나라의</span></div><div class="w-row"><span>책 속</span><i class="en">“…to seek my fortune in <b>foreign</b> lands”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">We tried <b>foreign</b> food at the festival.</i><br><span class="ko-line">축제에서 외국 음식을 먹어 봤어요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">marvelous</span><span class="w-pos">형용사</span><span class="w-ko">놀라운, 정말 멋진</span></div><div class="w-row"><span>책 속</span><i class="en">“This old man was simply <b>marvelous</b> at making things.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The fireworks last night were <b>marvelous</b>!</i><br><span class="ko-line">어젯밤 불꽃놀이는 정말 멋졌어요!</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">clever</span><span class="w-pos">형용사</span><span class="w-ko">영리한, 솜씨 좋은</span></div><div class="w-row"><span>책 속</span><i class="en">“I never saw a man so <b>clever</b> with his hands.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The <b>clever</b> fox found a way out of the box.</i><br><span class="ko-line">영리한 여우가 상자에서 나갈 방법을 찾았어요.</span></span></div><div class="w-row"><span>더 알기</span><span class="small">clever with one's hands = 손재주가 좋은</span></div></div><div class="word"><div class="w-head"><span class="w-en en">mend</span><span class="w-pos">동사</span><span class="w-ko">고치다, 수선하다</span></div><div class="w-row"><span>책 속</span><i class="en">“He used to <b>mend</b> my toy ships for me”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">Grandma can <b>mend</b> a torn shirt in five minutes.</i><br><span class="ko-line">할머니는 찢어진 셔츠를 5분 만에 고치실 수 있어요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">fond of</span><span class="w-pos">형용사구</span><span class="w-ko">~을 아주 좋아하는</span></div><div class="w-row"><span>책 속</span><i class="en">“But I was extremely <b>fond of</b> animals.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">My dad is very <b>fond of</b> spicy noodles.</i><br><span class="ko-line">아빠는 매운 국수를 정말 좋아하세요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">ramble</span><span class="w-pos">동사</span><span class="w-ko">(정해진 길 없이) 이리저리 거닐다</span></div><div class="w-row"><span>책 속</span><i class="en">“…<b>rambling</b> through the countryside after blackberries”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">We <b>rambled</b> through the park and found a hidden pond.</i><br><span class="ko-line">우리는 공원을 이리저리 거닐다가 숨은 연못을 발견했어요.</span></span></div></div></div>
+      <div class="gloss"><b class="small">이야기에만 나오는 말</b><div class="gloss-list"><span><b class="en">cobbler</b> 구두장이</span><span><b class="en">marsh</b> 습지</span><span><b class="en">tide</b> 밀물과 썰물</span><span><b class="en">anchor</b> 닻을 내리다</span><span><b class="en">mussel</b> 홍합</span></div></div>
     </div>
-
-    <div class="quiz">
-      <div class="q-part">
-        <h3><span class="q-badge">A</span>뜻 연결하기</h3>
-        <div class="match">
-          <ol class="en"><li>cobbler</li><li>tide</li><li>mend</li><li>marsh</li></ol>
-          <ol class="abc"><li>고치다, 수선하다</li><li>습지</li><li>구두를 고치는 사람</li><li>밀물과 썰물</li></ol>
-        </div>
-      </div>
-      <div class="q-part">
-        <h3><span class="q-badge">B</span>빈칸 채우기</h3>
-        <div class="bank en"><span>anchored</span><span>dangling</span><span>longed</span><span>rambled</span></div>
-        <ol class="qs en">
-          <li>The big ship <span class="blank"></span> near the old bridge.</li>
-          <li>Tom <span class="blank"></span> to see the faraway lands.</li>
-          <li>The cat sat on the fence with its tail <span class="blank"></span>.</li>
-          <li>We <span class="blank"></span> through the woods all afternoon.</li>
-        </ol>
-      </div>
-      <div class="q-part">
-        <h3><span class="q-badge">C</span>내용 이해</h3>
-        <ol class="qs">
-          <li>토미의 아빠는 무슨 일을 하나요?
-            <ul class="choices"><li>① 선원</li><li>② 구두장이</li><li>③ 어부</li></ul></li>
-          <li>토미가 다리 위에서 자주 한 일은 무엇인가요?
-            <ul class="choices"><li>① 선원들의 노래를 따라 불렀다</li><li>② 학교 숙제를 했다</li><li>③ 배를 직접 몰았다</li></ul></li>
-          <li>토미가 가장 바라는 것은 무엇인지 한 문장으로 써 보세요.<div class="write"></div></li>
-        </ol>
-      </div>
-    </div>
+    <div class="part quiz"><h3 class="part-h"><span class="q-badge">2</span>내용 이해 질문</h3><ol class="qs"><li>토미의 아빠는 무슨 일을 하나요?<ul class="choices"><li>① 선원</li><li>② 구두장이</li><li>③ 어부</li></ul></li><li>토미가 다리 위에서 자주 한 일은 무엇인가요?<ul class="choices"><li>① 선원들의 노래를 따라 불렀다</li><li>② 학교 숙제를 했다</li><li>③ 배를 직접 몰았다</li></ul></li><li>토미가 학교에 다니지 않은 이유는 무엇인가요?<ul class="choices"><li>① 학교가 너무 멀어서</li><li>② 아빠가 학교에 보낼 만큼 넉넉하지 않아서</li><li>③ 공부를 싫어해서</li></ul></li><li>토미의 친구 조 할아버지는 무엇을 잘하나요? 한 가지를 써 보세요.<div class="write"></div></li></ol></div>
+    <div class="part quiz"><h3 class="part-h"><span class="q-badge">3</span>생각해 볼 질문 · 써 보기</h3><div class="think"><p><b>이야기 나누기</b> 토미는 지금이 행복한 줄 몰랐다고 말해요. 나중에 돌아보면 '그때 참 좋았지' 할 것 같은 일이 지금 나에게도 있을까요?</p></div>
+      <div class="think"><p><b>영어로 써 보기</b> 토미처럼 배를 타고 가 보고 싶은 먼 곳이 있나요? 어디에 가서 무엇을 하고 싶은지 영어로 2~3문장 써 보세요.</p>
+        <p class="starter en">I want to sail to ______ because ______.</p>
+        <div class="write"></div><div class="write"></div><div class="write"></div></div></div>
   </section>
 
   <!-- ── 2장 ───────────────────────── -->
   <section class="chapter" aria-labelledby="ch2">
-    <div class="ch-head">
-      <span class="ch-no">CHAPTER 2</span>
-      <h2 id="ch2"><span class="en">I Hear of the Great Naturalist</span> · 위대한 박물학자 이야기를 듣다</h2>
-    </div>
+    <div class="ch-head"><span class="ch-no">CHAPTER 2</span><h2 id="ch2"><span class="en">I Hear of the Great Naturalist</span> · 위대한 박물학자 이야기를 듣다</h2></div>
     <p class="story">토미가 매에게 잡힌 다람쥐를 구했지만 다리가 다쳐 있었어요. 조 할아버지는 이런 동물을 고칠 수 있는 사람은 둘리틀 선생님뿐이라고 해요. 매튜 아저씨를 따라 선생님 집에 가는 길에, 토미는 놀라운 비밀을 듣게 돼요. 선생님은 동물의 말을 할 줄 안대요!</p>
-
-    <div class="words">
-      <div class="word">
-        <div class="w-head"><span class="w-en en">claw</span><span class="w-pos">명사</span><span class="w-ko">(새·동물의) 날카로운 발톱</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…I happened to come upon a hawk with a squirrel in its <b>claws</b>.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The kitten held the yarn with its tiny <b>claws</b>.</i><br><span class="ko-line">아기 고양이가 작은 발톱으로 털실을 꽉 잡았어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">examine</span><span class="w-pos">동사</span><span class="w-ko">자세히 살펴보다, 검사하다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“Joe put on his spectacles and <b>examined</b> it carefully.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The doctor <b>examined</b> my throat with a small light.</i><br><span class="ko-line">의사 선생님이 작은 불빛으로 내 목을 자세히 살펴보셨어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">surgeon</span><span class="w-pos">명사</span><span class="w-ko">외과 의사 (수술하는 의사)</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“This is a job for a <b>surgeon</b>—and for a right smart one”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">A <b>surgeon</b> fixed the bone in my uncle's arm.</i><br><span class="ko-line">외과 의사 선생님이 삼촌 팔의 뼈를 고쳐 주셨어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">naturalist</span><span class="w-pos">명사</span><span class="w-ko">자연(동물·식물)을 연구하는 사람, 박물학자</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“Doctor Dolittle is a <b>nacheralist</b>.” <span class="small muted">(조 할아버지 사투리. 바른 철자는 naturalist)</span></i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The <b>naturalist</b> wrote down the name of every bird she saw.</i><br><span class="ko-line">박물학자는 자기가 본 새의 이름을 하나하나 적었어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">voyage</span><span class="w-pos">명사</span><span class="w-ko">(배를 타고 가는) 긴 여행, 항해</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“He’s away on a <b>voyage</b>. But he’s liable to be back any day.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">The <b>voyage</b> across the ocean took two whole weeks.</i><br><span class="ko-line">바다를 건너는 항해는 꼬박 2주가 걸렸어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">procession</span><span class="w-pos">명사</span><span class="w-ko">(줄지어 가는) 행렬</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“…we had a whole <b>procession</b> of dogs following us patiently.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">A <b>procession</b> of ducks crossed the road to the pond.</i><br><span class="ko-line">오리들이 줄지어 길을 건너 연못으로 갔어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">whisper</span><span class="w-pos">동사</span><span class="w-ko">속삭이다</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“The cat’s-meat-man stopped and leant down to <b>whisper</b> in my ear.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">She <b>whispered</b> the secret so no one else could hear.</i><br><span class="ko-line">그 아이는 아무도 못 듣게 비밀을 속삭였어요.</span></span></div>
-      </div>
-      <div class="word">
-        <div class="w-head"><span class="w-en en">mysterious</span><span class="w-pos">형용사</span><span class="w-ko">신비한, 수수께끼 같은</span></div>
-        <div class="w-row"><span>책 속</span><i class="en">“‘He talks their language,’ he said in a hoarse, <b>mysterious</b> voice.”</i></div>
-        <div class="w-row"><span>새 예문</span><span><i class="en">A <b>mysterious</b> box appeared on our doorstep.</i><br><span class="ko-line">우리 집 문 앞에 수수께끼 같은 상자가 놓여 있었어요.</span></span></div>
-      </div>
+    <div class="part"><h3 class="part-h"><span class="q-badge">1</span>꼭 알아야 할 단어</h3>
+      <p class="small muted">이 책 밖에서도 자주 만나는 단어만 골랐어요. 읽기 전에 소리 내어 읽어 보세요.</p>
+      <div class="words"><div class="word"><div class="w-head"><span class="w-en en">examine</span><span class="w-pos">동사</span><span class="w-ko">자세히 살펴보다, 검사하다</span></div><div class="w-row"><span>책 속</span><i class="en">“Joe put on his spectacles and <b>examined</b> it carefully.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The doctor <b>examined</b> my throat with a small light.</i><br><span class="ko-line">의사 선생님이 작은 불빛으로 내 목을 자세히 살펴보셨어요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">naturalist</span><span class="w-pos">명사</span><span class="w-ko">자연(동물·식물·돌)을 연구하는 사람</span></div><div class="w-row"><span>책 속</span><i class="en">“Doctor Dolittle is a <b>nacheralist</b>.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The <b>naturalist</b> wrote down the name of every bird she saw.</i><br><span class="ko-line">박물학자는 자기가 본 새의 이름을 하나하나 적었어요.</span></span></div><div class="w-row"><span>더 알기</span><span class="small">책 속 nacheralist는 조 할아버지의 사투리 발음이에요. 바른 철자는 naturalist.</span></div></div><div class="word"><div class="w-head"><span class="w-en en">voyage</span><span class="w-pos">명사</span><span class="w-ko">(배를 타고 가는) 긴 여행, 항해</span></div><div class="w-row"><span>책 속</span><i class="en">“He’s away on a <b>voyage</b>.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The <b>voyage</b> across the ocean took two whole weeks.</i><br><span class="ko-line">바다를 건너는 항해는 꼬박 2주가 걸렸어요.</span></span></div><div class="w-row"><span>더 알기</span><span class="small">이 책 제목에도 나와요: The Voyages of Doctor Dolittle</span></div></div><div class="word"><div class="w-head"><span class="w-en en">discovery</span><span class="w-pos">명사</span><span class="w-ko">발견</span></div><div class="w-row"><span>책 속</span><i class="en">“He’s made some great voyages and some wonderful <b>discoveries</b>.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">Finding the old map was an exciting <b>discovery</b>.</i><br><span class="ko-line">오래된 지도를 찾은 건 신나는 발견이었어요.</span></span></div><div class="w-row"><span>더 알기</span><span class="small">discover(발견하다)의 명사형이에요.</span></div></div><div class="word"><div class="w-head"><span class="w-en en">patiently</span><span class="w-pos">부사</span><span class="w-ko">참을성 있게, 끈기 있게 기다리며</span></div><div class="w-row"><span>책 속</span><i class="en">“…a whole procession of dogs following us <b>patiently</b>.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">The puppy waited <b>patiently</b> for its dinner.</i><br><span class="ko-line">강아지가 저녁밥을 얌전히 기다렸어요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">certainly</span><span class="w-pos">부사</span><span class="w-ko">물론이지요, 확실히</span></div><div class="w-row"><span>책 속</span><i class="en">“<b>Certainly</b>,” said the cat’s-meat-man.</i></div><div class="w-row"><span>새 예문</span><span><i class="en">“Can you help me?” “<b>Certainly</b>!”</i><br><span class="ko-line">"도와줄 수 있어?" "물론이지!"</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">whisper</span><span class="w-pos">동사</span><span class="w-ko">속삭이다</span></div><div class="w-row"><span>책 속</span><i class="en">“The cat’s-meat-man stopped and leant down to <b>whisper</b> in my ear.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">She <b>whispered</b> the secret so no one else could hear.</i><br><span class="ko-line">그 아이는 아무도 못 듣게 비밀을 속삭였어요.</span></span></div></div><div class="word"><div class="w-head"><span class="w-en en">mysterious</span><span class="w-pos">형용사</span><span class="w-ko">신비한, 수수께끼 같은</span></div><div class="w-row"><span>책 속</span><i class="en">“…he said in a hoarse, <b>mysterious</b> voice.”</i></div><div class="w-row"><span>새 예문</span><span><i class="en">A <b>mysterious</b> box appeared on our doorstep.</i><br><span class="ko-line">우리 집 문 앞에 수수께끼 같은 상자가 놓여 있었어요.</span></span></div></div></div>
+      <div class="gloss"><b class="small">이야기에만 나오는 말</b><div class="gloss-list"><span><b class="en">hawk</b> 매</span><span><b class="en">claw</b> 발톱</span><span><b class="en">squirrel</b> 다람쥐</span><span><b class="en">spectacles</b> 안경 (옛날 말)</span><span><b class="en">surgeon</b> 외과 의사</span></div></div>
     </div>
-
-    <div class="quiz">
-      <div class="q-part">
-        <h3><span class="q-badge">A</span>뜻 연결하기</h3>
-        <div class="match">
-          <ol class="en"><li>voyage</li><li>whisper</li><li>claw</li><li>surgeon</li></ol>
-          <ol class="abc"><li>외과 의사</li><li>긴 항해</li><li>날카로운 발톱</li><li>속삭이다</li></ol>
-        </div>
-      </div>
-      <div class="q-part">
-        <h3><span class="q-badge">B</span>빈칸 채우기</h3>
-        <div class="bank en"><span>examined</span><span>procession</span><span>naturalist</span><span>mysterious</span></div>
-        <ol class="qs en">
-          <li>A <span class="blank"></span> knows a lot about animals and plants.</li>
-          <li>The vet <span class="blank"></span> the puppy’s sore paw.</li>
-          <li>We heard a <span class="blank"></span> sound from the attic.</li>
-          <li>A long <span class="blank"></span> of children walked to the zoo.</li>
-        </ol>
-      </div>
-      <div class="q-part">
-        <h3><span class="q-badge">C</span>내용 이해</h3>
-        <ol class="qs">
-          <li>토미가 구한 동물은 무엇인가요?
-            <ul class="choices"><li>① 매</li><li>② 다람쥐</li><li>③ 강아지</li></ul></li>
-          <li>조 할아버지가 다람쥐를 직접 고치지 못한 이유는 무엇인가요?
-            <ul class="choices"><li>① 바빠서</li><li>② 도구도 배운 것도 없어서</li><li>③ 다람쥐를 싫어해서</li></ul></li>
-          <li>매튜 아저씨가 귓속말로 알려준 둘리틀 선생님의 비밀은 무엇인가요?<div class="write"></div></li>
-        </ol>
-      </div>
-    </div>
+    <div class="part quiz"><h3 class="part-h"><span class="q-badge">2</span>내용 이해 질문</h3><ol class="qs"><li>토미가 구한 동물은 무엇인가요?<ul class="choices"><li>① 매</li><li>② 다람쥐</li><li>③ 강아지</li></ul></li><li>조 할아버지가 다람쥐를 직접 고치지 못한 이유는 무엇인가요?<ul class="choices"><li>① 바빠서</li><li>② 도구도 배운 것도 없어서</li><li>③ 다람쥐를 싫어해서</li></ul></li><li>토미와 매튜 아저씨가 선생님 집에 갔을 때 선생님은 어디에 있었나요?<ul class="choices"><li>① 집 안에서 자고 있었다</li><li>② 항해를 떠나 집에 없었다</li><li>③ 시장에 있었다</li></ul></li><li>매튜 아저씨가 귓속말로 알려준 둘리틀 선생님의 비밀은 무엇인가요?<div class="write"></div></li></ol></div>
+    <div class="part quiz"><h3 class="part-h"><span class="q-badge">3</span>생각해 볼 질문 · 써 보기</h3><div class="think"><p><b>이야기 나누기</b> 매튜 아저씨는 사람들이 웃을까 봐 선생님의 비밀을 지킨다고 해요. 친구의 비밀을 지켜 준 적이 있나요? 비밀을 지키는 건 왜 중요할까요?</p></div>
+      <div class="think"><p><b>영어로 써 보기</b> 동물과 이야기할 수 있다면 어떤 동물에게 무엇을 물어보고 싶나요? 영어로 2~3문장 써 보세요.</p>
+        <p class="starter en">If I could talk to a ______, I would ask, “______?”</p>
+        <div class="write"></div><div class="write"></div><div class="write"></div></div></div>
   </section>
 
   <div class="locked noprint">
     <b>3장부터는 로그인하면 받을 수 있어요</b>
     <p class="small muted">회원은 매주 새 챕터 자료를 받아요. 구독하면 시리즈 전체를 한 번에 받을 수 있어요.</p>
-    <a class="btn primary" href="../?login=materials#workbooks">로그인하고 이어서 받기</a>
+    <a class="btn primary" href="../?login=materials#books">로그인하고 이어서 받기</a>
   </div>
 
   <section class="answers">
     <details>
-      <summary>정답 보기</summary>
+      <summary>정답과 예시 답안</summary>
       <p><b>1장</b></p>
       <ul>
-        <li>A. 1-C, 2-D, 3-A, 4-B</li>
-        <li class="en">B. 1 anchored · 2 longed · 3 dangling · 4 rambled</li>
-        <li>C. 1 ② · 2 ① · 3 예) 배를 타고 넓은 세상으로 떠나 먼 나라를 보고 싶어 해요.</li>
+        <li>내용 이해: 1 ② · 2 ① · 3 ② · 4 예) 물건을 잘 만들어요. 장난감 배를 고쳐 주고, 낡은 우산으로 연을 만들어요.</li>
+        <li class="en">써 보기 예) I want to sail to Africa because I want to see real elephants. I would take lots of pictures.</li>
       </ul>
       <p><b>2장</b></p>
       <ul>
-        <li>A. 1-B, 2-D, 3-C, 4-A</li>
-        <li class="en">B. 1 naturalist · 2 examined · 3 mysterious · 4 procession</li>
-        <li>C. 1 ② · 2 ② · 3 예) 동물의 말을 할 줄 알아요.</li>
+        <li>내용 이해: 1 ② · 2 ② · 3 ② · 4 예) 동물의 말을 할 줄 알아요.</li>
+        <li class="en">써 보기 예) If I could talk to a dog, I would ask, “What do you dream about?” I think it dreams about bones.</li>
       </ul>
+      <p class="small muted">생각해 볼 질문과 써 보기는 정답이 없어요. 아이의 생각을 이유와 함께 말하고 쓰는 게 목표예요.</p>
     </details>
   </section>
 
