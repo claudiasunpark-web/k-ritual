@@ -1,4 +1,4 @@
-<title>시크릿 북클럽</title>
+<title>시크릿 북클럽 Beta</title>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <!-- 프리텐다드: 국내 앱에서 가장 많이 쓰는 한글·영문 글꼴. 쓰는 글자만 내려받는 버전 -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
@@ -275,6 +275,7 @@ td code { font-family: var(--font-mono); background: var(--soft); padding: 1px 6
 footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 4px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
+.beta { display: inline-block; vertical-align: middle; margin-left: 4px; padding: 2px 8px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; }
 /* ── 로그인 권유 시트 ─────────────────── */
 .sheet-back { position: fixed; inset: 0; z-index: 40; background: rgba(15, 20, 18, 0.45); display: flex; align-items: flex-end; justify-content: center; }
 .sheet { width: min(100%, 480px); background: var(--surface); color: var(--ink); border-radius: 22px 22px 0 0; display: grid; gap: 12px;
@@ -374,7 +375,7 @@ body { margin: 0; }
   <div class="screen" id="screen-home" data-screen="home">
   <header class="top">
     <span class="brand">Secret Book Club</span>
-    <h1>시크릿 북클럽</h1>
+    <h1>시크릿 북클럽 <span class="beta">Beta</span></h1>
     <p class="muted">엄마들끼리만 아는 영어원서 고르는 법. AR, 렉사일, 글밥을 '파닉스 뗀 지 몇 개월이면 읽는 책'으로 바꿔 드려요.</p>
   </header>
 
