@@ -106,6 +106,14 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .key-art .gem { fill: var(--lv); stroke: #a8771b; stroke-width: 3; }
 .key-art .gem-n { fill: var(--ink); font-family: var(--font-display); font-weight: 800; font-size: 22px; }
 .key-art .spark { fill: #f2c14e; }
+.key-art .gem-soft { fill: var(--lv); }
+.key-art .beak { fill: #e07a5f; stroke: #a8771b; stroke-width: 2; stroke-linejoin: round; }
+.key-art .eye { fill: #5a3d0c; }
+.key-art .tuft { fill: none; stroke: #a8771b; stroke-width: 2.5; stroke-linecap: round; }
+.key-art .page { fill: none; stroke: #a8771b; stroke-width: 1.4; stroke-linecap: round; }
+.key-art .wave { fill: none; stroke: #fde7a6; stroke-width: 2.4; stroke-linecap: round; }
+.key-art .leaf { fill: #8cc084; stroke: #4f7a45; stroke-width: 2.5; stroke-linejoin: round; }
+.key-art .drop { fill: #8fc3e6; stroke: #3a6f9e; stroke-width: 1.5; }
 .key-ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 @media (max-width: 380px) { .key-art { width: 92px; height: 92px; } .lb-title { font-size: 1.8rem; } }
 @media (max-width: 720px) { .level-card { grid-template-columns: minmax(0, 1fr); } .rung { font-size: 0.7rem; } }
@@ -528,31 +536,65 @@ function isGoodFit(book) {
   return f.diff >= -1 && f.diff <= 1;
 }
 
-// 레벨 열쇠 그림. 손잡이(네 잎 모양) 가운데 보석에 레벨 숫자, 이빨 모양은 레벨마다 다르고
-// 반짝이는 레벨이 오를수록 늘어난다. 마스터키(10)는 왕관을 쓴다.
+// 레벨 열쇠 그림. 손잡이 모양이 키 이름을 닮았다 (쫑긋키=토끼 귀, 챕터키=펼친 책, 날개키=날개 …).
+// 금빛 몸통, 레벨마다 다른 이빨, 레벨 숫자 보석은 모두 같아서 한 가족으로 보인다.
+const KEY_BOWS = [
+  // 0 쫑긋키: 쫑긋 선 토끼 귀
+  `<ellipse class="gold" cx="-8" cy="-22" rx="5.5" ry="13"/><ellipse class="gold" cx="8" cy="-22" rx="5.5" ry="13"/>
+   <ellipse class="gem-soft" cx="-8" cy="-22" rx="2.4" ry="8"/><ellipse class="gem-soft" cx="8" cy="-22" rx="2.4" ry="8"/>
+   <circle class="gold" r="17"/>`,
+  // 1 콕콕키: 콕콕 쪼는 아기 새
+  `<path class="beak" d="M-14-4l-13 3 13 6z"/><path class="tuft" d="M-2-17c-3-7 1-11 6-8M3-17c1-6 6-7 8-3"/>
+   <circle class="gold" r="17"/><circle class="eye" cx="-11" cy="-10" r="2.4"/>`,
+  // 2 뚝딱키: 작은 망치
+  `<rect class="gold" x="-3" y="-27" width="6" height="12" rx="2"/><rect class="gold" x="-14" y="-33" width="28" height="10" rx="3"/>
+   <circle class="gold" r="17"/>`,
+  // 3 혼자키: 혼자 빛나는 별
+  `<path class="gold" d="M0-23l6 13 14 1-11 9 4 14-13-8-13 8 4-14-11-9 14-1z"/>`,
+  // 4 챕터키: 펼친 책
+  `<path class="gold" d="M0-8c-7-6-15-7-23-5v24c8-2 16-1 23 5z"/><path class="gold" d="M0-8c7-6 15-7 23-5v24c-8-2-16-1-23 5z"/>
+   <path class="page" d="M-19-6c5-1 10 0 14 3M-19 0c5-1 10 0 14 3M19-6c-5-1-10 0-14 3M19 0c-5-1-10 0-14 3"/>`,
+  // 5 술술키: 술술 흐르는 물결
+  `<circle class="gold" r="19"/><path class="wave" d="M-15 11c5-4 10 4 15 0s10-4 15 0"/><path class="wave" d="M-10 15.5c3.5-3 7 3 10 0s7-3 10 0"/>`,
+  // 6 쑥쑥키: 새싹
+  `<path class="leaf" d="M0-14C-3-28-17-30-21-23c6 6 13 9 21 9z"/><path class="leaf" d="M0-14C3-28 17-30 21-23c-6 6-13 9-21 9z"/>
+   <circle class="gold" r="16"/>`,
+  // 7 풍덩키: 첨벙 튀는 물방울
+  `<path class="gold" d="M-17-6l-4-12 9 7 2-14 6 12 6-12 2 14 9-7-4 12z"/><circle class="gold" r="17"/>
+   <circle class="drop" cx="-22" cy="-22" r="3"/><circle class="drop" cx="22" cy="-24" r="2.5"/><circle class="drop" cx="0" cy="-34" r="2.5"/>`,
+  // 8 이야기키: 말풍선
+  `<path class="gold" d="M-21-16h42a6 6 0 0 1 6 6v20a6 6 0 0 1-6 6H-4l-11 9 2-9h-8a6 6 0 0 1-6-6v-20a6 6 0 0 1 6-6z"/>
+   <circle class="eye" cx="-13" cy="0" r="2"/><circle class="eye" cx="13" cy="0" r="2"/>`,
+  // 9 날개키: 날개
+  `<path class="gold" d="M-14-4C-24-18-36-18-40-12c6 1 9 4 9 4-6 0-10 3-11 6 7-1 11 1 11 1-4 2-6 5-6 8 9-3 16-5 23-5z"/>
+   <path class="gold" d="M14-4c10-14 22-14 26-8-6 1-9 4-9 4 6 0 10 3 11 6-7-1-11 1-11 1 4 2 6 5 6 8-9-3-16-5-23-5z"/>
+   <circle class="gold" r="15"/>`,
+  // 10 마스터키: 왕관을 쓴 네 잎 장식
+  `<circle class="gold" cx="0" cy="-15" r="9"/><circle class="gold" cx="0" cy="15" r="9"/><circle class="gold" cx="-15" cy="0" r="9"/><circle class="gold" cx="15" cy="0" r="9"/>
+   <circle class="gold" r="17"/><path class="gold" d="M-12-24l4 9 8-10 8 10 4-9 2 13h-28z"/>`,
+];
 function keyArt(level) {
   const teeth = [0, 1, 2].map((i) => {
     const h = 5 + (((level + i * 2) % 3) + 1) * 4;
     return `<rect class="gold" x="${80 + i * 10}" y="64" width="7" height="${h}" rx="1.5"/>`;
   }).join("");
-  const sparkPos = [[98, 24, 1], [16, 26, 0.75], [104, 92, 0.6]];
+  const sparkPos = [[100, 22, 1], [104, 94, 0.6], [14, 22, 0.7]];
   const sparks = sparkPos.slice(0, 1 + Math.floor(level / 4)).map(([x, y, k]) =>
     `<path class="spark" transform="translate(${x} ${y}) scale(${k})" d="M0-9C1-3 3-1 9 0C3 1 1 3 0 9C-1 3-3 1-9 0C-3-1-1-3 0-9Z"/>`).join("");
-  const crown = level >= 10 ? `<path class="gold" d="M22 33l5 9 7-8 7 8 5-9 2 14H20z"/>` : "";
+  const big = level >= 10;
   return `<svg class="key-art" viewBox="0 0 120 120" aria-hidden="true">
     ${sparks}
     <g transform="rotate(-40 60 60)">
       <rect class="gold" x="50" y="55" width="60" height="10" rx="4"/>
       <rect class="gold-hi" x="56" y="57.5" width="48" height="2.5" rx="1.25"/>
       ${teeth}
-      <circle class="gold" cx="34" cy="47" r="10"/><circle class="gold" cx="34" cy="73" r="10"/>
-      <circle class="gold" cx="21" cy="60" r="10"/><circle class="gold" cx="47" cy="60" r="10"/>
-      <circle class="gold" cx="34" cy="60" r="19"/>
-      <rect class="gold" x="50" y="51" width="7" height="18" rx="2"/>
-      ${crown}
+      <rect class="gold" x="48" y="51" width="7" height="18" rx="2"/>
     </g>
-    <circle class="gem" cx="40.1" cy="76.7" r="12.5"/>
-    <text class="gem-n" x="40.1" y="${level >= 10 ? 83 : 84.5}" text-anchor="middle" style="font-size: ${level >= 10 ? 16 : 22}px">${level}</text>
+    <g transform="translate(40.1 76.7)">
+      ${KEY_BOWS[Math.max(0, Math.min(10, level))]}
+      <circle class="gem" r="${big ? 10 : 9.5}"/>
+      <text class="gem-n" y="${big ? 4.5 : 6}" text-anchor="middle" style="font-size: ${big ? 12.5 : 17}px">${level}</text>
+    </g>
   </svg>`;
 }
 
