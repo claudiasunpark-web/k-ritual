@@ -101,17 +101,17 @@ select { background: var(--bg); border: 1px solid var(--line); border-radius: 8p
 .lb-sub > span { white-space: nowrap; }
 /* 레벨 열쇠 그림: 금빛 열쇠, 손잡이 보석은 레벨 색, 이빨 모양과 반짝이 수는 레벨마다 다르게 */
 .key-art { width: 112px; height: 112px; flex: none; filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.12)); }
-.key-art .gold { fill: #f2c14e; stroke: #a8771b; stroke-width: 3; stroke-linejoin: round; }
-.key-art .gold-hi { fill: #fde7a6; }
-.key-art .gem { fill: var(--lv); stroke: #a8771b; stroke-width: 3; }
+.key-art .gold { fill: var(--m, #f2c14e); stroke: var(--ms, #a8771b); stroke-width: 3; stroke-linejoin: round; }
+.key-art .gold-hi { fill: var(--mh, #fde7a6); }
+.key-art .gem { fill: var(--lv); stroke: var(--ms, #a8771b); stroke-width: 3; }
 .key-art .gem-n { fill: var(--ink); font-family: var(--font-display); font-weight: 800; font-size: 22px; }
-.key-art .spark { fill: #f2c14e; }
+.key-art .spark { fill: var(--m, #f2c14e); stroke: var(--ms, #a8771b); stroke-width: 1; }
 .key-art .gem-soft { fill: var(--lv); }
-.key-art .beak { fill: #e07a5f; stroke: #a8771b; stroke-width: 2; stroke-linejoin: round; }
+.key-art .beak { fill: #e07a5f; stroke: var(--ms, #a8771b); stroke-width: 2; stroke-linejoin: round; }
 .key-art .eye { fill: #5a3d0c; }
-.key-art .tuft { fill: none; stroke: #a8771b; stroke-width: 2.5; stroke-linecap: round; }
-.key-art .page { fill: none; stroke: #a8771b; stroke-width: 1.4; stroke-linecap: round; }
-.key-art .wave { fill: none; stroke: #fde7a6; stroke-width: 2.4; stroke-linecap: round; }
+.key-art .tuft { fill: none; stroke: var(--ms, #a8771b); stroke-width: 2.5; stroke-linecap: round; }
+.key-art .page { fill: none; stroke: var(--ms, #a8771b); stroke-width: 1.4; stroke-linecap: round; }
+.key-art .wave { fill: none; stroke: var(--mh, #fde7a6); stroke-width: 2.4; stroke-linecap: round; }
 .key-art .leaf { fill: #8cc084; stroke: #4f7a45; stroke-width: 2.5; stroke-linejoin: round; }
 .key-art .drop { fill: #8fc3e6; stroke: #3a6f9e; stroke-width: 1.5; }
 .key-ic { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
@@ -573,7 +573,15 @@ const KEY_BOWS = [
   `<circle class="gold" cx="0" cy="-15" r="9"/><circle class="gold" cx="0" cy="15" r="9"/><circle class="gold" cx="-15" cy="0" r="9"/><circle class="gold" cx="15" cy="0" r="9"/>
    <circle class="gold" r="17"/><path class="gold" d="M-12-24l4 9 8-10 8 10 4-9 2 13h-28z"/>`,
 ];
+// 레벨마다 열쇠 색 [몸통, 테두리, 반짝 줄] — 이름에 맞춰 (쫑긋=분홍 토끼, 콕콕=병아리 노랑 …)
+const KEY_METALS = [
+  ["#f7b9cb", "#b5577a", "#fde2ea"], ["#ffd84d", "#a88200", "#fff1b0"], ["#e39a5c", "#8a4b1f", "#f6cfa8"],
+  ["#d9dee4", "#6f7c89", "#f4f6f8"], ["#f2c14e", "#a8771b", "#fde7a6"], ["#7fd3d8", "#2c828b", "#cdf1f2"],
+  ["#9fd283", "#4b7a3f", "#dcf0cf"], ["#86b6f0", "#355a99", "#d6e6fb"], ["#f49d82", "#a94c31", "#fcd8cc"],
+  ["#c7b4f1", "#6a52a6", "#ebe3fc"], ["#f5cf55", "#7a4f00", "#fff0b8"],
+];
 function keyArt(level) {
+  const [m, ms, mh] = KEY_METALS[Math.max(0, Math.min(10, level))];
   const teeth = [0, 1, 2].map((i) => {
     const h = 5 + (((level + i * 2) % 3) + 1) * 4;
     return `<rect class="gold" x="${80 + i * 10}" y="64" width="7" height="${h}" rx="1.5"/>`;
@@ -582,7 +590,7 @@ function keyArt(level) {
   const sparks = sparkPos.slice(0, 1 + Math.floor(level / 4)).map(([x, y, k]) =>
     `<path class="spark" transform="translate(${x} ${y}) scale(${k})" d="M0-9C1-3 3-1 9 0C3 1 1 3 0 9C-1 3-3 1-9 0C-3-1-1-3 0-9Z"/>`).join("");
   const big = level >= 10;
-  return `<svg class="key-art" viewBox="0 0 120 120" aria-hidden="true">
+  return `<svg class="key-art" viewBox="0 0 120 120" aria-hidden="true" style="--m: ${m}; --ms: ${ms}; --mh: ${mh}">
     ${sparks}
     <g transform="rotate(-40 60 60)">
       <rect class="gold" x="50" y="55" width="60" height="10" rx="4"/>
