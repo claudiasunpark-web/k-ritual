@@ -273,7 +273,7 @@ th { font-weight: 500; color: var(--muted); font-size: 0.8rem; white-space: nowr
 tr:last-child td { border-bottom: 0; }
 td code { font-family: var(--font-mono); background: var(--soft); padding: 1px 6px; border-radius: 4px; }
 
-footer { font-size: 0.8rem; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; display: grid; gap: 4px; }
+footer { font-size: 0.72rem; color: var(--muted); opacity: 0.8; text-align: center; padding-top: 8px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 
 .beta { display: inline-block; vertical-align: middle; margin-left: 4px; padding: 2px 8px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; }
@@ -403,6 +403,7 @@ body { margin: 0; }
   <aside class="guide-mini" aria-label="지수 읽는 법">
     <p><b>참고 · 책에 적힌 숫자 읽는 법</b></p>
     <p><code>AR 2.5</code> 미국 원어민 2학년 5개월째 아이가 혼자 읽는 수준이에요. 한국 아이 학년과는 상관없어요.</p>
+    <p>레벨은 매일 20~30분 꾸준히 읽은 아이 기준이에요. '근사'가 붙은 값은 확인 전 대략값이에요.</p>
     <p><code>520L</code> 렉사일. 문장 길이와 단어 난이도로 잰 값이라 AR과 어긋날 수 있어요. 두 값이 다르면 아이 반응을 먼저 보세요.</p>
   </aside>
   </div>
@@ -441,16 +442,12 @@ body { margin: 0; }
   <section class="screen" id="screen-log" data-screen="log" aria-labelledby="log-h" hidden>
     <div class="screen-head">
       <h2 id="log-h">독서 기록</h2>
-      <p class="small muted">다 읽은 책의 '📖 읽었어요'를 누르면 쌓여요. 이 기기에만 저장돼요.</p>
+      <p class="small muted">다 읽은 책의 '📖 읽었어요'를 누르면 쌓여요.</p>
     </div>
     <div id="log" style="display: grid; gap: 16px"></div>
   </section>
 
-  <footer>
-    <p id="disclosure"></p>
-    <p>레벨은 매일 20~30분 꾸준히 영어책을 읽은 아이를 기준으로 했어요. 아이마다 속도가 달라요.</p>
-    <p>'근사'가 붙은 AR·렉사일·레벨은 아직 확인 전인 대략적인 값이에요. 정확한 값은 확인되는 대로 바꿔 드려요.</p>
-  </footer>
+  <footer id="footer"><p id="disclosure"></p></footer>
 </div>
 
 <div class="onb" id="onb" role="dialog" aria-modal="true" aria-label="우리 아이 레벨 찾기" hidden></div>
@@ -1231,6 +1228,8 @@ function showScreen() {
   if (location.hash === "#guide") history.replaceState(null, "", "#home");
   const name = SCREENS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "home";
   document.querySelectorAll("[data-screen]").forEach((el) => { el.hidden = el.dataset.screen !== name; });
+  // 쿠팡 파트너스 고지: 사러 가기 링크가 있는 화면에만 한 줄
+  $("footer").hidden = !["books", "workbooks", "cart"].includes(name);
   document.querySelectorAll("#tabbar [data-go]").forEach((b) => {
     b.dataset.go === name ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current");
   });
