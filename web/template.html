@@ -6,26 +6,26 @@
 <style>
 /* 레이아웃: 아래 메뉴로 화면 전환. 글꼴은 프리텐다드 하나, 레벨은 연민트→청록 사다리 색으로 일관되게 표시 */
 :root {
-  /* 크림 바탕 + 세이지 그린 + 살구 포인트. 레벨은 연민트 → 청록 한 계열로 */
-  --bg: #f8f6f1;
-  --surface: #ffffff;
-  --ink: #1f2b27;
-  --muted: #66726d;
-  --line: #e6e2d9;
-  --accent: #2e6b5c;
-  --accent-ink: #ffffff;
-  --mark: #f6e2a8;
-  --mark-ink: #5b4410;
-  --good: #2f7d5b;
-  --warn: #b8662a;
-  --hard: #c2453f;
-  --listen: #7b62a8;
-  --soft: #eef3ef;
-  --series: #e07a5f;
-  --series-ink: #ffffff;
-  --wb-grammar: #2e6b5c;
-  --wb-vocab: #d9694c;
-  --wb-reading: #3a6f9e;
+  /* 이솝 느낌: 크림·베이지 바탕 + 올리브 포인트 + 담배색. 레벨은 연한 베이지 → 올리브 한 계열로 */
+  --bg: #f3ede2;
+  --surface: #fbf8f2;
+  --ink: #2b2620;
+  --muted: #6e604c;
+  --line: #e2d8c6;
+  --accent: #5b5e3c;
+  --accent-ink: #fbf8f2;
+  --mark: #e8d9b5;
+  --mark-ink: #4a3a28;
+  --good: #5b6e3a;
+  --warn: #a8642a;
+  --hard: #a8433a;
+  --listen: #7a6a8c;
+  --soft: #ece4d4;
+  --series: #8c6a4a;
+  --series-ink: #fbf8f2;
+  --wb-grammar: #5b5e3c;
+  --wb-vocab: #a8643f;
+  --wb-reading: #4f6470;
   --level-l: 91%;
   --level-step: 5.4%;
   --font-body: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
@@ -36,19 +36,19 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141a18; --surface: #1c2421; --ink: #e9efec; --muted: #9aa7a1; --line: #2c3632;
-    --accent: #7fc3ad; --accent-ink: #0f1f1a; --mark: #e6cf86; --mark-ink: #2b2005;
-    --good: #79c6a0; --warn: #e7a066; --hard: #f08a80; --listen: #b9a5e0; --soft: #22302b; --series: #f0997f; --series-ink: #2a120a;
-    --wb-grammar: #7fc3ad; --wb-vocab: #f0997f; --wb-reading: #8fb8e0;
+    --bg: #1c1915; --surface: #25211b; --ink: #ede5d6; --muted: #a89c88; --line: #3a342b;
+    --accent: #b9bc8a; --accent-ink: #1c1915; --mark: #cdb98a; --mark-ink: #2b2005;
+    --good: #a9bc85; --warn: #dda06a; --hard: #e08a7e; --listen: #b7a8cc; --soft: #2c2720; --series: #c9a27e; --series-ink: #1c1915;
+    --wb-grammar: #b9bc8a; --wb-vocab: #dda07e; --wb-reading: #9db3c0;
     --level-l: 36%; --level-step: 3%;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #141a18; --surface: #1c2421; --ink: #e9efec; --muted: #9aa7a1; --line: #2c3632;
-  --accent: #7fc3ad; --accent-ink: #0f1f1a; --mark: #e6cf86; --mark-ink: #2b2005;
-  --good: #79c6a0; --warn: #e7a066; --hard: #f08a80; --listen: #b9a5e0; --soft: #22302b; --series: #f0997f; --series-ink: #2a120a;
-  --wb-grammar: #7fc3ad; --wb-vocab: #f0997f; --wb-reading: #8fb8e0;
+  --bg: #1c1915; --surface: #25211b; --ink: #ede5d6; --muted: #a89c88; --line: #3a342b;
+  --accent: #b9bc8a; --accent-ink: #1c1915; --mark: #cdb98a; --mark-ink: #2b2005;
+  --good: #a9bc85; --warn: #dda06a; --hard: #e08a7e; --listen: #b7a8cc; --soft: #2c2720; --series: #c9a27e; --series-ink: #1c1915;
+  --wb-grammar: #b9bc8a; --wb-vocab: #dda07e; --wb-reading: #9db3c0;
   --level-l: 36%; --level-step: 3%;
   color-scheme: dark;
 }
@@ -278,7 +278,7 @@ footer { font-size: 0.72rem; color: var(--muted); opacity: 0.8; text-align: cent
 
 .beta { display: inline-block; vertical-align: middle; margin-left: 4px; padding: 2px 8px; border-radius: 99px; background: var(--accent); color: var(--accent-ink); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; }
 /* ── 로그인 권유 시트 ─────────────────── */
-.sheet-back { position: fixed; inset: 0; z-index: 40; background: rgba(15, 20, 18, 0.45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet-back { position: fixed; inset: 0; z-index: 40; background: rgba(28, 25, 21, 0.45); display: flex; align-items: flex-end; justify-content: center; }
 .sheet { width: min(100%, 480px); background: var(--surface); color: var(--ink); border-radius: 22px 22px 0 0; display: grid; gap: 12px;
   padding: 10px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px)); }
 .sheet-grip { width: 40px; height: 4px; border-radius: 2px; background: var(--line); justify-self: center; margin-bottom: 4px; }
@@ -619,7 +619,7 @@ function keyIcon() {
 }
 
 function levelColor(level) {
-  return `hsl(${150 + level * 4} 36% calc(var(--level-l) - ${level} * var(--level-step) / 2))`;
+  return `hsl(${62 - level * 3} 22% calc(var(--level-l) - ${level} * var(--level-step) / 2))`;
 }
 
 // ── 우리 아이 ───────────────────────
