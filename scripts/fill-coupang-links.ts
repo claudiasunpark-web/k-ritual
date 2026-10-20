@@ -68,7 +68,7 @@ for (const book of todo) {
   let match: CoupangProduct | null = null;
   for (const keyword of bookSearchKeywords(book.title, book.author)) {
     try {
-      match = bestProductMatch(book.title, await search(keyword));
+      match = bestProductMatch(book.title, await search(keyword), { series: book.isSeries });
     } catch (err) {
       console.error(`중단: ${(err as Error).message}`);
       stopped = true;

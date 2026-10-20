@@ -157,6 +157,11 @@ test("쿠팡 상품 매칭: 스핀오프·비슷한 제목은 고르지 않는�
   const brownBear = names("The Very Hungry Caterpillar", "Polar Bear Polar Bear  What Do you see 유아 보드북 아기 영어 도서");
   assert.equal(bestProductMatch("Brown Bear, Brown Bear, What Do You See?", brownBear), null);
   assert.equal(bestProductMatch("Goodnight Moon", names("Goodnight Moon (216318)"))?.productName, "Goodnight Moon (216318)");
+  // 낱권 카드에는 묶음 상품을 붙이지 않고, 시리즈 카드에는 붙인다
+  const boxcar = names("The Boxcar Children Bookshelf  1~12권 세트");
+  assert.equal(bestProductMatch("The Boxcar Children", boxcar), null);
+  assert.equal(bestProductMatch("The Boxcar Children", boxcar, { series: true })?.productName, "The Boxcar Children Bookshelf  1~12권 세트");
+  assert.equal(bestProductMatch("Dog Man", names("Dog Man 1~10권 세트", "Dog Man (Paperback)"))?.productName, "Dog Man (Paperback)");
 });
 
 test("시트 데이터: 낱권·시리즈가 충분히 들어 있다", () => {

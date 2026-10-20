@@ -166,7 +166,10 @@ const titleWords = (s: string) =>
  */
 const NOT_THE_BOOK = /\b(guide|workbook|activit(y|ies)|teacher|study|summary|quiz|comprehension|lesson|unit|novel study|literature (circle|unit))\b|가이드|워크북|교사용|문제집|요약/i;
 
-export function bestProductMatch<P extends { productName: string }>(title: string, products: P[]): P | null {
+// 여러 권 묶음 상품 ("1~12권 세트", "4종 박스 세트", "Collection"). 낱권 카드에 붙이면 엉뚱한 값이 된다
+const SET_PRODUCT = /세트|박스|\bbox(ed)? ?set\b|\bset\b|\bcollection\b|\bbookshelf\b|\d+\s*[~-]\s*\d+\s*권|\d+\s*(권|종|-book)/i;
+
+export function bestProductMatch<P extends { productName: string }>(title: string, products: P[], { series = false } = {}): P | null {
   const want = titleWords(title);
   const wantSet = new Set(want);
   if (wantSet.size === 0) return null;
@@ -175,6 +178,8 @@ export function bestProductMatch<P extends { productName: string }>(title: strin
   for (const p of products) {
     // 그 책이 아니라 그 책으로 하는 수업 자료·문제집·요약본인 상품 ("…: An Instructional Guide for Literature")
     if (NOT_THE_BOOK.test(p.productName) && !NOT_THE_BOOK.test(title)) continue;
+    // 낱권은 묶음 상품을 고르지 않는다 (제목 자체가 묶음이면 예외). 시리즈 카드는 묶음이 맞다
+    if (!series && SET_PRODUCT.test(p.productName) && !SET_PRODUCT.test(title)) continue;
     const have = titleWords(p.productName);
     if (have[0] !== want[0]) continue;
     const haveSet = new Set(have);
