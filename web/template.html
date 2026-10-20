@@ -297,6 +297,7 @@ footer { font-size: 0.72rem; color: var(--muted); opacity: 0.8; text-align: cent
 /* 실력 다지기: 책 자료 */
 .mat-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; text-decoration: none; color: var(--ink);
   background: color-mix(in srgb, var(--wb-reading) 10%, var(--surface)); border: 1px solid color-mix(in srgb, var(--wb-reading) 35%, var(--line)); }
+.wb-get.has { border-color: var(--accent); color: var(--accent); }
 .mat-link svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--wb-reading); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .mat-link > span:nth-child(2) { flex: 1; min-width: 0; display: grid; line-height: 1.35; }
 .mat-link .small { color: var(--muted); }
@@ -904,14 +905,11 @@ function bookCard(b, child = false) {
       ${b.summaryKo || b.summary ? `<p class="summary" lang="${b.summaryKo ? "ko" : "en"}" title="눌러서 펼치기">${esc(b.summaryKo ?? b.summary)}</p>` : ""}
       <p class="note">${esc(note)}</p>
       ${f.warnings.map((w) => `<p class="note warn">${esc(w)}</p>`).join("")}
-      ${MATERIALS[b.id] ? MATERIALS[b.id].map((m) => `<a class="mat-link" href="${esc(m.href)}">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z M14 4v5h5 M8 13h8 M8 17h5"/></svg>
-        <span><b>학습 자료 · ${esc(m.label)}</b><span class="small">꼭 알아야 할 단어 · 내용 이해 · 생각하고 쓰기</span></span>
-        ${m.free ? `<span class="mat-free">무료</span>` : ""}</a>`).join("") : ""}
       <div class="actions">
         ${DATA.seriesBooks[b.id] ? `<button class="btn small primary" data-series="${b.id}" aria-expanded="${state.expanded.has(b.id)}">${state.expanded.has(b.id) ? "접기 ▴" : `소개된 ${DATA.seriesBooks[b.id].length}권 펼치기 ▾`}</button>` : ""}
         <a class="btn small ${DATA.seriesBooks[b.id] ? "" : "primary"}" href="${esc(b.url)}" target="_blank" rel="noopener sponsored">${b.isSeries ? "세트 사러 가기" : "사러 가기"}</a>
         <button class="btn small cart-btn" data-cart="${b.id}" aria-pressed="${state.cart.includes(b.id)}">${state.cart.includes(b.id) ? "담음 ✓" : "🛒 담기"}</button>
+        ${b.isSeries ? "" : `<button class="btn small wb-get ${MATERIALS[b.id] ? "has" : ""}" data-wb-get="${b.id}">📝 워크북 받기</button>`}
         ${b.isSeries ? "" : `<button class="btn small read-btn" data-read="${b.id}" aria-pressed="${readCount(b.id) > 0}">${readCount(b.id) ? `읽음 ✓${readCount(b.id) > 1 ? ` ${readCount(b.id)}번` : ""}` : "📖 읽었어요"}</button>`}
       </div>
     </div>
@@ -1430,6 +1428,26 @@ document.addEventListener("click", (e) => {
   if (e.target.closest("[data-login-go]")) { if ($("onb").hidden === false) closeOnbAfterLogin(); startLogin(); return; }
   if (e.target.id === "sign-out") { signOut(); return; }
   if (e.target.closest("[data-login-close]") || e.target.id === "login-sheet") $("login-sheet").hidden = true;
+});
+// 워크북 받기: 만든 책은 학습지로, 아직이면 '만드는 중' 안내
+function openWorkbook(id) {
+  const mats = MATERIALS[id];
+  const b = DATA.books[id];
+  if (mats?.length === 1) { location.href = mats[0].href; return; }
+  $("login-body").innerHTML = mats ? `<div class="sheet-grip" aria-hidden="true"></div>
+    <h2 id="login-h">워크북 받기</h2><p class="muted">${esc(b.title)}</p>
+    ${mats.map((m) => `<a class="mat-link" href="${esc(m.href)}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10l4 4v12H5z M14 4v5h5 M8 13h8 M8 17h5"/></svg>
+      <span><b>${esc(m.label)}</b><span class="small">꼭 알아야 할 단어 · 내용 이해 · 생각하고 쓰기</span></span>${m.free ? `<span class="mat-free">무료</span>` : ""}</a>`).join("")}
+    <button class="onb-link" data-login-close>닫기</button>`
+  : `<div class="sheet-grip" aria-hidden="true"></div>
+    <h2 id="login-h">아직 워크북을 만드는 중이에요</h2>
+    <p class="muted">${esc(b.title)}의 단어 · 내용 이해 · 생각하고 쓰기 워크북을 준비하고 있어요. 조금만 기다려 주세요.</p>
+    <button class="btn primary onb-next" data-login-close>확인</button>`;
+  $("login-sheet").hidden = false;
+}
+document.addEventListener("click", (e) => {
+  const w = e.target.closest("[data-wb-get]");
+  if (w) openWorkbook(w.dataset.wbGet);
 });
 function closeOnbAfterLogin() { /* 결과 화면의 로그인 버튼은 결과를 먼저 저장한다 */ $("onb").querySelector('[data-act="finish"]')?.click(); }
 // 학습지 페이지의 '로그인하고 이어서 받기'에서 넘어온 경우
