@@ -30,6 +30,9 @@ import {
 const AWARD_KIND = { medal: "대상", honor: "아너" } as const;
 
 // 카드에 보여줄 한국어 줄거리 (영어 소개글을 1~2문장으로 줄여 옮긴 것). 없으면 영어 원문
+// 쿠팡에서 찾아봤는데 낱권 상품이 없던 책 (fill-coupang이 기록). 화면에서 '세트로만 판매'로 보여준다
+const NOT_FOUND_URL = new URL("../data/coupang-not-found.json", import.meta.url);
+const NOT_FOUND = (existsSync(NOT_FOUND_URL) ? JSON.parse(readFileSync(NOT_FOUND_URL, "utf8")) : {}) as Record<string, string>;
 const SUMMARY_KO = JSON.parse(readFileSync(new URL("../data/book-summary-ko.json", import.meta.url), "utf8")) as Record<string, string>;
 
 // EMBED_COVERS=1: 미리보기는 외부 이미지를 못 불러와서, scripts/cache-covers.py가 만든 썸네일을 페이지에 넣는다
@@ -98,6 +101,8 @@ const books = Object.fromEntries(
         summaryKo: SUMMARY_KO[b.id] ?? null,
         price: b.priceKrw ?? null,
         url: bookCoupangUrl(b),
+        noSingle: Boolean(NOT_FOUND[b.id]) && !b.coupang?.partnersUrl && !b.coupang?.productId,
+        setId: null as string | null,
         // 지수가 없다는 경고는 화면에서 '레벨 확인 중'으로 대신한다
         warnings: r.basis === "none" ? [] : r.warnings,
       },
@@ -109,6 +114,7 @@ const books = Object.fromEntries(
 for (const [seriesId, kids] of seriesBooks()) {
   const card = books[seriesId];
   if (card && !card.cover) card.cover = kids.map((k) => books[k.id]?.cover).find(Boolean) ?? null;
+  if (card) for (const k of kids) if (books[k.id]) books[k.id].setId = seriesId;
 }
 
 // "우리 아이 지금" 선택지. 개월 → 레벨은 levelFromPhonicsMonths와 같은 규칙
