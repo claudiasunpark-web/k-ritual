@@ -59,7 +59,17 @@ async function search(keyword: string): Promise<CoupangProduct[]> {
   const wait = lastCall + gapMs - Date.now();
   if (wait > 0) await sleep(wait);
   lastCall = Date.now();
-  return searchProducts(keyword, creds!, 10);
+  // 쿠팡 서버 쪽 일시 오류(5xx)는 10분 쉬고 최대 3번 다시. 횟수 제한(429) 같은 건 바로 멈춘다
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await searchProducts(keyword, creds!, 10);
+    } catch (err) {
+      if (attempt > 3 || !/검색 실패 \(5\d\d\)/.test((err as Error).message)) throw err;
+      console.error(`  … 쿠팡 서버 일시 오류, 10분 뒤 다시 (${attempt}/3): ${(err as Error).message}`);
+      await sleep(600_000);
+      lastCall = Date.now();
+    }
+  }
 }
 
 let stopped = false;
